@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <EditText
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/layout_name"/>
+    <ImageButton
+            android:layout_width="48sp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:src="@android:drawable/ic_menu_delete"
+            android:id="@+id/layout_delete"
+            android:contentDescription="@string/delete"/>
+</LinearLayout>

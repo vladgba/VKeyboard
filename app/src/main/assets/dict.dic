@@ -1,0 +1,9 @@
+# Text expansion dictionary.
+# When you type an abbreviation followed by space, Enter or punctuation,
+# it is replaced with the text on the right. Disable with "textExpansion": "0" in settings.
+# Remove the leading "#" to enable an example.
+(
+#    "brb": "be right back",
+#    "omw": "on my way",
+#    "shrug": "¯\\_(ツ)_/¯",
+)

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:id="@+id/action_prebuilt_add_theme"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:title="@string/prebuilt_themes"
+            android:showAsAction="ifRoom" />
+    <item
+            android:id="@+id/action_prebuilt_add_layouts"
+            android:icon="@android:drawable/ic_menu_add"
+            android:title="@string/prebuilt_layouts"
+            android:showAsAction="ifRoom" />
+    <item
+            android:id="@+id/action_about"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="@string/ui_about"
+            android:showAsAction="always" />
+</menu>

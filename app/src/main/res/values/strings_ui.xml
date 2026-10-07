@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Strings of the newcomer-friendly screens: home, settings, macros, key tester, pickers. -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Common -->
+    <string name="ui_none">none</string>
+    <string name="ui_off">Off</string>
+    <string name="ui_done">Done</string>
+    <string name="ui_help">Help</string>
+    <string name="ui_rename">Rename</string>
+    <string name="ui_move_up">Move up</string>
+    <string name="ui_move_down">Move down</string>
+    <string name="ui_copied">Copied: %1$s</string>
+    <string name="ui_restored_default">Restored the default value</string>
+
+    <!-- Home -->
+    <string name="ui_home_tagline">A light keyboard you can shape to your needs: layouts, themes, gestures, shortcuts and macros.</string>
+    <string name="ui_home_setup">Get started</string>
+    <string name="ui_step1">1. Turn on VKeyboard</string>
+    <string name="ui_step1_sub">Opens system settings. Switch VKeyboard on there.</string>
+    <string name="ui_step2">2. Make it your keyboard</string>
+    <string name="ui_step2_sub">Pick VKeyboard in the list of keyboards.</string>
+    <string name="ui_step3">3. Try it here:</string>
+    <string name="ui_home_customize">Customize</string>
+    <string name="ui_home_settings_sub">Behavior, sizes, touch timing, vibration</string>
+    <string name="ui_home_layouts">Layouts</string>
+    <string name="ui_home_layouts_sub">Choose the default layout, edit keys, add new layouts</string>
+    <string name="ui_home_themes_sub">Colors for day and night</string>
+    <string name="ui_home_macros_sub">One key that presses shortcuts and types text for you</string>
+    <string name="ui_home_tools">Tools and help</string>
+    <string name="ui_home_keycodes_sub">Find the code of any key to use in layouts</string>
+    <string name="ui_guide">Quick guide</string>
+    <string name="ui_guide_sub">How keys, gestures, modifiers and macros work</string>
+    <string name="ui_guide_text">Every key can do several things:\n\n• Tap: types its label, or sends a key combination or runs a macro (see Tap action in the key editor).\n• Long press and heavy press: a second action.\n• Swipe in a direction (Popup mode): one of up to 8 extra characters around the key.\n• Joystick mode: sliding moves the cursor, or repeats any action per step.\n• Modifier mode (Ctrl, Alt, Shift, Meta): tap once for the next key, tap twice to lock, or hold it and press other keys for shortcuts like Meta+D.\n\nTo edit a layout: Layouts → pencil icon. Tap a key to change it, swipe a key to move it.\n\nAction values you can type anywhere:\n• text, e.g. hello\n• a key code, e.g. -61 (Tab). Use the Key codes list to find codes.\n• a combination, e.g. ctrl+c or ctrl+shift+t\n• a macro, e.g. macro:selectAllCopy\n• a layout switch, e.g. layout:@EMOJI\n\nPhysical keys (volume, keyboard, remote) can be remapped in Physical buttons.</string>
+
+    <!-- Settings -->
+    <string name="ui_settings_intro">Changes apply right away. Long-press any setting to restore its default.</string>
+    <string name="ui_sec_typing">Typing</string>
+    <string name="ui_set_one_shot">Sticky modifiers</string>
+    <string name="ui_set_one_shot_sub">Tap Ctrl/Alt/Shift once for the next key, twice to lock. Off: a simple on/off switch.</string>
+    <string name="ui_set_expansion">Text expansion</string>
+    <string name="ui_set_expansion_sub">Replace abbreviations from your dictionary as you type</string>
+    <string name="ui_set_dict_sub">Abbreviations and the text they expand to</string>
+    <string name="ui_set_auto_num">Numbers in number fields</string>
+    <string name="ui_set_auto_num_sub">Show the number layout for phone, number and date fields</string>
+    <string name="ui_sec_look">Look and size</string>
+    <string name="ui_set_def_layout">Default layout</string>
+    <string name="ui_set_def_layout_sub">Layout shown when the keyboard opens</string>
+    <string name="ui_set_day_theme">Day theme</string>
+    <string name="ui_set_day_theme_sub">Used when the system is in light mode</string>
+    <string name="ui_set_night_theme">Night theme</string>
+    <string name="ui_set_night_theme_sub">Used when the system is in dark mode</string>
+    <string name="ui_set_landscape">Height in landscape</string>
+    <string name="ui_set_landscape_sub">Keyboard height when the phone is turned sideways</string>
+    <string name="ui_set_label_size">Label size</string>
+    <string name="ui_set_label_size_sub">Size of the main character on keys</string>
+    <string name="ui_set_hint_size">Hint size</string>
+    <string name="ui_set_hint_size_sub">Size of the small swipe characters around the label</string>
+    <string name="ui_set_padding">Gap between keys</string>
+    <string name="ui_set_padding_sub">Space around each key</string>
+    <string name="ui_set_radius">Corner roundness</string>
+    <string name="ui_set_radius_sub">0 = square keys</string>
+    <string name="ui_sec_touch">Touch and timing</string>
+    <string name="ui_set_long_press">Long press delay</string>
+    <string name="ui_set_long_press_sub">How long to hold a key for its long-press action</string>
+    <string name="ui_set_repeat">Repeat speed</string>
+    <string name="ui_set_repeat_sub">Delay between repeats while a repeating key is held (e.g. Backspace)</string>
+    <string name="ui_set_swipe">Swipe distance</string>
+    <string name="ui_set_swipe_sub">How far to slide from a key to pick a popup character</string>
+    <string name="ui_set_joy_h">Joystick step (horizontal)</string>
+    <string name="ui_set_joy_h_sub">Sliding distance for one step left/right on joystick keys</string>
+    <string name="ui_set_joy_v">Joystick step (vertical)</string>
+    <string name="ui_set_joy_v_sub">Sliding distance for one step up/down on joystick keys</string>
+    <string name="ui_set_hard">Heavy press force</string>
+    <string name="ui_set_hard_sub">Pressure needed for the heavy-press action. Only on screens that report pressure.</string>
+    <string name="ui_sec_feedback">Vibration</string>
+    <string name="ui_set_vib_press">On key press</string>
+    <string name="ui_set_vib_press_sub">Vibration length when a key is touched</string>
+    <string name="ui_set_vib_tick">On long press and joystick</string>
+    <string name="ui_set_vib_tick_sub">Short tick for long presses and each joystick step</string>
+    <string name="ui_set_vib_popup">On popup character</string>
+    <string name="ui_set_vib_popup_sub">Tick when a swipe selects another character</string>
+    <string name="ui_sec_hardware">Physical keys</string>
+    <string name="ui_set_hw_remap">Remap hardware keys</string>
+    <string name="ui_set_hw_remap_sub">Apply your remaps of volume, keyboard and remote keys while typing</string>
+    <string name="ui_sec_advanced">Advanced</string>
+    <string name="ui_set_errors">Show error messages</string>
+    <string name="ui_set_errors_sub">Pop up a message when a layout or macro has a problem</string>
+    <string name="ui_set_debug">Debug mode</string>
+    <string name="ui_set_debug_sub">Show every key event as a message. For troubleshooting.</string>
+    <string name="ui_set_input_device">Touch injection device</string>
+    <string name="ui_set_input_device_sub">Input device used by root touch-injection keys, e.g. /dev/input/event4</string>
+    <string name="ui_set_raw">Edit settings file</string>
+    <string name="ui_set_raw_sub">All settings as text, for advanced users</string>
+    <string name="ui_set_reset_all">Reset settings</string>
+    <string name="ui_set_reset_all_sub">Restore all defaults. Layout, themes and key remaps are kept.</string>
+    <string name="ui_set_reset_all_confirm">Restore all settings to their defaults?</string>
+
+    <!-- Key code list -->
+    <string name="ui_keycodes_title">Key codes</string>
+    <string name="ui_keycodes_note_copy">Tap a key to copy its layout value (for example -61 for Tab).</string>
+    <string name="ui_keycodes_note_pick">Tap a key to use it.</string>
+    <string name="ui_search_key">Search: tab, enter, f5, 61…</string>
+
+    <!-- Combination builder -->
+    <string name="ui_combo_title">Key combination</string>
+    <string name="ui_combo_hold">Hold:</string>
+    <string name="ui_combo_then_press">Then press:</string>
+    <string name="ui_combo_key_hint">key, e.g. c, tab, f5, enter</string>
+    <string name="ui_choose_key">Choose…</string>
+    <string name="ui_combo_choose_key">Choose a key</string>
+    <string name="ui_unknown_key">Unknown key: %1$s</string>
+    <string name="ui_combo_capture_tip">Tip: with a physical keyboard connected, just press the combination now.</string>
+
+    <!-- Action values -->
+    <string name="ui_action_help">Type text, or use the buttons to pick a key, a combination, a macro or a layout to switch to.</string>
+    <string name="ui_action_nothing">Does nothing</string>
+    <string name="ui_action_text">Types “%1$s”</string>
+    <string name="ui_action_char">Types %1$s</string>
+    <string name="ui_action_key">Presses %1$s</string>
+    <string name="ui_action_macro">Runs macro %1$s</string>
+    <string name="ui_action_macro_missing">Macro %1$s does not exist yet</string>
+    <string name="ui_btn_key">Key…</string>
+    <string name="ui_btn_combo">Combination…</string>
+    <string name="ui_btn_macro">Macro…</string>
+    <string name="ui_btn_clear">Clear</string>
+    <string name="ui_long_press_action">Long press action</string>
+    <string name="ui_heavy_press_action">Heavy press action</string>
+    <string name="ui_popup_char">Swipe character</string>
+
+    <!-- Key editor -->
+    <string name="ui_tap_action">Tap action</string>
+    <string name="ui_tap_default">Tap: default</string>
+    <string name="ui_tap_combo">Tap: %1$s</string>
+    <string name="ui_tap_macro">Tap: macro %1$s</string>
+    <string name="ui_tap_opt_default">Type the label (default)</string>
+    <string name="ui_tap_opt_combo">Press a key combination…</string>
+    <string name="ui_tap_opt_macro">Run a macro…</string>
+    <string name="ui_modifier_pick">Modifier type…</string>
+    <string name="ui_layout_none">Do not switch</string>
+    <string name="ui_layout_next">Next layout</string>
+    <string name="ui_layout_prev">Previous layout</string>
+    <string name="ui_layout_num">Numbers</string>
+    <string name="ui_layout_text">Back to text layout</string>
+    <string name="ui_layout_emoji">Emoji</string>
+
+    <!-- Macros -->
+    <string name="ui_macros">Macros</string>
+    <string name="ui_macros_intro">A macro does several things with one key: presses shortcuts, types text and waits between steps. Create one here, then open a layout, tap a key and choose Tap action → Run a macro.</string>
+    <string name="ui_macros_help">Steps:\n• Shortcut: a key or combination, e.g. Ctrl + A\n• Text: typed as is\n• Pause: waits before the next step (up to 10 s), useful for slow apps\n\nUse a macro:\n• on tap: key editor → Tap action → Run a macro\n• on long press, heavy press, swipe or popup: enter macro:name\n\nMacros are stored as text (menu → Edit as text), e.g.\n\"copyAll\": (\"key:ctrl+a\", \"key:ctrl+c\")</string>
+    <string name="ui_edit_as_text">Edit as text</string>
+    <string name="ui_macro_new">+ New macro</string>
+    <string name="ui_macros_yours">Your macros (%1$d)</string>
+    <string name="ui_no_macros_yet">No macros yet. Create one, or add an example below.</string>
+    <string name="ui_macro_empty">(no steps yet)</string>
+    <string name="ui_macro_examples">Examples</string>
+    <string name="ui_macro_examples_sub">Tap to add an example to your macros.</string>
+    <string name="ui_macro_exists">A macro named %1$s already exists</string>
+    <string name="ui_macro_name_hint">A short name without spaces, e.g. copyAll</string>
+    <string name="ui_macro_usage">Use it on a key with Tap action → Run a macro, or type macro:%1$s in a long-press or swipe action.</string>
+    <string name="ui_macro_empty_hint">Add the first step below.</string>
+    <string name="ui_macro_add_step">Add a step</string>
+    <string name="ui_macro_delete_confirm">Delete this macro? Keys that use it will do nothing.</string>
+    <string name="ui_pick_macro">Choose a macro</string>
+    <string name="ui_step_shortcut">Shortcut</string>
+    <string name="ui_step_shortcut_sub">Press a key or a combination like Ctrl + C</string>
+    <string name="ui_step_text">Text</string>
+    <string name="ui_step_text_sub">Type some text</string>
+    <string name="ui_step_wait">Pause</string>
+    <string name="ui_step_wait_sub">Wait before the next step, in milliseconds (1000 = 1 second)</string>
+
+    <!-- Hardware key tester -->
+    <string name="ui_key_tester">Physical buttons</string>
+    <string name="ui_key_tester_sub">Change what volume, keyboard or remote buttons do while you type</string>
+    <string name="ui_tester_details">Key code: %1$d (%2$s)\nIn layouts: %3$s\nScan code: %4$d\nAction: %5$s, repeat %6$d\nModifiers: %7$s (meta %8$s)\nDevice: %9$s (id %10$d)\nSource: %11$s</string>
+    <string name="ui_tester_held">Held now: %1$s</string>
+    <string name="ui_tester_copy">Copy code</string>
+    <string name="ui_tester_capture_back">Capture the Back key too</string>
+    <string name="ui_tester_capture_back_sub">When on, leave this screen with the arrow at the top</string>
+    <string name="ui_tester_remap_note">Remaps work while you type with VKeyboard. A layout can also define its own remaps, which take priority.</string>
+    <string name="ui_tester_log">Event log</string>
+    <string name="ui_remap_hidden">Also when the keyboard is hidden</string>
+    <string name="ui_remap_hidden_too">also when hidden</string>
+    <string name="ui_remap_inject">touch injection (edit in settings file)</string>
+
+    <!-- Theme colors: names and where they appear -->
+    <string name="tc_group_keyboard">Keyboard</string>
+    <string name="tc_group_keys">Keys</string>
+    <string name="tc_group_mods">Modifier keys (Shift, Ctrl…)</string>
+    <string name="tc_group_popup">Swipe popup</string>
+    <string name="tc_kb_bg">Background</string>
+    <string name="tc_kb_bg_d">Behind and between the keys</string>
+    <string name="tc_border">Key edge and shadow</string>
+    <string name="tc_border_d">The outline and the shadow under each key</string>
+    <string name="tc_key_bg">Key</string>
+    <string name="tc_key_bg_d">Normal key surface</string>
+    <string name="tc_key_pressed">Pressed key</string>
+    <string name="tc_key_pressed_d">Key surface while your finger is on it</string>
+    <string name="tc_text">Key label</string>
+    <string name="tc_text_d">The main character on keys</string>
+    <string name="tc_hint">Swipe hints</string>
+    <string name="tc_hint_d">Small characters around the label</string>
+    <string name="tc_meta">Active modifier</string>
+    <string name="tc_meta_d">Shift/Ctrl/Alt turned on for the next key</string>
+    <string name="tc_meta_locked">Locked modifier</string>
+    <string name="tc_meta_locked_d">Shift/Ctrl/Alt locked on (tapped twice)</string>
+    <string name="tc_dim">Dimming</string>
+    <string name="tc_dim_d">Darkens the keyboard behind the popup; use transparency</string>
+    <string name="tc_popup_bg">Popup</string>
+    <string name="tc_popup_bg_d">Background of the popup with extra characters</string>
+    <string name="tc_popup_text">Popup characters</string>
+    <string name="tc_popup_text_d">Characters inside the popup</string>
+    <string name="tc_popup_sel">Popup selection</string>
+    <string name="tc_popup_sel_d">Circle behind the character you are pointing at</string>
+
+    <!-- Theme editor -->
+    <string name="te_tap_hint">Tap any part of the preview to change its color. Long-press a color below for more options.</string>
+    <string name="te_default">default</string>
+    <string name="te_quick">More</string>
+    <string name="te_generate">Generate from one color</string>
+    <string name="te_generate_sub">Pick an accent color and get a complete, readable light or dark theme</string>
+    <string name="te_pick_accent">Accent color</string>
+    <string name="te_light_or_dark">Light or dark?</string>
+    <string name="te_light">Light</string>
+    <string name="te_dark">Dark</string>
+    <string name="te_load_from">Copy colors from…</string>
+    <string name="te_load_from_sub">Start over from a built-in or another theme</string>
+    <string name="te_builtin_light">Built-in light</string>
+    <string name="te_builtin_dark">Built-in dark</string>
+    <string name="te_use_as">Use this theme</string>
+    <string name="te_use_as_sub">Now: day = %1$s, night = %2$s</string>
+    <string name="te_both">Day and night</string>
+    <string name="te_applied">Saved and applied</string>
+    <string name="te_raw_sub">Saves first, then opens the theme as text</string>
+    <string name="te_enter_hex">Enter hex code</string>
+    <string name="te_hex_help">RRGGBB or AARRGGBB (AA = transparency, 00 invisible to FF solid)</string>
+    <string name="te_bad_hex">Use 6 or 8 hex digits, e.g. 1A73E8 or 801A73E8</string>
+    <string name="te_copy_from">Same as another color…</string>
+    <string name="te_reset_one">Reset to default</string>
+    <string name="te_undo">Undo</string>
+    <string name="te_unsaved">Save your changes to this theme?</string>
+    <string name="te_discard">Discard</string>
+    <string name="te_warn_labels">⚠ Key labels may be hard to read on the key color.</string>
+    <string name="te_warn_popup">⚠ Popup characters may be hard to read on the popup color.</string>
+
+    <!-- Themes list -->
+    <string name="tm_intro">Tap a preview to edit a theme. The sun icon chooses whether a theme is used by day, by night or both.</string>
+    <string name="tm_new">+ New theme</string>
+    <string name="tm_name_hint">Name for the new theme</string>
+    <string name="tm_exists">A theme named %1$s already exists</string>
+    <string name="tm_start_from">Start from</string>
+    <string name="tm_copy_of">Copy of %1$s</string>
+
+    <!-- Key / row colors in the layout editor -->
+    <string name="ce_intro">Colors for this key or row only. Tap to change (the layout updates live), long-press to use the theme color again.</string>
+    <string name="ce_own">Set here: %1$s</string>
+    <string name="ce_inherited">From theme</string>
+    <string name="ui_about">About</string>
+
+    <!-- Built-in layouts and themes -->
+    <string name="bi_welcome_title">Choose your languages</string>
+    <string name="bi_layouts_intro">Add the layouts you type in. Switch between them on the keyboard with the globe key. You can change or add layouts later in Layouts.</string>
+    <string name="bi_themes_intro">Ready-made color themes. Added themes appear in Themes, where you can edit them or make your own.</string>
+    <string name="bi_add">Add</string>
+    <string name="bi_added">Added ✓</string>
+    <string name="bi_added_toast">Added: %1$s</string>
+    <string name="bi_restore">Restore original</string>
+    <string name="bi_restore_confirm">Replace your copy with the original? Your changes to it will be lost.</string>
+    <string name="bi_restored">Restored: %1$s</string>
+    <string name="bi_done">Done</string>
+    <string name="bi_more_themes_or_layouts">Open my list</string>
+    <string name="bi_en">English</string>
+    <string name="bi_en_d">QWERTY. Swipe down on the top row for numbers.</string>
+    <string name="bi_en_ext">English (full)</string>
+    <string name="bi_en_ext_d">QWERTY with a number row, Ctrl, Alt and Meta keys. Good for shortcuts and remote desktops.</string>
+    <string name="bi_uk">Ukrainian</string>
+    <string name="bi_uk_d">ЙЦУКЕН with і, ї, є, ґ. Swipe down on the top row for numbers.</string>
+    <string name="bi_ru_ext">Russian (full)</string>
+    <string name="bi_ru_ext_d">ЙЦУКЕН with a number row and modifier keys.</string>
+    <string name="bi_bg">Bulgarian</string>
+    <string name="bi_bg_d">Phonetic Bulgarian layout. Swipe down on the top row for numbers.</string>
+    <string name="bi_num">Numbers</string>
+    <string name="bi_num_d">Digits and common symbols. Opens by the 123 key and in number fields.</string>
+    <string name="bi_sym">More symbols</string>
+    <string name="bi_sym_d">Math, currency and other special characters.</string>
+    <string name="bi_light">Light</string>
+    <string name="bi_light_d">White keys on a light gray background.</string>
+    <string name="bi_dark">Dark</string>
+    <string name="bi_dark_d">Dark gray keys, easy on the eyes at night.</string>
+
+    <!-- Layouts screen -->
+    <string name="lm_intro">Tap a preview to edit its keys. The default layout opens first; the globe key switches between your typing layouts.</string>
+    <string name="lm_new">+ New layout</string>
+    <string name="lm_builtin">Built-in layouts</string>
+    <string name="lm_typing">Typing layouts (%1$d)</string>
+    <string name="lm_typing_sub">Your languages. The globe key cycles through these.</string>
+    <string name="lm_other">Numbers and symbols</string>
+    <string name="lm_other_sub">Opened by keys like 123, not by the globe key.</string>
+    <string name="lm_default">DEFAULT</string>
+    <string name="lm_file">file: %1$s</string>
+    <string name="lm_make_default">Make default</string>
+    <string name="lm_edit_visual">Edit keys</string>
+    <string name="lm_cant_delete_default">This is the default layout. Make another layout the default first.</string>
+    <string name="lm_name_hint">Name for the new layout, e.g. myEnglish</string>
+    <string name="lm_start_empty">Empty layout</string>
+    <string name="lm_start_builtin">Built-in: %1$s</string>
+
+    <!-- Dictionary -->
+    <string name="dict_intro">Type a short abbreviation, then a space or punctuation, and it turns into the full text. Example: brb → be right back.</string>
+    <string name="dict_add">+ Add abbreviation</string>
+    <string name="dict_edit">Edit abbreviation</string>
+    <string name="dict_search">Search</string>
+    <string name="dict_count">Your abbreviations (%1$d)</string>
+    <string name="dict_empty">Nothing here yet. Add your own or pick an example below.</string>
+    <string name="dict_no_match">Nothing matches your search.</string>
+    <string name="dict_examples">Examples</string>
+    <string name="dict_examples_sub">Tap to add.</string>
+    <string name="dict_abbr_label">When I type</string>
+    <string name="dict_abbr_hint">abbreviation, e.g. brb</string>
+    <string name="dict_text_label">Replace it with</string>
+    <string name="dict_text_hint">full text, e.g. be right back</string>
+    <string name="dict_err_abbr">One word, no spaces</string>
+    <string name="dict_err_text">Enter the text to insert</string>
+    <string name="dict_err_exists">This abbreviation already exists</string>
+
+    <!-- Physical buttons (remapping) -->
+    <string name="pk_title">Physical buttons</string>
+    <string name="pk_intro">Make physical buttons do something else while you type with VKeyboard. For example: Volume Down moves the cursor, a remote button types your e-mail, or a keyboard key switches language.</string>
+    <string name="pk_enabled">Use my button changes</string>
+    <string name="pk_enabled_sub">Turn off to make all buttons work normally again without deleting your changes</string>
+    <string name="pk_step1">1. Press the button you want to change</string>
+    <string name="pk_waiting">Waiting for a button…</string>
+    <string name="pk_waiting_sub">Volume keys, a connected keyboard, a remote or a gamepad. Home and Power cannot be changed.</string>
+    <string name="pk_code_line">Button code %1$d</string>
+    <string name="pk_now_normal">Now: works normally</string>
+    <string name="pk_now_does">Now: %1$s</string>
+    <string name="pk_step2">2. Choose what it should do</string>
+    <string name="pk_change_none">Press a button first</string>
+    <string name="pk_change">Change what %1$s does…</string>
+    <string name="pk_yours">Your changed buttons</string>
+    <string name="pk_none_yet">No changes yet.</string>
+    <string name="pk_row">%1$s → %2$s</string>
+    <string name="pk_row_sub">Code %1$d · tap to change or restore</string>
+    <string name="pk_advanced">Technical details</string>
+    <string name="pk_advanced_sub">Codes, modifiers, device and an event log</string>
+    <string name="pk_dialog_title">When I press %1$s while typing…</string>
+    <string name="pk_dialog_now">Now it %1$s.</string>
+    <string name="pk_normal_short">works normally</string>
+    <string name="pk_opt_key">…act as another key or shortcut</string>
+    <string name="pk_opt_key_sub">For example Tab, an arrow, Enter or Ctrl + C</string>
+    <string name="pk_opt_text">…type some text</string>
+    <string name="pk_opt_text_sub">For example your e-mail address or a signature</string>
+    <string name="pk_opt_layout">…switch to a layout</string>
+    <string name="pk_opt_layout_sub">For example jump to your second language</string>
+    <string name="pk_opt_block">…do nothing</string>
+    <string name="pk_opt_block_sub">Ignore this button while typing (e.g. stop accidental presses)</string>
+    <string name="pk_opt_restore">…work normally again</string>
+    <string name="pk_opt_restore_sub">Remove my change for this button</string>
+    <string name="pk_hidden_note">Without this, the change works only while the VKeyboard keys are on screen. A text field must be active either way.</string>
+    <string name="pk_switches_to">switches to %1$s</string>
+    <string name="pk_does_nothing">does nothing</string>
+
+    <!-- Touch heatmap -->
+    <string name="ts_title">Touch heatmap</string>
+    <string name="ts_home_sub">See where you touch the keys and which ones you miss</string>
+    <string name="ts_intro">Shows which keys you touch most and where inside each key your finger lands. Only totals are stored on this phone, never the order of your touches, and nothing is recorded in password or incognito fields.</string>
+    <string name="ts_record">Record my touches</string>
+    <string name="ts_record_sub">Off by default. Turn on, type for a while, then come back.</string>
+    <string name="ts_layout">Layout</string>
+    <string name="ts_touches">%1$d touches</string>
+    <string name="ts_mode_keys">Keys</string>
+    <string name="ts_mode_heat">Heatmap</string>
+    <string name="ts_mode_aim">Aim</string>
+    <string name="ts_no_data">No touches recorded for this layout yet. Type with it, or try the field below.</string>
+    <string name="ts_no_data_off">Recording is off. Turn on Record my touches above.</string>
+    <string name="ts_summary">%1$d touches recorded.</string>
+    <string name="ts_legend_keys">Number = touches per key. Blue = rarely, red = most.</string>
+    <string name="ts_legend_heat">Colored spots show where on the keyboard you touch. Blue = rarely, red = most.</string>
+    <string name="ts_legend_aim">Line from the key center to your average touch. Green = on target, orange = a bit off, red = often off.</string>
+    <string name="ts_try">Try it live</string>
+    <string name="ts_try_hint">Type here with VKeyboard…</string>
+    <string name="ts_try_sub">Your latest touches appear on the preview as dots (the red one is the newest). They are only kept while this screen is open.</string>
+    <string name="ts_insights">What it shows</string>
+    <string name="ts_insights_none">Nothing yet.</string>
+    <string name="ts_top">Most used:</string>
+    <string name="ts_aim_good">Your touches land close to the key centers. 👍</string>
+    <string name="ts_aim_off">Keys you often touch off-center:</string>
+    <string name="ts_aim_tip">Tip: make these keys wider or taller in the layout editor (Style), or increase Gap between keys in Settings if you hit neighbours.</string>
+    <string name="ts_bottom_heavy">Many touches are on the bottom rows. A taller keyboard can make them easier to hit.</string>
+    <string name="ts_dir_low">too low</string>
+    <string name="ts_dir_high">too high</string>
+    <string name="ts_dir_left">too far left</string>
+    <string name="ts_dir_right">too far right</string>
+    <string name="ts_key_n">key %1$d</string>
+    <string name="ts_reset_layout">Clear this layout</string>
+    <string name="ts_reset_layout_sub">Forget recorded touches for the layout shown</string>
+    <string name="ts_reset_all">Clear everything</string>
+    <string name="ts_reset_confirm">Delete the recorded touches?</string>
+    <string name="tm_builtin">Built-in themes</string>
+    <!-- More built-in layouts -->
+    <string name="bi_ru">Russian</string>
+    <string name="bi_ru_d">Compact ЙЦУКЕН; ё on е, ъ on ь. Swipe down on the top row for numbers.</string>
+    <string name="bi_be">Belarusian</string>
+    <string name="bi_be_d">ЙЦУКЕН with ў and і; apostrophe on ь.</string>
+    <string name="bi_de">German</string>
+    <string name="bi_de_d">QWERTZ; swipe right on a, o, u, s for ä, ö, ü, ß.</string>
+    <string name="bi_fr">French</string>
+    <string name="bi_fr_d">AZERTY with accents on swipes: é è ê ë, à â, ç, ù, î, ô, œ.</string>
+    <string name="bi_es">Spanish</string>
+    <string name="bi_es_d">QWERTY with an ñ key; á é í ó ú ü on swipes, ¿ ¡ on the period.</string>
+    <string name="bi_pl">Polish</string>
+    <string name="bi_pl_d">QWERTY; ą ć ę ł ń ó ś ź ż on swipes.</string>
+    <string name="bi_ro">Romanian</string>
+    <string name="bi_ro_d">QWERTY; ă â î ș ț on swipes.</string>
+    <string name="bi_dvorak">English Dvorak</string>
+    <string name="bi_dvorak_d">The Dvorak layout: vowels under the left hand.</string>
+    <string name="bi_colemak">English Colemak</string>
+    <string name="bi_colemak_d">Colemak: easier on the fingers than QWERTY, similar shortcuts.</string>
+    <string name="bi_code">Programmer</string>
+    <string name="bi_code_d">Esc, Tab, Ctrl, Alt and arrows on top, a number row, and code symbols on every letter (swipe down).</string>
+    <string name="bi_emoji">Emoji</string>
+    <string name="bi_emoji_d">Hundreds of emoji in 9 categories with tabs on top; swipe on an emoji for related ones. Long-press the globe key to open it.</string>
+    <string name="bi_nav">Navigation and editing</string>
+    <string name="bi_nav_d">Arrows, Home/End, word jumps, selection, copy, cut, paste, undo. Open it from a key with Switch layout.</string>
+    <string name="bi_numpad">Number pad</string>
+    <string name="bi_numpad_d">Calculator-style digits and operators.</string>
+
+    <!-- More built-in themes -->
+    <string name="bi_t_amoled">AMOLED black</string>
+    <string name="bi_t_amoled_d">Pure black for OLED screens, teal accents. Saves battery.</string>
+    <string name="bi_t_hc">High contrast</string>
+    <string name="bi_t_hc_d">White on black with yellow accents. Easiest to read.</string>
+    <string name="bi_t_arctic">Arctic</string>
+    <string name="bi_t_arctic_d">Cool blue-gray dark theme.</string>
+    <string name="bi_t_purple">Midnight purple</string>
+    <string name="bi_t_purple_d">Dark purple with soft pastel accents.</string>
+    <string name="bi_t_retro">Retro dark</string>
+    <string name="bi_t_retro_d">Warm brown and amber, cozy at night.</string>
+    <string name="bi_t_solar_dark">Solar dark</string>
+    <string name="bi_t_solar_dark_d">Deep teal-blue, low glare.</string>
+    <string name="bi_t_forest">Forest</string>
+    <string name="bi_t_forest_d">Calm dark green.</string>
+    <string name="bi_t_solar_light">Solar light</string>
+    <string name="bi_t_solar_light_d">Warm cream with blue accents, soft contrast.</string>
+    <string name="bi_t_paper">Paper</string>
+    <string name="bi_t_paper_d">Warm beige, like a notebook.</string>
+    <string name="bi_t_ocean">Ocean</string>
+    <string name="bi_t_ocean_d">Fresh light blue.</string>
+    <string name="bi_t_sakura">Sakura</string>
+    <string name="bi_t_sakura_d">Soft light pink.</string>
+
+    <!-- New typing features -->
+    <string name="ui_set_auto_caps">Automatic capitals</string>
+    <string name="ui_set_auto_caps_sub">Start sentences with a capital letter where the text field asks for it</string>
+    <string name="ui_set_double_space">Double space for a period</string>
+    <string name="ui_set_double_space_sub">Tap space twice quickly after a word to type \". \"</string>
+    <string name="ui_set_portrait">Height in portrait</string>
+    <string name="ui_set_portrait_sub">Keyboard height when the phone is upright</string>
+    <string name="ui_btn_layout">Layout…</string>
+    <string name="ui_action_layout">Switches to %1$s</string>
+    <!-- Hardcoded texts moved to resources -->
+    <string name="about_github">Open on GitHub</string>
+    <string name="about_wiki">Wiki</string>
+    <string name="about_privacy">Privacy policy</string>
+    <string name="about_terms">Terms of use</string>
+    <string name="mk_code">Key code</string>
+    <string name="raw_reformat">Reformat</string>
+
+    <!-- Key labels used by layout files as "@string/kb_…" (keep short) -->
+    <string name="kb_abc">ABC</string>
+    <string name="kb_space_name">space</string>
+    <string name="kb_word_left">⇤ word</string>
+    <string name="kb_word_right">word ⇥</string>
+    <string name="kb_select_all">Select all</string>
+    <string name="kb_undo">Undo</string>
+    <string name="kb_redo">Redo</string>
+    <string name="kb_cut">Cut</string>
+    <string name="kb_copy">Copy</string>
+    <string name="kb_paste">Paste</string>
+    <string name="kb_emoji_smileys">Smileys</string>
+    <string name="kb_emoji_people">People</string>
+    <string name="kb_emoji_nature">Animals and nature</string>
+    <string name="kb_emoji_food">Food and drink</string>
+    <string name="kb_emoji_travel">Travel and places</string>
+    <string name="kb_emoji_activities">Activities</string>
+    <string name="kb_emoji_objects">Objects</string>
+    <string name="kb_emoji_symbols">Symbols</string>
+    <string name="kb_emoji_flags">Flags</string>
+    <!-- Voice typing -->
+    <string name="vo_sec">Voice typing</string>
+    <string name="vo_intro">On the built-in layouts, swipe down or long-press the comma key (🎤) and speak. Tap the keyboard to finish.</string>
+    <string name="vo_set_lang">Speech language</string>
+    <string name="vo_set_lang_sub">Auto uses the language of the current layout</string>
+    <string name="vo_lang_auto">Auto (from layout)</string>
+    <string name="vo_set_offline">Prefer offline recognition</string>
+    <string name="vo_set_offline_sub">Recognize speech on the phone without internet (Android 13+, if the language is downloaded)</string>
+    <string name="vo_set_mic">Microphone permission</string>
+    <string name="vo_mic_ok">Allowed</string>
+    <string name="vo_mic_missing">Not allowed yet. Tap to allow.</string>
+    <string name="vo_starting">Starting…</string>
+    <string name="vo_listening">Speak now…</string>
+    <string name="vo_processing">Recognizing…</string>
+    <string name="vo_tap_to_stop">Tap to finish · %1$s</string>
+    <string name="vo_action">Starts voice typing</string>
+    <string name="vo_err_unavailable">No speech recognition service on this phone. Install one (for example the Google app) or a voice keyboard.</string>
+    <string name="vo_err_nothing">Didn’t catch that. Try again.</string>
+    <string name="vo_err_network">Speech recognition needs a connection. Try offline recognition in Settings if your phone supports it.</string>
+    <string name="vo_err_permission">Microphone permission is missing.</string>
+    <string name="vo_err_busy">Speech recognition is busy. Try again in a moment.</string>
+    <string name="vo_err_language">This language is not available for speech recognition.</string>
+    <string name="vo_err_generic">Voice typing failed. Try again.</string>
+    <string name="vo_perm_granted">Microphone allowed. Tap 🎤 again to speak.</string>
+    <string name="vo_perm_denied">Voice typing needs the microphone.</string>
+    <string name="vo_perm_settings">Allow the microphone for VKeyboard in Permissions, then tap 🎤 again.</string>
+    <string name="ui_btn_voice">🎤 Voice</string>
+    <string name="ui_tap_opt_voice">Start voice typing</string>
+    <string name="ui_tap_voice">Tap: voice typing</string>
+
+    <!-- Layout editor -->
+    <string name="le_hint">Tap a key to edit it. Drag a key to move it anywhere; drop it above or below the keyboard to start a new row.</string>
+    <string name="le_new_row">+ new row</string>
+    <!-- Text (raw) editor -->
+    <string name="re_find">Find</string>
+    <string name="re_find_hint">Find</string>
+    <string name="re_replace_hint">Replace with</string>
+    <string name="re_replace">Replace</string>
+    <string name="re_replace_all">All</string>
+    <string name="re_replaced">%1$d replaced</string>
+    <string name="re_prev">Previous match</string>
+    <string name="re_next">Next match</string>
+    <string name="re_close">Close</string>
+    <string name="re_preview">Live preview</string>
+    <string name="re_wrap">Wrap long lines</string>
+    <string name="re_goto">Go to line</string>
+    <string name="re_goto_hint">Line number, 1 to %1$d</string>
+    <string name="re_problems_title">Problems</string>
+    <string name="re_no_problems">No problems found</string>
+    <string name="re_n_problems">%1$d problem(s)</string>
+    <string name="re_line">Line %1$d: %2$s</string>
+    <string name="re_pos">%1$d:%2$d</string>
+    <string name="re_err_unclosed">This bracket is never closed</string>
+    <string name="re_err_extra_close">Closing bracket without a matching opening one</string>
+    <string name="re_err_string">Text is missing its closing quote</string>
+    <string name="re_row">Row %1$d</string>
+    <string name="re_key">Key %1$d</string>
+    <string name="re_key_named">Key %1$d: %2$s</string>
+    <string name="re_swipe">swipe %1$s</string>
+    <string name="re_text_bigger">Bigger text</string>
+    <string name="re_text_smaller">Smaller text</string>
+    <string name="re_restore">Restore original</string>
+    <string name="re_restore_confirm">Replace the text with the built-in version? You can undo this.</string>
+    <string name="re_reformat_confirm">Reformatting removes all comments. Continue? You can undo this.</string>
+    <string name="re_undo">Undo</string>
+    <string name="re_redo">Redo</string>
+    <string name="re_indent">Indent</string>
+    <string name="re_outdent">Outdent</string>
+    <string name="re_ins_brackets">Brackets (wrap selection)</string>
+    <string name="re_ins_quotes">Quotes (wrap selection)</string>
+    <string name="re_comment">Comment / uncomment lines</string>
+    <string name="re_duplicate">Duplicate line</string>
+    <string name="re_select_block">Select block (tap again to grow)</string>
+    <string name="re_insert">Insert</string>
+    <string name="re_ins_key">Key</string>
+    <string name="re_ins_key_slots">Key with all 8 swipe slots</string>
+    <string name="re_ins_row">Row</string>
+    <string name="re_ins_param">Parameter…</string>
+    <string name="re_ins_action">Action (key, combo, macro…)</string>
+    <string name="re_ins_color">Color…</string>
+    <string name="re_help">Syntax help</string>
+    <string name="re_help_text">• ( ) groups things: the whole layout, a row, or a key. [ ] and { } work the same.\n• \"name\": \"value\" sets a parameter. : and = both work, commas are optional.\n• Values without a name are the swipe characters of a key, in this order: ↖ ↑ ↗ ← → ↙ ↓ ↘. The editor shows the arrow next to each one.\n• # starts a comment.\n• Parameters are inherited: key → row → layout → theme → settings.\n\nTips: tap a key in the preview to jump to it. The bar at the bottom shows where the cursor is and any problems; tap ⚠ to list them. Pinch to zoom. Long-press a toolbar button to see what it does.</string>
+
+    <!-- App language -->
+    <string name="ui_language">App language</string>
+    <string name="ui_language_sub">Language of these screens and of translated key labels</string>
+    <string name="ui_language_system">System default</string>
+    <string name="ui_language_system_with">System default (%1$s)</string>
+</resources>

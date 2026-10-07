@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Key labels (kb_*) are looked up by name from layout files (Labels.resolve); keep them in release builds. -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/kb_*" />

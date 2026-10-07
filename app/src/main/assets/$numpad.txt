@@ -1,0 +1,37 @@
+# Calculator-style number pad. Open it from any key with  "layout": "$numpad".
+(
+    (
+        ("key": "7"),
+        ("key": "8"),
+        ("key": "9"),
+        ("key": "/"),
+        ("key": "⌫", "width": "1", "code": "-67", "holdRepeat": "1", "mode": "joy", "top": "0", "bottom": "0", "right": "-112")
+    ),
+    (
+        ("key": "4"),
+        ("key": "5"),
+        ("key": "6"),
+        ("key": "*"),
+        ("key": "(")
+    ),
+    (
+        ("key": "1"),
+        ("key": "2"),
+        ("key": "3"),
+        ("key": "-"),
+        ("key": ")")
+    ),
+    (
+        ("key": "0", "width": "2"),
+        ("key": "."),
+        ("key": "+"),
+        ("key": "⏎", "code": "-66")
+    ),
+    (
+        ("key": "@string/kb_abc", "layout": "@TEXT"),
+        ("key": ","),
+        ("key": " ", "width": "2", "code": "-62", "mode": "joy", "left": "-21", "right": "-22", "top": "0", "bottom": "0"),
+        ("key": "%"),
+        ("key": "=")
+    )
+)

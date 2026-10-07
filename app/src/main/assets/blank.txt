@@ -1,0 +1,168 @@
+(
+    (
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+    )
+    (
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+    )
+    (
+(
+    key:"\u21ea"
+	mod: 1
+	modmeta: 129
+	modkey: 59
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:""
+    ext: ()
+)
+(
+    key:"\u2190"
+	code: -67
+	holdRepeat: 1
+)
+    )
+    (
+(
+    key:"123"
+    layout:"@NUM"
+)
+(
+    key:"\uD83C\uDF10"
+    layout:"@NEXT"
+)
+(
+    key:""
+)
+(
+    key:""
+)
+(
+    key:" "
+    width:2
+	code: -62
+    type: "joy"
+	left: -21
+	right: -22
+	top: 0
+	bottom: 0
+)
+(
+    key:""
+)
+(
+    key:""
+)
+(
+    key:"\u25cb"
+	code: -66
+    width:2
+)
+    )
+)

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated: VKeyboard launcher icon. A keycap with "V" and the 8 swipe directions around it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:pathData="M50.4,27 A3.6,3.6 0 1 0 57.6,27 A3.6,3.6 0 1 0 50.4,27 Z M77.4,54 A3.6,3.6 0 1 0 84.6,54 A3.6,3.6 0 1 0 77.4,54 Z M69.49,73.09 A3.6,3.6 0 1 0 76.69,73.09 A3.6,3.6 0 1 0 69.49,73.09 Z M50.4,81 A3.6,3.6 0 1 0 57.6,81 A3.6,3.6 0 1 0 50.4,81 Z M31.31,73.09 A3.6,3.6 0 1 0 38.51,73.09 A3.6,3.6 0 1 0 31.31,73.09 Z M23.4,54 A3.6,3.6 0 1 0 30.6,54 A3.6,3.6 0 1 0 23.4,54 Z M31.31,34.91 A3.6,3.6 0 1 0 38.51,34.91 A3.6,3.6 0 1 0 31.31,34.91 Z" android:fillColor="#FFFFFF" android:fillAlpha="0.55"/>
+    <path android:pathData="M68.49,34.91 A4.6,4.6 0 1 0 77.69,34.91 A4.6,4.6 0 1 0 68.49,34.91 Z" android:fillColor="#FDE68A"/>
+    <path android:pathData="M46,39.5 H62 A8.5,8.5 0 0 1 70.5,48 V64 A8.5,8.5 0 0 1 62,72.5 H46 A8.5,8.5 0 0 1 37.5,64 V48 A8.5,8.5 0 0 1 46,39.5 Z" android:fillColor="#1E1B4B" android:fillAlpha="0.35"/>
+    <path android:pathData="M46,36.5 H62 A8.5,8.5 0 0 1 70.5,45 V61 A8.5,8.5 0 0 1 62,69.5 H46 A8.5,8.5 0 0 1 37.5,61 V45 A8.5,8.5 0 0 1 46,36.5 Z" android:fillColor="#FFFFFF"/>
+    <path android:pathData="M43.7,44.3 L49,44.3 L54,57.6 L59,44.3 L64.3,44.3 L57,62.7 L51,62.7 Z" android:fillColor="#5B21B6"/>
+</vector>

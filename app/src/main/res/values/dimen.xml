@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<dimen name="picker_hsv_width">240dp</dimen>
+	<dimen name="picker_hsv_height">240dp</dimen>
+	<dimen name="picker_hue_width">30dp</dimen>
+	<dimen name="picker_hue_cursor_height">6dp</dimen>
+	<dimen name="picker_padding">10dp</dimen>
+	<dimen name="picker_preview_color_width">64dp</dimen>
+	<dimen name="picker_preview_color_height">32dp</dimen>
+</resources>

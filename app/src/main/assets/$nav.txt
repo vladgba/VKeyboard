@@ -1,0 +1,39 @@
+# Navigation and editing: arrows, word jumps, selection, clipboard and undo.
+# Open it from any key with  "layout": "$nav".
+(
+    (
+        ("key": "Esc", "code": "-111"),
+        ("key": "Home", "code": "-122"),
+        ("key": "↑", "code": "-19", "holdRepeat": "1"),
+        ("key": "End", "code": "-123"),
+        ("key": "PgUp", "code": "-92")
+    ),
+    (
+        ("key": "@string/kb_word_left", "combo": "ctrl+dpad_left"),
+        ("key": "←", "code": "-21", "holdRepeat": "1"),
+        ("key": "↓", "code": "-20", "holdRepeat": "1"),
+        ("key": "→", "code": "-22", "holdRepeat": "1"),
+        ("key": "@string/kb_word_right", "combo": "ctrl+dpad_right")
+    ),
+    (
+        ("key": "⇧ ←", "combo": "shift+dpad_left"),
+        ("key": "@string/kb_select_all", "combo": "ctrl+a"),
+        ("key": "⇧ →", "combo": "shift+dpad_right"),
+        ("key": "Del", "code": "-112", "holdRepeat": "1"),
+        ("key": "PgDn", "code": "-93")
+    ),
+    (
+        ("key": "@string/kb_undo", "combo": "ctrl+z"),
+        ("key": "@string/kb_cut", "combo": "ctrl+x"),
+        ("key": "@string/kb_copy", "combo": "ctrl+c"),
+        ("key": "@string/kb_paste", "combo": "ctrl+v"),
+        ("key": "@string/kb_redo", "combo": "ctrl+shift+z")
+    ),
+    (
+        ("key": "@string/kb_abc", "layout": "@TEXT"),
+        ("key": "Tab", "code": "-61"),
+        ("key": " ", "width": "2", "code": "-62"),
+        ("key": "⌫", "width": "1", "code": "-67", "holdRepeat": "1", "mode": "joy", "top": "0", "bottom": "0", "right": "-112"),
+        ("key": "⏎", "code": "-66")
+    )
+)

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- Voice typing (asked only when the user starts it). -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <!-- Android 11+: be able to see the system speech recognition service. -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
+        </intent>
+    </queries>
+
+    <application
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:label="@string/app_name"
+            android:localeConfig="@xml/locales_config"
+            android:theme="@android:style/Theme.Material.Light">
+
+        <activity
+                android:name=".ui.MainActivity"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.SetupLayouts"/>
+        <activity android:name=".ui.LayoutsManage"/>
+        <activity android:name=".ui.ThemeManage"/>
+        <activity android:name=".ui.ThemeEditorActivity"/>
+        <activity
+                android:name=".ui.VoicePermissionActivity"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                android:excludeFromRecents="true"
+                android:noHistory="true"/>
+        <activity android:name=".ui.DictionaryActivity" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".ui.TouchStatsActivity" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".ui.LayoutEditor"/>
+        <activity
+                android:name=".ui.RawEditor"
+                android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".ui.FileExport"/>
+        <activity android:name=".ui.SettingsActivity" android:label="@string/settings"/>
+        <activity android:name=".ui.MacrosActivity" android:label="@string/ui_macros"/>
+        <activity
+                android:name=".ui.PhysicalKeysActivity"
+                android:label="@string/pk_title"
+                android:configChanges="keyboard|keyboardHidden|navigation"/>
+        <activity
+                android:name=".ui.FileImport"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="file"/>
+                <data android:scheme="content"/>
+                <data android:mimeType="text/plain"/>
+                <data android:pathPattern=".*\\.txt"/>
+                <data android:pathPattern=".*\\.ini"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Keep the service class name stable: the system stores enabled IMEs by component name. -->
+        <service
+                android:name=".KeybWrapper"
+                android:directBootAware="true"
+                android:enabled="true"
+                android:exported="true"
+                android:label="@string/app_name"
+            android:localeConfig="@xml/locales_config"
+                android:permission="android.permission.BIND_INPUT_METHOD">
+            <meta-data
+                    android:name="android.view.im"
+                    android:resource="@xml/method"/>
+            <intent-filter>
+                <action android:name="android.view.InputMethod"/>
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
