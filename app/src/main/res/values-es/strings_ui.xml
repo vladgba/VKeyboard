@@ -330,6 +330,8 @@
     <string name="ts_intro">Muestra qué teclas tocas más y dónde cae tu dedo dentro de cada tecla. En el teléfono solo se guardan totales, nunca el orden de tus toques, y no se registra nada en campos de contraseña ni en modo incógnito.</string>
     <string name="ts_record">Registrar mis toques</string>
     <string name="ts_record_sub">Desactivado por defecto. Actívalo, escribe un rato y vuelve.</string>
+    <string name="ts_autotune">Ajuste automático de zonas táctiles</string>
+    <string name="ts_autotune_sub">Desplaza la zona táctil de cada tecla hacia donde realmente la pulsas, para fallar menos. Las teclas no se mueven en pantalla. Aprende de los toques registrados.</string>
     <string name="ts_layout">Distribución</string>
     <string name="ts_touches">%1$d toques</string>
     <string name="ts_mode_keys">Teclas</string>

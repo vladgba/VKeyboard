@@ -20,6 +20,8 @@ internal const val STATS_FILENAME = "touchstats"
 internal const val STATS_EXT = "stats"
 /** Record touch positions for the touch heatmap (aggregates only, never in password fields). */
 internal const val SETTING_TOUCH_STATS = "touchStats"
+/** Move each key's touch area toward where the user really touches it (learned from touch stats). */
+internal const val SETTING_HITBOX_AUTOTUNE = "hitboxAutotune"
 /** Capitalize automatically where the text field asks for it (start of sentences, names...). */
 internal const val SETTING_AUTO_CAPS = "autoCaps"
 /** Two quick spaces after a word become ". ". */

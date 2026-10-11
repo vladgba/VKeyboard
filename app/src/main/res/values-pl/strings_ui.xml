@@ -330,6 +330,8 @@
     <string name="ts_intro">Pokazuje, których klawiszy dotykasz najczęściej i gdzie w klawiszu trafia palec. W telefonie przechowywane są tylko sumy, nigdy kolejność dotknięć, i nic nie jest zapisywane w polach haseł ani w trybie incognito.</string>
     <string name="ts_record">Zapisuj moje dotknięcia</string>
     <string name="ts_record_sub">Domyślnie wyłączone. Włącz, popisz chwilę i wróć.</string>
+    <string name="ts_autotune">Automatyczne dopasowanie stref dotyku</string>
+    <string name="ts_autotune_sub">Przesuwa strefę dotyku każdego klawisza tam, gdzie naprawdę go naciskasz, aby było mniej pomyłek. Klawisze zostają na ekranie na swoim miejscu. Uczy się z zapisanych dotknięć.</string>
     <string name="ts_layout">Układ</string>
     <string name="ts_touches">dotknięcia: %1$d</string>
     <string name="ts_mode_keys">Klawisze</string>

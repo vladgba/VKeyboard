@@ -330,6 +330,8 @@
     <string name="ts_intro">Arată ce taste atingi cel mai des și unde ajunge degetul în fiecare tastă. Pe telefon se păstrează doar totaluri, niciodată ordinea atingerilor, și nimic nu se înregistrează în câmpurile de parolă sau incognito.</string>
     <string name="ts_record">Înregistrează atingerile mele</string>
     <string name="ts_record_sub">Oprit implicit. Pornește, scrie o vreme, apoi revino.</string>
+    <string name="ts_autotune">Ajustare automată a zonelor de atingere</string>
+    <string name="ts_autotune_sub">Mută zona de atingere a fiecărei taste spre locul unde o apeși de fapt, ca să greșești mai rar. Tastele rămân la locul lor pe ecran. Învață din atingerile înregistrate.</string>
     <string name="ts_layout">Aranjament</string>
     <string name="ts_touches">%1$d atingeri</string>
     <string name="ts_mode_keys">Taste</string>

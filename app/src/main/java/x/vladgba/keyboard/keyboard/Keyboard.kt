@@ -250,7 +250,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         try {
             when (me.actionMasked) {
                 MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
-                    val key = currentLayout.getKey(x, y) ?: return true
+                    val key = keyAt(x, y) ?: return true
                     if (isEditor) editInterface?.onPress(key, x, y)
                     else {
                         lastPointerId = pid
@@ -285,15 +285,78 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         if (privateField) return
         val store = Settings.bool(SETTING_TOUCH_STATS)
         if (!store && TouchStats.listener == null) return
-        val layout = currentLayout
-        val row = layout.rows.indexOf(key.row)
-        val index = key.row.keys.indexOf(key)
-        if (row < 0 || index < 0 || key.width <= 0 || key.height <= 0) return
+        if (key.width <= 0 || key.height <= 0) return
+        val id = keyIds()[key] ?: return
         TouchStats.record(
-            ctx, store, currentLayoutName, row, index,
-            x / layout.width.coerceAtLeast(1).toFloat(), y / layout.height.coerceAtLeast(1).toFloat(),
+            ctx, store, currentLayoutName, id,
             (x - (key.x + key.width / 2f)) / (key.width / 2f), (y - (key.y + key.height / 2f)) / (key.height / 2f),
         )
+    }
+
+    // ======================= touch stats / hitbox autotune =======================
+
+    private var idsLayout: KeybLayout? = null
+    private var idsKeyCount = -1
+    private var ids: Map<Key, String> = emptyMap()
+
+    /** Stable touch-stats ids of the current layout's keys (they follow a key when it moves). */
+    private fun keyIds(): Map<Key, String> {
+        val layout = currentLayout
+        val count = layout.rows.sumOf { it.keys.size }
+        if (layout !== idsLayout || count != idsKeyCount) {
+            val rows = layout.rows.map { it.keys }
+            val list = TouchStats.keyIds(rows)
+            val m = HashMap<Key, String>()
+            for ((r, row) in rows.withIndex()) for ((i, k) in row.withIndex()) m[k] = list[r][i]
+            ids = m
+            idsLayout = layout
+            idsKeyCount = count
+            TouchStats.migrate(ctx, currentLayoutName, list)
+        }
+        return ids
+    }
+
+    private var shiftsLayout: KeybLayout? = null
+    private var shiftsVersion = -1
+    private var shifts: Map<Key, FloatArray> = emptyMap()
+
+    private fun hitboxShifts(): Map<Key, FloatArray> {
+        val ids = keyIds()
+        if (shiftsLayout !== currentLayout || shiftsVersion != TouchStats.version) {
+            val byId = TouchStats.hitboxShifts(ctx, currentLayoutName)
+            shifts = if (byId.isEmpty()) emptyMap() else ids.mapNotNull { (k, id) -> byId[id]?.let { k to it } }.toMap()
+            shiftsLayout = currentLayout
+            shiftsVersion = TouchStats.version
+        }
+        return shifts
+    }
+
+    /**
+     * The key under a touch. With hitbox autotune on, each key's touch area (not its drawing) is
+     * moved toward where the user really touches it, learned from the touch stats; where shifted
+     * areas overlap, the key whose tuned center is closer wins. Untuned keys keep their exact area.
+     */
+    private fun keyAt(x: Int, y: Int): Key? {
+        val base = currentLayout.getKey(x, y)
+        if (isEditor || !Settings.bool(SETTING_HITBOX_AUTOTUNE)) return base
+        val shifts = hitboxShifts()
+        if (shifts.isEmpty()) return base
+        var best: Key? = null
+        var bestD = Float.MAX_VALUE
+        for (row in currentLayout.rows) for (k in row.keys) {
+            if (k.width <= 0 || k.height <= 0) continue
+            val hw = k.width / 2f
+            val hh = k.height / 2f
+            val s = shifts[k]
+            val cx = k.x + hw + (s?.get(0) ?: 0f) * hw
+            val cy = k.y + hh + (s?.get(1) ?: 0f) * hh
+            val nx = (x - cx) / hw
+            val ny = (y - cy) / hh
+            if (nx < -1f || nx >= 1f || ny < -1f || ny >= 1f) continue
+            val d = nx * nx + ny * ny
+            if (d < bestD) { bestD = d; best = k }
+        }
+        return best ?: base
     }
 
     // ======================= voice overlay =======================

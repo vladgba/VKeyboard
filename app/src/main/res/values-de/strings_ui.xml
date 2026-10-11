@@ -330,6 +330,8 @@
     <string name="ts_intro">Zeigt, welche Tasten du am häufigsten berührst und wo dein Finger in jeder Taste landet. Auf dem Handy werden nur Summen gespeichert, nie die Reihenfolge deiner Berührungen, und in Passwort- oder Inkognito-Feldern wird nichts erfasst.</string>
     <string name="ts_record">Meine Berührungen aufzeichnen</string>
     <string name="ts_record_sub">Standardmäßig aus. Einschalten, eine Weile tippen, dann zurückkommen.</string>
+    <string name="ts_autotune">Trefferzonen automatisch anpassen</string>
+    <string name="ts_autotune_sub">Verschiebt die Tippfläche jeder Taste dorthin, wo du sie tatsächlich triffst, damit du dich seltener vertippst. Auf dem Bildschirm bleiben die Tasten, wo sie sind. Lernt aus den aufgezeichneten Berührungen.</string>
     <string name="ts_layout">Layout</string>
     <string name="ts_touches">%1$d Berührungen</string>
     <string name="ts_mode_keys">Tasten</string>

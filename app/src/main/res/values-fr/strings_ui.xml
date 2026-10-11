@@ -330,6 +330,8 @@
     <string name="ts_intro">Montre les touches que vous touchez le plus et où votre doigt se pose dans chaque touche. Seuls des totaux sont stockés sur le téléphone, jamais l\'ordre de vos appuis, et rien n\'est enregistré dans les champs de mot de passe ou en navigation privée.</string>
     <string name="ts_record">Enregistrer mes appuis</string>
     <string name="ts_record_sub">Désactivé par défaut. Activez-le, tapez un moment, puis revenez.</string>
+    <string name="ts_autotune">Ajustement auto des zones tactiles</string>
+    <string name="ts_autotune_sub">Décale la zone tactile de chaque touche vers l’endroit où vous la touchez réellement, pour moins de fautes de frappe. Les touches ne bougent pas à l’écran. Apprend à partir des touchers enregistrés.</string>
     <string name="ts_layout">Disposition</string>
     <string name="ts_touches">%1$d appuis</string>
     <string name="ts_mode_keys">Touches</string>

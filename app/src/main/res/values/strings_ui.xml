@@ -365,6 +365,8 @@
     <string name="ts_intro">Shows which keys you touch most and where inside each key your finger lands. Only totals are stored on this phone, never the order of your touches, and nothing is recorded in password or incognito fields.</string>
     <string name="ts_record">Record my touches</string>
     <string name="ts_record_sub">Off by default. Turn on, type for a while, then come back.</string>
+    <string name="ts_autotune">Hitbox autotune</string>
+    <string name="ts_autotune_sub">Shifts each key\'s touch area toward where you actually tap it, to cut down on misses. Keys stay where they are on screen. Learns from recorded touches.</string>
     <string name="ts_layout">Layout</string>
     <string name="ts_touches">%1$d touches</string>
     <string name="ts_mode_keys">Keys</string>

@@ -35,8 +35,13 @@ class TouchStatsActivity : LocalizedActivity() {
     private var layoutName = ""
     private var mode = Mode.KEYS
 
-    /** Latest touches (memory only): row, index, dx, dy, time. */
-    private class Live(val row: Int, val index: Int, val dx: Float, val dy: Float, val time: Long)
+    /** Latest touches (memory only): key id, dx, dy, time. */
+    private class Live(val id: String, val dx: Float, val dy: Float, val time: Long)
+
+    /** Stable touch-stats ids of the shown layout, by [row][index] like the preview's keys. */
+    private var ids: List<List<String>> = emptyList()
+
+    private fun idOf(k: LayoutPreview.KeyRect) = ids.getOrNull(k.row)?.getOrNull(k.index)
     private val live = ArrayDeque<Live>()
 
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -61,9 +66,10 @@ class TouchStatsActivity : LocalizedActivity() {
 
     override fun onResume() {
         super.onResume()
-        TouchStats.listener = { layout, row, index, dx, dy ->
+        shownLayout = null // the layout may have been edited meanwhile
+        TouchStats.listener = { layout, id, dx, dy ->
             if (layout != layoutName) selectLayout(layout)
-            live.addLast(Live(row, index, dx, dy, System.currentTimeMillis()))
+            live.addLast(Live(id, dx, dy, System.currentTimeMillis()))
             while (live.size > 12) live.removeFirst()
             refresh()
         }
@@ -80,6 +86,10 @@ class TouchStatsActivity : LocalizedActivity() {
         page.note(getString(R.string.ts_intro))
         page.switchRow(getString(R.string.ts_record), getString(R.string.ts_record_sub), Settings.bool(SETTING_TOUCH_STATS)) {
             Settings[SETTING_TOUCH_STATS] = if (it) "1" else "0"
+            Settings.save(this)
+        }
+        page.switchRow(getString(R.string.ts_autotune), getString(R.string.ts_autotune_sub), Settings.bool(SETTING_HITBOX_AUTOTUNE)) {
+            Settings[SETTING_HITBOX_AUTOTUNE] = if (it) "1" else "0"
             Settings.save(this)
         }
         layoutRow = page.row(getString(R.string.ts_layout), "") { chooseLayout() }
@@ -152,6 +162,8 @@ class TouchStatsActivity : LocalizedActivity() {
         if (shownLayout != layoutName) {
             preview.layout = FlexParser.parse(PFile(this, layoutName).read())
             shownLayout = layoutName
+            ids = TouchStats.keyIds(preview.layout.childs.filterIsInstance<FlexNode>().map { it.childs.filterIsInstance<FlexNode>() })
+            TouchStats.migrate(this, layoutName, ids)
         }
         layoutRow.setSubtitle(BuiltIns.layoutTitle(this, layoutName))
         val stats = TouchStats.get(this, layoutName)
@@ -187,7 +199,7 @@ class TouchStatsActivity : LocalizedActivity() {
         val stats = TouchStats.get(this, layoutName)
         if (stats != null && stats.total > 0) when (mode) {
             Mode.KEYS -> drawKeyCounts(c, keys, stats)
-            Mode.HEAT -> drawGrid(c, stats)
+            Mode.HEAT -> drawHeat(c, keys, stats)
             Mode.AIM -> drawAim(c, keys, stats)
         }
         drawLive(c, keys)
@@ -197,7 +209,7 @@ class TouchStatsActivity : LocalizedActivity() {
         val maxCount = s.keys.values.maxOfOrNull { it.count }?.coerceAtLeast(1) ?: return
         text.textSize = dp(11).toFloat()
         for (k in keys) {
-            val st = s.keys[TouchStats.keyId(k.row, k.index)] ?: continue
+            val st = idOf(k)?.let { s.keys[it] } ?: continue
             val t = st.count / maxCount.toFloat()
             fill.color = heat(t, (70 + 120 * t).toInt())
             c.drawRoundRect(k.rect, dp(4).toFloat(), dp(4).toFloat(), fill)
@@ -206,25 +218,32 @@ class TouchStatsActivity : LocalizedActivity() {
         }
     }
 
-    private fun drawGrid(c: Canvas, s: TouchStats.LayoutStats) {
-        val maxCell = s.grid.maxOrNull()?.coerceAtLeast(1) ?: return
-        val cw = c.width / TouchStats.GRID_W.toFloat()
-        val ch = preview.height / TouchStats.GRID_H.toFloat()
-        for (i in s.grid.indices) {
-            val v = s.grid[i]
-            if (v == 0) continue
-            val t = sqrt(v / maxCell.toFloat())
-            fill.color = heat(t, (60 + 150 * t).toInt())
-            val cx = (i % TouchStats.GRID_W + 0.5f) * cw
-            val cy = (i / TouchStats.GRID_W + 0.5f) * ch
-            c.drawCircle(cx, cy, max(cw, ch) * (0.6f + 0.5f * t), fill)
+    /** Each key's touch grid, drawn inside the key where it is now (follows moved keys). */
+    private fun drawHeat(c: Canvas, keys: List<LayoutPreview.KeyRect>, s: TouchStats.LayoutStats) {
+        val shown = keys.mapNotNull { k -> idOf(k)?.let { s.keys[it] }?.let { k to it } }
+        val maxCell = shown.maxOfOrNull { it.second.cells.maxOrNull() ?: 0 }?.takeIf { it > 0 } ?: return
+        val span = TouchStats.SPAN
+        for ((k, st) in shown) {
+            val cw = k.rect.width() * span / TouchStats.CELLS_X
+            val ch = k.rect.height() * span / TouchStats.CELLS_Y
+            for (i in st.cells.indices) {
+                val v = st.cells[i]
+                if (v == 0) continue
+                val t = sqrt(v / maxCell.toFloat())
+                fill.color = heat(t, (60 + 150 * t).toInt())
+                val u = -span + (i % TouchStats.CELLS_X + 0.5f) * 2 * span / TouchStats.CELLS_X
+                val w = -span + (i / TouchStats.CELLS_X + 0.5f) * 2 * span / TouchStats.CELLS_Y
+                val cx = k.rect.centerX() + u * k.rect.width() / 2
+                val cy = k.rect.centerY() + w * k.rect.height() / 2
+                c.drawCircle(cx, cy, max(cw, ch) * (0.35f + 0.35f * t), fill)
+            }
         }
     }
 
     private fun drawAim(c: Canvas, keys: List<LayoutPreview.KeyRect>, s: TouchStats.LayoutStats) {
         line.strokeWidth = dp(2).toFloat()
         for (k in keys) {
-            val st = s.keys[TouchStats.keyId(k.row, k.index)] ?: continue
+            val st = idOf(k)?.let { s.keys[it] } ?: continue
             if (st.count < 3) continue
             val cx = k.rect.centerX()
             val cy = k.rect.centerY()
@@ -245,7 +264,7 @@ class TouchStatsActivity : LocalizedActivity() {
         val now = System.currentTimeMillis()
         text.textSize = dp(10).toFloat()
         for ((i, t) in live.withIndex()) {
-            val k = keys.firstOrNull { it.row == t.row && it.index == t.index } ?: continue
+            val k = keys.firstOrNull { idOf(it) == t.id } ?: continue
             val age = ((now - t.time) / 8000f).coerceIn(0f, 1f)
             val x = k.rect.centerX() + t.dx * k.rect.width() / 2
             val y = k.rect.centerY() + t.dy * k.rect.height() / 2
@@ -263,19 +282,23 @@ class TouchStatsActivity : LocalizedActivity() {
     private fun insightsText(s: TouchStats.LayoutStats?): String {
         if (s == null || s.total == 0) return getString(R.string.ts_insights_none)
         val node = preview.layout
+        val rows = node.childs.filterIsInstance<FlexNode>().map { it.childs.filterIsInstance<FlexNode>() }
+        val pos = HashMap<String, Pair<Int, Int>>()
+        for ((r, row) in ids.withIndex()) for ((i, id) in row.withIndex()) pos[id] = r to i
         fun label(id: String): String {
-            val (r, i) = id.split(':').map { it.toInt() }
-            val row = node.childs.filterIsInstance<FlexNode>().getOrNull(r) ?: return id
-            val key = row.childs.filterIsInstance<FlexNode>().getOrNull(i) ?: return id
+            val (r, i) = pos[id] ?: return "?"
+            val key = rows.getOrNull(r)?.getOrNull(i) ?: return "?"
             return (key.params[KEY_KEY] as? String)?.let { Labels.resolve(this, it) }?.takeIf { it.isNotBlank() }
                 ?: if ((key.params[KEY_CODE] as? String)?.trim() == "-62") getString(R.string.kb_space_name) else getString(R.string.ts_key_n, i + 1)
         }
         val sb = StringBuilder()
-        val top = s.keys.entries.sortedByDescending { it.value.count }.take(8)
+        // Keys no longer in the layout (deleted or relabeled) are left out.
+        val present = s.keys.entries.filter { it.key in pos }
+        val top = present.sortedByDescending { it.value.count }.take(8)
         sb.append(getString(R.string.ts_top)).append(' ')
             .append(top.joinToString(", ") { "${label(it.key)} (${it.value.count * 100 / s.total}%)" }).append("\n\n")
 
-        val off = s.keys.entries.filter { it.value.count >= 8 }
+        val off = present.filter { it.value.count >= 8 }
             .map { it to sqrt(it.value.avgDx * it.value.avgDx + it.value.avgDy * it.value.avgDy) }
             .filter { it.second > 0.35f }.sortedByDescending { it.second }.take(5)
         if (off.isEmpty()) sb.append(getString(R.string.ts_aim_good))
@@ -290,7 +313,7 @@ class TouchStatsActivity : LocalizedActivity() {
             }
             sb.append(getString(R.string.ts_aim_tip))
         }
-        val bottomRow = s.grid.sliceArray((TouchStats.GRID_H - 2) * TouchStats.GRID_W until s.grid.size).sum()
+        val bottomRow = ids.lastOrNull().orEmpty().sumOf { s.keys[it]?.count ?: 0 }
         if (bottomRow * 100 / max(1, s.total) > 40) sb.append("\n\n").append(getString(R.string.ts_bottom_heavy))
         return sb.toString()
     }
