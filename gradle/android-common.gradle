@@ -1,0 +1,141 @@
+// Shared versioning + release signing. Master copy: <GIT>/android-common, see README.md there.
+// version.properties: major/minor/patch -> versionName "M.m.p", versionCode M*10000 + m*100 + p.
+// Release key: <project>/keystore.properties, else RELEASE_STORE_FILE, RELEASE_STORE_PASSWORD,
+// RELEASE_KEY_ALIAS, RELEASE_KEY_PASSWORD from env / -P / ~/.gradle/gradle.properties,
+// else the debug key (or unsigned with -Pandroid.common.unsigned=true).
+
+def root = rootProject
+def versionFile = root.file('version.properties')
+
+def readVersion = {
+    if (!versionFile.exists()) {
+        throw new GradleException("Missing ${versionFile}. Create it with lines major=1, minor=0, patch=0")
+    }
+    def p = new Properties()
+    versionFile.withInputStream { p.load(it) }
+    def part = { String k ->
+        def v = p.getProperty(k)?.trim()
+        if (v == null || !v.isInteger() || v.toInteger() < 0) {
+            throw new GradleException("version.properties: '$k' must be a non-negative number")
+        }
+        v.toInteger()
+    }
+    def (int ma, int mi, int pa) = [part('major'), part('minor'), part('patch')]
+    if (mi > 99 || pa > 99) throw new GradleException("version.properties: minor and patch must be 0..99")
+    [ma, mi, pa]
+}
+
+def (int vMajor, int vMinor, int vPatch) = readVersion()
+def vName = "$vMajor.$vMinor.$vPatch".toString()
+def vCode = vMajor * 10000 + vMinor * 100 + vPatch
+project.extensions.extraProperties.set('appVersionName', vName)
+project.extensions.extraProperties.set('appVersionCode', vCode)
+
+def commonDir = root.file(root.findProperty('android.common.dir') ?: '../android-common')
+
+def unquote = { v -> v?.toString()?.trim()?.replaceAll(/^"(.*)"$/, '$1') }
+
+def findSigning = {
+    def f = root.file('keystore.properties')
+    if (f.exists()) {
+        def p = new Properties()
+        f.withInputStream { p.load(it) }
+        def sf = unquote(p.getProperty('storeFile'))
+        if (sf) {
+            def store = new File(sf)
+            if (!store.absolute) store = new File(f.parentFile, sf)
+            return [store: store, storePassword: unquote(p.getProperty('storePassword')),
+                    alias: unquote(p.getProperty('keyAlias')), keyPassword: unquote(p.getProperty('keyPassword')),
+                    source: f.path]
+        }
+    }
+    def get = { String k -> unquote(System.getenv(k) ?: root.findProperty(k)) }
+    def sf = get('RELEASE_STORE_FILE')
+    if (!sf) return null
+    [store: root.file(sf), storePassword: get('RELEASE_STORE_PASSWORD'), alias: get('RELEASE_KEY_ALIAS'),
+     keyPassword: get('RELEASE_KEY_PASSWORD'), source: 'RELEASE_* properties']
+}
+
+def unsigned = (root.findProperty('android.common.unsigned') ?: 'false').toString().toBoolean()
+def signing = unsigned ? null : findSigning()
+if (signing != null && !signing.store.exists()) {
+    logger.warn("android-common: keystore ${signing.store} (from ${signing.source}) not found")
+    signing = null
+}
+
+android {
+    defaultConfig {
+        versionCode = vCode
+        versionName = vName
+    }
+    if (signing != null) {
+        def release = signingConfigs.maybeCreate('release')
+        release.storeFile = signing.store
+        release.storePassword = signing.storePassword
+        release.keyAlias = signing.alias
+        release.keyPassword = signing.keyPassword
+        buildTypes.getByName('release').signingConfig = release
+    } else if (!unsigned) {
+        buildTypes.getByName('release').signingConfig = signingConfigs.getByName('debug')
+    } else {
+        buildTypes.getByName('release').signingConfig = null
+    }
+}
+
+if (signing == null && !unsigned) {
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.allTasks.any { it.name.toLowerCase().contains('release') }) {
+            logger.warn("android-common: no release key found - ${root.name} release is signed with the DEBUG key")
+        }
+    }
+}
+
+try {
+    project.extensions.getByName('base').archivesName.set("${root.name.replace(' ', '')}-$vName".toString())
+} catch (ignored) {
+}
+
+def bump = { String kind ->
+    def (int ma, int mi, int pa) = readVersion()
+    def n = kind == 'major' ? [ma + 1, 0, 0] : kind == 'minor' ? [ma, mi + 1, 0] : [ma, mi, pa + 1]
+    if (n[1] > 99 || n[2] > 99) throw new GradleException("minor/patch would reach 100: bump the next part instead")
+    def text = versionFile.text
+            .replaceAll(/(?m)^major=.*$/, "major=${n[0]}")
+            .replaceAll(/(?m)^minor=.*$/, "minor=${n[1]}")
+            .replaceAll(/(?m)^patch=.*$/, "patch=${n[2]}")
+    versionFile.text = text
+    println "Version $ma.$mi.$pa -> ${n.join('.')} (versionCode ${n[0] * 10000 + n[1] * 100 + n[2]})"
+}
+
+['Major', 'Minor', 'Patch'].each { k ->
+    tasks.register("bump$k") {
+        group = 'versioning'
+        description = "Increments the ${k.toLowerCase()} version in version.properties"
+        notCompatibleWithConfigurationCache('edits version.properties')
+        doLast { bump(k.toLowerCase()) }
+    }
+}
+
+tasks.register('printVersion') {
+    group = 'versioning'
+    description = 'Prints versionName, versionCode and where the release key comes from'
+    notCompatibleWithConfigurationCache('prints build configuration')
+    doLast {
+        println "$vName ($vCode)"
+        println "release key: " + (signing ? "${signing.alias} @ ${signing.store} (from ${signing.source})"
+                : unsigned ? 'unsigned' : 'DEBUG key (no release key found)')
+    }
+}
+
+tasks.register('syncAndroidCommon') {
+    group = 'versioning'
+    description = 'Copies the master android-common.gradle into this project'
+    notCompatibleWithConfigurationCache('copies a build script')
+    doLast {
+        def master = new File(commonDir, 'android-common.gradle')
+        def local = root.file('gradle/android-common.gradle')
+        if (!master.exists()) throw new GradleException("Master copy not found: $master")
+        if (master.text == local.text) println 'android-common.gradle is up to date'
+        else { local.text = master.text; println "Updated $local from $master" }
+    }
+}
