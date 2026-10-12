@@ -468,8 +468,12 @@
     <string name="vo_err_generic">Голосове введення не спрацювало. Спробуйте ще раз.</string>
     <string name="vo_perm_granted">Мікрофон дозволено. Натисніть 🎤 ще раз, щоб говорити.</string>
     <string name="vo_perm_denied">Для голосового введення потрібен мікрофон.</string>
-    <string name="vo_perm_settings">Дозвольте мікрофон для VKeyboard у розділі «Дозволи», потім знову натисніть 🎤.</string>
+    <string name="vo_translating">Переклад…</string>
+    <string name="vo_err_translate">Помилка перекладу</string>
+    <string name="vo_tr_action">Голосовий переклад</string>
+    <string name="vo_tr_action_desc">Голосовий переклад: %1$s → %2$s</string>
     <string name="ui_btn_voice">🎤 Голос</string>
+    <string name="ui_btn_tr_voice">🎤🌐 Переклад</string>
     <string name="ui_tap_opt_voice">Запустити голосове введення</string>
     <string name="ui_tap_voice">Натискання: голосове введення</string>
     <string name="le_hint">Натисніть клавішу, щоб змінити її. Перетягніть клавішу будь-куди; відпустіть над або під клавіатурою, щоб почати новий ряд.</string>

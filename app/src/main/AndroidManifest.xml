@@ -4,6 +4,8 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- Voice typing (asked only when the user starts it). -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- Voice translation fallback when on-device translation is unavailable. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- Android 11+: be able to see the system speech recognition service. -->
     <queries>

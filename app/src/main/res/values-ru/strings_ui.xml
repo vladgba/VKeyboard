@@ -468,8 +468,12 @@
     <string name="vo_err_generic">Голосовой ввод не сработал. Попробуйте ещё раз.</string>
     <string name="vo_perm_granted">Микрофон разрешён. Нажмите 🎤 ещё раз, чтобы говорить.</string>
     <string name="vo_perm_denied">Для голосового ввода нужен микрофон.</string>
-    <string name="vo_perm_settings">Разрешите микрофон для VKeyboard в разделе «Разрешения», затем снова нажмите 🎤.</string>
+    <string name="vo_translating">Перевод…</string>
+    <string name="vo_err_translate">Ошибка перевода</string>
+    <string name="vo_tr_action">Голосовой перевод</string>
+    <string name="vo_tr_action_desc">Голосовой перевод: %1$s → %2$s</string>
     <string name="ui_btn_voice">🎤 Голос</string>
+    <string name="ui_btn_tr_voice">🎤🌐 Перевод</string>
     <string name="ui_tap_opt_voice">Запустить голосовой ввод</string>
     <string name="ui_tap_voice">Нажатие: голосовой ввод</string>
     <string name="le_hint">Нажмите на клавишу, чтобы изменить её. Перетащите клавишу в любое место; отпустите над или под клавиатурой, чтобы начать новый ряд.</string>

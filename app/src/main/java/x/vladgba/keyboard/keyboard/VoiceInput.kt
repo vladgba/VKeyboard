@@ -15,6 +15,8 @@ import x.vladgba.keyboard.core.*
 import x.vladgba.keyboard.ui.VoicePermissionActivity
 import java.util.Locale
 
+data class TranslationSpec(val sourceLang: String, val targetLang: String)
+
 /**
  * Voice typing with the system speech recognizer (android.speech, no libraries).
  *
@@ -40,11 +42,18 @@ class VoiceInput(private val kb: Keyboard) {
     private var recognizer: SpeechRecognizer? = null
     private val ctx get() = kb.ctx
 
+    var translationSpec: TranslationSpec? = null
+        private set
+    val isTranslating get() = translationSpec != null
+
+    private var transRequestId = 0L
+
     val active get() = state != State.IDLE
 
-    fun toggle() = if (active) stop() else start()
+    fun toggle(spec: TranslationSpec? = null) = if (active) stop() else start(spec)
+    fun toggle(specStr: String?) = toggle(specStr?.let { parseTrVoiceSpec(it) })
 
-    fun start() {
+    fun start(spec: TranslationSpec? = null) {
         if (kb.isEditor || active) return
         if (Build.VERSION.SDK_INT >= 23 && ctx.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             // An input method can't show the permission dialog itself.
@@ -58,6 +67,7 @@ class VoiceInput(private val kb: Keyboard) {
         }
         recognizer = rec
         rec.setRecognitionListener(listener)
+        translationSpec = spec
         partial = ""
         level = 0f
         state = State.STARTING
@@ -89,6 +99,7 @@ class VoiceInput(private val kb: Keyboard) {
     /** Abort without inserting anything (keyboard hidden, field changed). */
     fun cancel() {
         if (!active) return
+        transRequestId++
         recognizer?.cancel()
         clearComposing()
         finish()
@@ -104,6 +115,7 @@ class VoiceInput(private val kb: Keyboard) {
         state = State.IDLE
         partial = ""
         level = 0f
+        translationSpec = null
         recognizer?.destroy()
         recognizer = null
         kb.invalidate()
@@ -129,8 +141,15 @@ class VoiceInput(private val kb: Keyboard) {
         if (Settings.bool(SETTING_VOICE_OFFLINE)) putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
     }
 
-    /** BCP 47 tag: setting > layout's "voiceLang" > known layout > system language. */
+    /** BCP 47 tag: translation source > setting > layout's "voiceLang" > known layout > system language. */
     fun language(): String {
+        translationSpec?.let { spec ->
+            if (spec.sourceLang.isNotBlank() && spec.sourceLang != VOICE_LANG_AUTO && spec.sourceLang != "auto") {
+                LAYOUT_LANGS[spec.sourceLang]?.let { return it }
+                if (spec.sourceLang.contains("-")) return spec.sourceLang
+                return "${spec.sourceLang}-${spec.sourceLang.uppercase(Locale.ROOT)}"
+            }
+        }
         Settings.str(SETTING_VOICE_LANG).trim().takeIf { it.isNotEmpty() && it != VOICE_LANG_AUTO }?.let { return it }
         kb.currentLayout.str(KEY_VOICE_LANG).trim().takeIf { it.isNotEmpty() }?.let { return it }
         LAYOUT_LANGS[kb.currentLayoutName]?.let { return it }
@@ -161,6 +180,7 @@ class VoiceInput(private val kb: Keyboard) {
         }
 
         override fun onError(error: Int) {
+            transRequestId++
             clearComposing()
             val msg = when (error) {
                 SpeechRecognizer.ERROR_NO_MATCH, SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> R.string.vo_err_nothing
@@ -178,8 +198,35 @@ class VoiceInput(private val kb: Keyboard) {
 
         override fun onResults(results: Bundle?) {
             val text = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull().orEmpty()
-            commit(text)
-            finish()
+            if (text.isBlank()) {
+                commit("")
+                finish()
+                return
+            }
+            val spec = translationSpec
+            if (spec != null) {
+                state = State.PROCESSING
+                kb.invalidate()
+                val currentReqId = ++transRequestId
+                val src = if (spec.sourceLang.isNotBlank() && spec.sourceLang != "auto") spec.sourceLang
+                          else language().substringBefore("-").lowercase(Locale.ROOT)
+                val tgt = spec.targetLang.substringBefore("-").lowercase(Locale.ROOT)
+
+                Translator.translate(ctx, text, src, tgt, onSuccess = { translated ->
+                    if (transRequestId != currentReqId || state != State.PROCESSING) return@translate
+                    commit(translated)
+                    finish()
+                }, onError = { err ->
+                    if (transRequestId != currentReqId || state != State.PROCESSING) return@translate
+                    kb.prStack(err)
+                    commit(text)
+                    finish()
+                    toast(R.string.vo_err_translate)
+                })
+            } else {
+                commit(text)
+                finish()
+            }
         }
 
         override fun onPartialResults(partialResults: Bundle?) {
@@ -253,6 +300,48 @@ class VoiceInput(private val kb: Keyboard) {
     private fun toast(res: Int) = Toast.makeText(ctx, res, Toast.LENGTH_SHORT).show()
 
     companion object {
+        /**
+         * Parses voice translation specifier like `@tr_voice/ru-en`, `tr_voice:ru-en`,
+         * `@tr_voice/en`, `@tr_voice`, etc.
+         */
+        fun parseTrVoiceSpec(value: String): TranslationSpec? {
+            val clean = value.trim()
+            val raw = when {
+                clean.startsWith("@tr_voice/") -> clean.removePrefix("@tr_voice/")
+                clean.startsWith("@tr_voice:") -> clean.removePrefix("@tr_voice:")
+                clean.startsWith("@tr_voice") -> clean.removePrefix("@tr_voice").removePrefix("/").removePrefix(":")
+                clean.startsWith("tr_voice:") -> clean.removePrefix("tr_voice:")
+                clean.startsWith("tr_voice/") -> clean.removePrefix("tr_voice/")
+                clean.startsWith("tr_voice") -> clean.removePrefix("tr_voice").removePrefix("/").removePrefix(":")
+                else -> return null
+            }.trim()
+
+            if (raw.isEmpty()) return TranslationSpec("auto", "en")
+
+            val parts = when {
+                raw.contains("->") -> raw.split("->", limit = 2)
+                raw.contains(">") -> raw.split(">", limit = 2)
+                raw.contains("/") -> raw.split("/", limit = 2)
+                raw.contains(":") -> raw.split(":", limit = 2)
+                raw.contains("-") -> {
+                    val p = raw.split("-")
+                    if (p.size == 4) listOf("${p[0]}-${p[1]}", "${p[2]}-${p[3]}")
+                    else if (p.size >= 2) listOf(p[0], p[1])
+                    else listOf(raw)
+                }
+                raw.contains("_") -> raw.split("_", limit = 2)
+                else -> listOf(raw)
+            }.map { it.trim().lowercase(Locale.ROOT) }
+
+            return if (parts.size >= 2 && parts[0].isNotEmpty() && parts[1].isNotEmpty()) {
+                TranslationSpec(parts[0], parts[1])
+            } else if (parts.size == 1 && parts[0].isNotEmpty()) {
+                TranslationSpec("auto", parts[0])
+            } else {
+                TranslationSpec("auto", "en")
+            }
+        }
+
         /** Speech language for the bundled layouts. */
         val LAYOUT_LANGS = mapOf(
             "en" to "en-US", "enExt" to "en-US", "dvorak" to "en-US", "colemak" to "en-US", "code" to "en-US",
