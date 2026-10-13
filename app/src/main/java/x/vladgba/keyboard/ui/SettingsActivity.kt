@@ -142,6 +142,7 @@ class SettingsActivity : LocalizedActivity() {
         bool(SETTING_AUTO_CAPS, R.string.ui_set_auto_caps, R.string.ui_set_auto_caps_sub, true)
         bool(SETTING_DOUBLE_SPACE, R.string.ui_set_double_space, R.string.ui_set_double_space_sub, true)
         bool(SETTING_AUTO_NUM_LAYOUT, R.string.ui_set_auto_num, R.string.ui_set_auto_num_sub, true)
+        bool(SETTING_SMART_PUNCTUATION, R.string.ui_set_smart_punctuation, R.string.ui_set_smart_punctuation_sub, true)
 
         page.header(getString(R.string.vo_sec))
         page.note(getString(R.string.vo_intro))
@@ -162,6 +163,9 @@ class SettingsActivity : LocalizedActivity() {
             set(SETTING_LANDSCAPE_HEIGHT, fmt(it / 100f))
         }
         lRow.setOnLongClickListener { reset(SETTING_LANDSCAPE_HEIGHT); true }
+        int(SETTING_BOTTOM_PADDING, R.string.ui_set_bottom_padding, R.string.ui_set_bottom_padding_sub, 0, 80, 5, 0) {
+            if (it == 0) getString(R.string.ui_off) else "$it dp"
+        }
         textSize(KEY_TEXT_SIZE_PRIMARY, R.string.ui_set_label_size, R.string.ui_set_label_size_sub, 2.5f)
         textSize(KEY_TEXT_SIZE_SECONDARY, R.string.ui_set_hint_size, R.string.ui_set_hint_size_sub, 5f)
         int(KEY_PADDING, R.string.ui_set_padding, R.string.ui_set_padding_sub, 0, 40, 1, 10) { "$it px" }

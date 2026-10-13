@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.RectF
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -42,6 +43,9 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     val isEditor get() = ime == null
     val inputConnection: InputConnection? get() = ime?.currentInputConnection
     val voice = VoiceInput(this)
+    val compose = ComposeHelper()
+    private var currentAppPackage = ""
+    private var appSwitchedLayout = false
     /** Ignore the rest of a touch that only stopped voice typing. */
     private var swallowTouch = false
 
@@ -138,6 +142,8 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
     fun onStartInput(info: EditorInfo) {
         voice.cancel()
+        compose.cancel()
+        currentAppPackage = info.packageName ?: ""
         setKeybType(info.inputType)
         editorInputType = info.inputType
         imeAction = info.imeOptions and EditorInfo.IME_MASK_ACTION
@@ -160,6 +166,24 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         Theme.load(ctx, isNight)
         textExpander.reload()
 
+        if (currentAppPackage.isNotEmpty()) {
+            val appNode = Settings[SETTING_APP_LAYOUTS]
+            val target = (if (appNode.has(currentAppPackage)) appNode.str(currentAppPackage)
+                          else Settings.str("appLayout.$currentAppPackage")).trim()
+            if (target.isNotEmpty() && PFile(ctx, target, LAYOUT_EXT).exists()) {
+                if (currentLayoutName != target) {
+                    appSwitchedLayout = true
+                    currentLayoutName = target
+                    lastTextLayout = target
+                }
+            } else if (appSwitchedLayout) {
+                appSwitchedLayout = false
+                val def = Settings.str(SETTING_DEF_LAYOUT)
+                currentLayoutName = def
+                lastTextLayout = def
+            }
+        }
+
         if (Settings.bool(SETTING_AUTO_NUM_LAYOUT, true)) {
             val numeric = keybType in setOf(KeybType.NUMBER, KeybType.PHONE, KeybType.DATETIME, KeybType.DATE, KeybType.TIME)
             if (numeric && PFile(ctx, NUM_FILENAME).exists()) {
@@ -176,6 +200,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
     fun onHide() {
         voice.cancel()
+        compose.cancel()
         resetTouches()
         TouchStats.flush(ctx)
     }
@@ -208,6 +233,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             if (!isEditor) { if (popups) drawPopups(canvas, w, h, 0) }
             else editInterface?.drawOverlay(canvas, w, h)
             if (voice.active) drawVoiceOverlay(canvas, w, h)
+            else if (compose.active) drawComposeOverlay(canvas, w, h)
         } catch (e: Exception) {
             prStack(e)
         }
@@ -215,7 +241,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
     /** Popups of the pressed keys; [above] px over the keyboard's top edge may be used. */
     fun drawPopups(canvas: Canvas, w: Int, h: Int, above: Int) {
-        if (isEditor || voice.active) return
+        if (isEditor || voice.active || compose.active) return
         try {
             for (key in pointers.values) key.drawPopup(canvas, w, h, above)
         } catch (e: Exception) {
@@ -420,6 +446,26 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         canvas.drawText(footer, cx, top + cardH * 0.9f, p)
     }
 
+    private fun drawComposeOverlay(canvas: Canvas, w: Int, h: Int) {
+        val p = voicePaint
+        val text = "⎄ Compose: ${compose.firstChar ?: "…"}"
+        val density = ctx.resources.displayMetrics.density
+        p.textSize = 14f * density
+        val tw = p.measureText(text)
+        val padH = 16f * density
+        val padV = 8f * density
+        val cardW = tw + padH * 2
+        val cardH = p.textSize + padV * 2
+        val left = (w - cardW) / 2f
+        val top = 8f * density
+        val r = cardH / 2f
+        val node = currentLayout
+        p.color = color(COLOR_KEY_PRESSED_MOD_BACKGROUND, node)
+        canvas.drawRoundRect(RectF(left, top, left + cardW, top + cardH), r, r, p)
+        p.color = color(COLOR_TEXT_PRIMARY, node)
+        canvas.drawText(text, w / 2f, top + cardH / 2f + (p.textSize - p.descent()) / 2f, p)
+    }
+
     // ======================= hardware keys =======================
 
     fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -537,10 +583,29 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         if (space && doubleSpacePeriod()) return
         lastSpaceTime = if (space) android.os.SystemClock.uptimeMillis() else 0L
         when {
-            i in LATIN_KEYS -> clickModified(i - LATIN_OFFSET, if (autoShiftApplies()) metaState or META_SHIFT_ON else metaState)
+            i in LATIN_KEYS -> {
+                textExpander.clearUndo()
+                if (compose.active) {
+                    val code = getShifted(i, letterShift())
+                    feedCompose(Character.toChars(code).concatToString())
+                    return
+                }
+                clickModified(i - LATIN_OFFSET, if (autoShiftApplies()) metaState or META_SHIFT_ON else metaState)
+            }
             i < 0 -> {
                 val code = -i
-                if (code == KEYCODE_SPACE || code == KEYCODE_ENTER) expandText()
+                if (compose.active && (code == KEYCODE_DEL || code == KEYCODE_ESCAPE)) {
+                    compose.cancel()
+                    invalidate()
+                    return
+                }
+                if (code == KEYCODE_DEL) {
+                    val ic = inputConnection
+                    if (ic != null && textExpander.undo(ic)) return
+                } else {
+                    textExpander.clearUndo()
+                }
+                if (code == KEYCODE_SPACE || code == KEYCODE_ENTER) expandText(if (code == KEYCODE_SPACE) " " else "\n")
                 if (code == KEYCODE_ENTER && performEditorAction()) return
                 clickModified(code)
             }
@@ -551,17 +616,51 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
     fun onText(chars: CharSequence) {
         if (isEditor) return
+        if (compose.active) {
+            feedCompose(chars.toString())
+            return
+        }
+        val s = chars.toString()
+        if (!TextExpander.isSeparator(chars)) textExpander.clearUndo()
         lastSpaceTime = 0L
         scheduleAutoShift()
         recKey?.let { rk ->
             if (rk.recording) {
                 val last = rk.record.lastOrNull()
-                if (last != null && !last.keyText.isNullOrEmpty()) last.keyText += chars.toString()
-                else rk.record.add(Key.Record(chars.toString()))
+                if (last != null && !last.keyText.isNullOrEmpty()) last.keyText += s
+                else rk.record.add(Key.Record(s))
             }
         }
-        if (TextExpander.isSeparator(chars)) expandText()
-        setText(chars.toString())
+        if (smartPunctuation(s)) return
+        if (TextExpander.isSeparator(chars)) expandText(s)
+        setText(s)
+    }
+
+    private fun feedCompose(s: String) {
+        val res = compose.feed(s)
+        invalidate()
+        if (res != null) {
+            scheduleAutoShift()
+            setText(res)
+        }
+    }
+
+    /** If typing a punctuation mark immediately after "word ", swallow the space: "word " + "," -> "word," */
+    private fun smartPunctuation(punc: String): Boolean {
+        if (punc.length != 1 || punc[0] !in ".,!?:;") return false
+        if (!Settings.bool(SETTING_SMART_PUNCTUATION, true)) return false
+        if (metaState != 0 || privateField) return false
+        val ic = inputConnection ?: return false
+        val before = ic.getTextBeforeCursor(2, 0)?.toString() ?: return false
+        if (before.length >= 2 && before[1] == ' ' && before[0].isLetterOrDigit()) {
+            ic.beginBatchEdit()
+            ic.deleteSurroundingText(1, 0)
+            ic.commitText(punc, 1)
+            ic.endBatchEdit()
+            scheduleAutoShift()
+            return true
+        }
+        return false
     }
 
     fun setText(text: String, del: Int = 0) = inputConnection?.apply {
@@ -571,9 +670,9 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         endBatchEdit()
     }
 
-    private fun expandText() {
+    private fun expandText(sep: String = "") {
         if (!Settings.bool(SETTING_TEXT_EXPANSION, true)) return
-        inputConnection?.let { textExpander.expand(it) }
+        inputConnection?.let { textExpander.expand(it, sep) }
     }
 
     /** Enter in single-line fields triggers the field's action (Go/Search/Send/...) like other keyboards. */
@@ -600,7 +699,10 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     }
 
     /** The cursor moved (tap in the text, arrows...): capitals may be needed now or no longer. */
-    fun onSelectionChanged() = scheduleAutoShift()
+    fun onSelectionChanged() {
+        textExpander.clearUndo()
+        scheduleAutoShift()
+    }
 
     fun updateAutoShift() {
         val want = !isEditor && Settings.bool(SETTING_AUTO_CAPS, true) && !privateField &&
@@ -733,6 +835,11 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         val trimmed = value.trim()
         if (trimmed == VOICE_ACTION) {
             voice.toggle()
+            return true
+        }
+        if (trimmed == COMPOSE_ACTION) {
+            compose.toggle()
+            invalidate()
             return true
         }
         if (trimmed.startsWith(TR_VOICE_PREFIX) || trimmed.startsWith(TR_VOICE_ALT_PREFIX)) {

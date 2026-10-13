@@ -70,6 +70,16 @@ internal const val SETTING_AUTO_NUM_LAYOUT = "autoNumLayout"
 internal const val SETTING_LANDSCAPE_HEIGHT = "landscapeHeight"
 /** Show error toasts (otherwise errors are only logged). */
 internal const val SETTING_ERROR_TOASTS = "errorToasts"
+/** Space in dp below the keyboard to elevate it from the navigation bar. */
+internal const val SETTING_BOTTOM_PADDING = "bottomPadding"
+/** Clean trailing space before punctuation marks (. , ! ? : ;). */
+internal const val SETTING_SMART_PUNCTUATION = "smartPunctuation"
+/** Default layout per app package name, mapped in settings.txt (`appLayouts: ("com.termux": "code")`). */
+internal const val SETTING_APP_LAYOUTS = "appLayouts"
+/** Action value (tap, hold, swipe) that starts compose sequence, drawn as ⎄. */
+internal const val COMPOSE_ACTION = "@COMPOSE"
+/** Key param: tap toggles compose mode. */
+internal const val KEY_COMPOSE = "compose"
 
 // Key
 internal const val KEY_KEY = "key"

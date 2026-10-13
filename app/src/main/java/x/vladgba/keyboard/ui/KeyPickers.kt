@@ -183,6 +183,7 @@ internal object ActionPrompt {
         val v = value.trim()
         if (value.isEmpty()) return ctx.getString(R.string.ui_action_nothing) to true
         if (v == VOICE_ACTION) return ctx.getString(R.string.vo_action) to true
+        if (v == COMPOSE_ACTION) return ctx.getString(R.string.ui_action_compose) to true
         if (v.startsWith(TR_VOICE_PREFIX) || v.startsWith(TR_VOICE_ALT_PREFIX)) {
             val spec = VoiceInput.parseTrVoiceSpec(v)
             val desc = if (spec != null) {
@@ -242,6 +243,7 @@ internal object ActionPrompt {
             addView(small(R.string.ui_btn_layout) { pickLayout(ctx) { input.setText(LAYOUT_ACTION_PREFIX + it) } })
             addView(small(R.string.ui_btn_voice) { input.setText(VOICE_ACTION) })
             addView(small(R.string.ui_btn_tr_voice) { input.setText("$TR_VOICE_PREFIX/auto-en") })
+            addView(small(R.string.ui_btn_compose) { input.setText(COMPOSE_ACTION) })
             addView(small(R.string.ui_btn_clear) { input.setText("") })
         }
         val box = LinearLayout(ctx).apply {

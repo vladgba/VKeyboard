@@ -42,6 +42,8 @@
     <string name="ui_set_dict_sub">Abbreviations and the text they expand to</string>
     <string name="ui_set_auto_num">Numbers in number fields</string>
     <string name="ui_set_auto_num_sub">Show the number layout for phone, number and date fields</string>
+    <string name="ui_set_smart_punctuation">Clean space before punctuation</string>
+    <string name="ui_set_smart_punctuation_sub">Typing punctuation (. , ! ? : ;) after a space removes the space</string>
     <string name="ui_sec_look">Look and size</string>
     <string name="ui_set_def_layout">Default layout</string>
     <string name="ui_set_def_layout_sub">Layout shown when the keyboard opens</string>
@@ -51,6 +53,8 @@
     <string name="ui_set_night_theme_sub">Used when the system is in dark mode</string>
     <string name="ui_set_landscape">Height in landscape</string>
     <string name="ui_set_landscape_sub">Keyboard height when the phone is turned sideways</string>
+    <string name="ui_set_bottom_padding">Bottom margin</string>
+    <string name="ui_set_bottom_padding_sub">Elevate keyboard above the gesture navigation bar</string>
     <string name="ui_set_label_size">Label size</string>
     <string name="ui_set_label_size_sub">Size of the main character on keys</string>
     <string name="ui_set_hint_size">Hint size</string>
@@ -519,6 +523,8 @@
     <string name="vo_tr_action_desc">Voice translation: %1$s → %2$s</string>
     <string name="ui_btn_voice">🎤 Voice</string>
     <string name="ui_btn_tr_voice">🎤🌐 Translate</string>
+    <string name="ui_btn_compose">⎄ Compose</string>
+    <string name="ui_action_compose">Compose key (⎄ character combination)</string>
     <string name="ui_tap_opt_voice">Start voice typing</string>
     <string name="ui_tap_voice">Tap: voice typing</string>
 

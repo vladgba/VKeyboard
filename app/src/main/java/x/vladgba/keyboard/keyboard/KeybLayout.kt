@@ -29,6 +29,7 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
     private var measuredWidth = -1
     private var measuredPortrait = true
     private var measuredRefSize = -1f
+    private var measuredBottomPad = -1
 
     init {
         try {
@@ -58,10 +59,12 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
      */
     fun measure(viewWidth: Int, portrait: Boolean, force: Boolean = false) {
         val refSize = refSize(portrait)
-        if (!force && viewWidth == measuredWidth && portrait == measuredPortrait && refSize == measuredRefSize) return
+        val bottomPad = Settings.num(SETTING_BOTTOM_PADDING, 0)
+        if (!force && viewWidth == measuredWidth && portrait == measuredPortrait && refSize == measuredRefSize && bottomPad == measuredBottomPad) return
         measuredWidth = viewWidth
         measuredPortrait = portrait
         measuredRefSize = refSize
+        measuredBottomPad = bottomPad
         width = viewWidth
 
         var y = 0
@@ -71,7 +74,8 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
             row.layoutKeys(viewWidth)
             y += row.height
         }
-        height = y.coerceAtLeast(1)
+        val bottomPadPx = if (bottomPad > 0) (bottomPad * c.ctx.resources.displayMetrics.density).roundToInt() else 0
+        height = (y + bottomPadPx).coerceAtLeast(1)
     }
 
     /** Recomputes geometry after an edit (rows/keys added, removed, resized). */
@@ -89,6 +93,7 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
     }
 
     fun onDraw(canvas: Canvas) {
+        canvas.drawColor(c.color(COLOR_KEYBOARD_BACKGROUND, this))
         for (row in rows) row.onDraw(canvas)
     }
 
