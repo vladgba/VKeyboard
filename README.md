@@ -36,6 +36,7 @@ New features & options:
 - **Modifier indicators**: Distinct pip indicator for one-shot active modifiers and auto-shift; solid bar for locked modifiers (Caps Lock).
 - Key option `"holdRepeat": "1"` repeats the key while it is held. All bundled layouts now use it on Backspace.
 - Theme colors: `keyPressedBackgroundColor` (key being pressed) and `metaPressedBackgroundColor` (locked modifier).
+- **Backup & restore**: Full backup (`.zip`) covering all settings (`settings.txt`), custom layouts (`.txt`), color themes (`.ini`), dictionary abbreviations (`dictionary.dic`), macros (`macros.macro`), and hitbox autotune calibration (`touchstats.stats`). Partial backups support standalone `settings.txt` export/import, config-only, or layouts & themes only. Backup archives can also be opened directly from external file managers to restore.
 
 ## Layout format (Flexaml)
 

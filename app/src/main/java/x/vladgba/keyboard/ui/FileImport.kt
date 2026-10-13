@@ -10,6 +10,7 @@ import android.text.InputType
 import android.widget.EditText
 import android.widget.Toast
 import x.vladgba.keyboard.R
+import x.vladgba.keyboard.core.BackupManager
 import x.vladgba.keyboard.core.LAYOUT_EXT
 import x.vladgba.keyboard.core.PFile
 import x.vladgba.keyboard.core.THEME_EXT
@@ -22,8 +23,27 @@ class FileImport : LocalizedActivity() {
         val uri = intent.data
         if (intent.action != Intent.ACTION_VIEW || uri == null) return finish()
         try {
-            val content = contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } ?: return finish()
             val fileName = displayName(uri)
+            if (fileName.endsWith(".zip")) {
+                confirm(this, R.string.bk_confirm_restore, R.string.bk_confirm_restore_msg, R.string.yes) {
+                    try {
+                        contentResolver.openInputStream(uri)?.use { stream ->
+                            val res = BackupManager.restoreBackup(this, stream)
+                            if (res.success) {
+                                Toast.makeText(this, getString(R.string.bk_restore_success, res.count), Toast.LENGTH_LONG).show()
+                            } else {
+                                Toast.makeText(this, "${getString(R.string.bk_restore_fail)}: ${res.message}", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    } catch (_: Exception) {
+                        Toast.makeText(this, R.string.bk_restore_fail, Toast.LENGTH_LONG).show()
+                    }
+                    finish()
+                }
+                return
+            }
+
+            val content = contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } ?: return finish()
             val ext = if (fileName.endsWith(".$THEME_EXT")) THEME_EXT else LAYOUT_EXT
             ask(fileName.substringBeforeLast('.'), ext, content)
         } catch (e: Exception) {

@@ -586,4 +586,28 @@
     <string name="ui_language_sub">Language of these screens and of translated key labels</string>
     <string name="ui_language_system">System default</string>
     <string name="ui_language_system_with">System default (%1$s)</string>
+
+    <!-- Backup and restore -->
+    <string name="bk_title">Backup and restore</string>
+    <string name="bk_sub">Export or restore all settings, layouts, themes, and data</string>
+    <string name="bk_sec_full">Full backup</string>
+    <string name="bk_export_full">Export full backup</string>
+    <string name="bk_export_full_sub">All settings, layouts, themes, dictionary, macros, and touch statistics (.zip)</string>
+    <string name="bk_restore_full">Restore backup</string>
+    <string name="bk_restore_full_sub">Restore settings and files from a .zip backup archive</string>
+    <string name="bk_sec_partial">Partial backup</string>
+    <string name="bk_export_settings">Export settings only</string>
+    <string name="bk_export_settings_sub">Save settings.txt as a standalone text file</string>
+    <string name="bk_import_settings">Import settings only</string>
+    <string name="bk_import_settings_sub">Load settings from a settings.txt file</string>
+    <string name="bk_export_config">Export config only</string>
+    <string name="bk_export_config_sub">Settings, dictionary, macros, and touch statistics (.zip)</string>
+    <string name="bk_export_layouts">Export layouts &amp; themes</string>
+    <string name="bk_export_layouts_sub">All custom layouts and color themes (.zip)</string>
+    <string name="bk_confirm_restore">Restore this backup?</string>
+    <string name="bk_confirm_restore_msg">This will overwrite existing settings and files with the ones in the archive.</string>
+    <string name="bk_restore_success">Restored %1$d files successfully</string>
+    <string name="bk_restore_fail">Failed to restore backup</string>
+    <string name="bk_export_success">Backup saved successfully</string>
+    <string name="bk_export_fail">Failed to save backup</string>
 </resources>

@@ -210,6 +210,9 @@ class SettingsActivity : LocalizedActivity() {
         page.row(getString(R.string.ui_set_raw), getString(R.string.ui_set_raw_sub)) {
             startActivity(Intent(this, RawEditor::class.java).putExtra("name", SETTINGS_FILENAME))
         }
+        page.row(getString(R.string.bk_title), getString(R.string.bk_sub)) {
+            startActivity(Intent(this, BackupActivity::class.java))
+        }
         page.row(getString(R.string.ui_set_reset_all), getString(R.string.ui_set_reset_all_sub)) {
             confirm(this, R.string.ui_set_reset_all, R.string.ui_set_reset_all_confirm, R.string.yes) {
                 // Keep the chosen layout, themes and hardware key remaps (managed in the key tester).
