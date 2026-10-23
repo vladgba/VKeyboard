@@ -90,6 +90,10 @@
     <string name="ui_set_clip_history_sub">Recordar el texto copiado; se abre deslizando hacia arriba en 123</string>
     <string name="ui_set_clip_expiry">Conservar recortes</string>
     <string name="ui_set_clip_expiry_sub">Los recortes no fijados se olvidan tras este tiempo; los fijados se quedan</string>
+    <string name="ui_set_number_row">Fila de números</string>
+    <string name="ui_set_number_row_sub">Añade una fila de dígitos encima de las distribuciones que no la tienen</string>
+    <string name="ui_nr_digits">Dígitos</string>
+    <string name="ui_nr_symbols">Dígitos + símbolos</string>
     <string name="ui_clip_never">Sin caducidad</string>
     <string name="ui_btn_del_word">⌫⌫ Borrar palabra</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Borrar palabra siguiente</string>

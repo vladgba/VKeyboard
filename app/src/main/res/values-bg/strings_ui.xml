@@ -90,6 +90,10 @@
     <string name="ui_set_clip_history_sub">Запомняне на копирания текст; отваря се с плъзгане нагоре по 123</string>
     <string name="ui_set_clip_expiry">Пазене на записите</string>
     <string name="ui_set_clip_expiry_sub">Незакачените записи се забравят след това време; закачените остават</string>
+    <string name="ui_set_number_row">Ред с цифри</string>
+    <string name="ui_set_number_row_sub">Добавя ред с цифри над подредбите, които нямат такъв</string>
+    <string name="ui_nr_digits">Цифри</string>
+    <string name="ui_nr_symbols">Цифри + символи</string>
     <string name="ui_clip_never">Без изтичане</string>
     <string name="ui_btn_del_word">⌫⌫ Изтрий дума</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Изтрий следваща дума</string>

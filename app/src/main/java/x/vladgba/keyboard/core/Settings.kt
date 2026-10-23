@@ -52,6 +52,7 @@ private val DEFAULTS = FlexParser.parse(
     "$SETTING_EDGE_GESTURE_GUARD": "1",
     "$SETTING_CLIP_HISTORY": "1",
     "$SETTING_CLIP_EXPIRY": 15,
+    "$SETTING_NUMBER_ROW": 0,
     "$SENSE_HOLD_PRESS": 300,
     "$SENSE_HOLD_PRESS_REPEAT": 50,
     "$KEY_VISIBLE": 1,

@@ -90,6 +90,10 @@
     <string name="ui_set_clip_history_sub">Retenir le texte copié ; s\'ouvre en glissant vers le haut sur 123</string>
     <string name="ui_set_clip_expiry">Conserver les extraits</string>
     <string name="ui_set_clip_expiry_sub">Les extraits non épinglés sont oubliés après ce délai ; les épinglés restent</string>
+    <string name="ui_set_number_row">Rangée de chiffres</string>
+    <string name="ui_set_number_row_sub">Ajoute une rangée de chiffres au-dessus des dispositions qui n\'en ont pas</string>
+    <string name="ui_nr_digits">Chiffres</string>
+    <string name="ui_nr_symbols">Chiffres + symboles</string>
     <string name="ui_clip_never">Sans expiration</string>
     <string name="ui_btn_del_word">⌫⌫ Effacer le mot</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Effacer le mot suivant</string>

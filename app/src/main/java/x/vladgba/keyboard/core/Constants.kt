@@ -212,6 +212,8 @@ internal const val SETTING_EDGE_GESTURE_GUARD = "edgeGestureGuard"
 internal const val SETTING_CLIP_HISTORY = "clipHistory"
 /** Minutes unpinned clips are kept; 0 = never expire. */
 internal const val SETTING_CLIP_EXPIRY = "clipExpiry"
+/** Row of digits added on top of typing layouts: 0 off, 1 digits, 2 digits + symbols (also a per-layout override). */
+internal const val SETTING_NUMBER_ROW = "numberRow"
 /** Key option: action for a clockwise circle drawn on the key. Default: capital letter on letter keys,
  *  delete the previous word on Backspace, Caps Lock on Shift. */
 internal const val KEY_CIRCLE = "circle"

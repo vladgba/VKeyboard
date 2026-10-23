@@ -90,6 +90,10 @@
     <string name="ui_set_clip_history_sub">Запам\'ятовувати скопійований текст; відкрити свайпом угору по 123</string>
     <string name="ui_set_clip_expiry">Зберігати записи</string>
     <string name="ui_set_clip_expiry_sub">Незакріплені записи забуваються через цей час; закріплені лишаються</string>
+    <string name="ui_set_number_row">Ряд цифр</string>
+    <string name="ui_set_number_row_sub">Додає ряд цифр над розкладками, де його немає</string>
+    <string name="ui_nr_digits">Цифри</string>
+    <string name="ui_nr_symbols">Цифри + символи</string>
     <string name="ui_clip_never">Безстроково</string>
     <string name="ui_btn_del_word">⌫⌫ Видалити слово</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Видалити наступне слово</string>

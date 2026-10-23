@@ -90,6 +90,10 @@
     <string name="ui_set_clip_history_sub">Reține textul copiat; se deschide glisând în sus pe 123</string>
     <string name="ui_set_clip_expiry">Păstrează intrările</string>
     <string name="ui_set_clip_expiry_sub">Intrările nefixate sunt uitate după acest timp; cele fixate rămân</string>
+    <string name="ui_set_number_row">Rând de cifre</string>
+    <string name="ui_set_number_row_sub">Adaugă un rând de cifre deasupra aranjamentelor care nu au unul</string>
+    <string name="ui_nr_digits">Cifre</string>
+    <string name="ui_nr_symbols">Cifre + simboluri</string>
     <string name="ui_clip_never">Fără expirare</string>
     <string name="ui_btn_del_word">⌫⌫ Șterge cuvântul</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Șterge cuvântul următor</string>

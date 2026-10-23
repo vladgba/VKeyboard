@@ -90,6 +90,10 @@
     <string name="ui_set_clip_history_sub">Kopierten Text merken; öffnen mit Wischen nach oben auf 123</string>
     <string name="ui_set_clip_expiry">Einträge behalten für</string>
     <string name="ui_set_clip_expiry_sub">Nicht angeheftete Einträge werden danach vergessen; angeheftete bleiben</string>
+    <string name="ui_set_number_row">Zahlenreihe</string>
+    <string name="ui_set_number_row_sub">Fügt Layouts ohne Ziffernreihe oben eine hinzu</string>
+    <string name="ui_nr_digits">Ziffern</string>
+    <string name="ui_nr_symbols">Ziffern + Symbole</string>
     <string name="ui_clip_never">Unbegrenzt</string>
     <string name="ui_btn_del_word">⌫⌫ Wort löschen</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Nächstes Wort löschen</string>

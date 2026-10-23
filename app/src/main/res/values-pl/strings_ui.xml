@@ -90,6 +90,10 @@
     <string name="ui_set_clip_history_sub">Zapamiętuj skopiowany tekst; otwórz przesunięciem w górę na 123</string>
     <string name="ui_set_clip_expiry">Przechowuj wpisy</string>
     <string name="ui_set_clip_expiry_sub">Nieprzypięte wpisy znikają po tym czasie; przypięte zostają</string>
+    <string name="ui_set_number_row">Rząd cyfr</string>
+    <string name="ui_set_number_row_sub">Dodaje rząd cyfr nad układami, które go nie mają</string>
+    <string name="ui_nr_digits">Cyfry</string>
+    <string name="ui_nr_symbols">Cyfry + symbole</string>
     <string name="ui_clip_never">Bez wygasania</string>
     <string name="ui_btn_del_word">⌫⌫ Usuń słowo</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Usuń następne słowo</string>

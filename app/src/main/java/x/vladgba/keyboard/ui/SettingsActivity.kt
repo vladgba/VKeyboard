@@ -70,6 +70,24 @@ class SettingsActivity : LocalizedActivity() {
         row.setOnLongClickListener { reset(key); true }
     }
 
+    /** "Number row": off / digits / digits + symbols, stored as 0 / 1 / 2. */
+    private fun numberRowChoice() {
+        val names = listOf(getString(R.string.ui_off), getString(R.string.ui_nr_digits), getString(R.string.ui_nr_symbols))
+        val cur = Settings.num(SETTING_NUMBER_ROW, 0).coerceIn(0, 2)
+        val row = page.row(getString(R.string.ui_set_number_row), getString(R.string.ui_set_number_row_sub)) {
+            Ask.choice(this, getString(R.string.ui_set_number_row), names, cur) {
+                set(SETTING_NUMBER_ROW, it.toString())
+                render()
+            }
+        }
+        row.end.addView(android.widget.TextView(this).apply {
+            text = names[cur]
+            setTextColor(COLOR_ACCENT)
+            textSize = 15f
+        })
+        row.setOnLongClickListener { reset(SETTING_NUMBER_ROW); true }
+    }
+
     /** "Keep clips for": a slider over fixed steps (minutes; 0 = never expire). Other stored values snap to the nearest step. */
     private fun clipExpiryRow() {
         val steps = intArrayOf(0, 1, 5, 10, 15, 20, 30, 40, 60, 120, 180, 360, 540, 720, 960, 1440)
@@ -185,6 +203,7 @@ class SettingsActivity : LocalizedActivity() {
         int(SETTING_BOTTOM_PADDING, R.string.ui_set_bottom_padding, R.string.ui_set_bottom_padding_sub, 0, 80, 5, 0) {
             if (it == 0) getString(R.string.ui_off) else "$it dp"
         }
+        numberRowChoice()
         textSize(KEY_TEXT_SIZE_PRIMARY, R.string.ui_set_label_size, R.string.ui_set_label_size_sub, 2.5f)
         textSize(KEY_TEXT_SIZE_SECONDARY, R.string.ui_set_hint_size, R.string.ui_set_hint_size_sub, 5f)
         int(KEY_PADDING, R.string.ui_set_padding, R.string.ui_set_padding_sub, 0, 40, 1, 10) { "$it px" }

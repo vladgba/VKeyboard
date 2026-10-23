@@ -32,6 +32,7 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 | `edgeGestureGuard` | `1` | Android 10+ gesture navigation: swipes that start at the screen edge over the keyboard go to the keyboard instead of Back (the system honours up to 200dp of keyboard height). `0` turns it off. |
 | `clipHistory` | `1` | Remember copied text (clipboard history, opened with `@CLIPBOARD`). `0` turns it off. |
 | `clipExpiry` | `15` | Minutes unpinned clips are kept; `0` = never expire. Pinned clips stay until removed. |
+| `numberRow` | `0` | Adds a row of digits on top of typing layouts that don't have one: `0` off, `1` digits, `2` digits with `! @ # $ % ^ & * ( )` on swipe-up. A layout can set its own `"numberRow"` (e.g. `"0"`) to override it. The layout files are not changed. |
 | `smartPunctuation` | `1` | Cleans space before punctuation: typing punctuation (. , ! ? : ;) after a space removes the space. |
 | `appLayouts` | `()` | Default layout per app package, e.g. `("com.termux": "code")`. |
 | `errorToasts` | `1` | Shows errors as toasts. With `0`, errors are only logged. |

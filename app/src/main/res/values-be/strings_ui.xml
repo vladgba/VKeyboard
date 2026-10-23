@@ -90,6 +90,10 @@
     <string name="ui_set_clip_history_sub">Запамінаць скапіраваны тэкст; адкрыць свайпам уверх па 123</string>
     <string name="ui_set_clip_expiry">Захоўваць запісы</string>
     <string name="ui_set_clip_expiry_sub">Незамацаваныя запісы забываюцца праз гэты час; замацаваныя застаюцца</string>
+    <string name="ui_set_number_row">Радок лічбаў</string>
+    <string name="ui_set_number_row_sub">Дадае радок лічбаў над раскладкамі, у якіх яго няма</string>
+    <string name="ui_nr_digits">Лічбы</string>
+    <string name="ui_nr_symbols">Лічбы + сімвалы</string>
     <string name="ui_clip_never">Назаўжды</string>
     <string name="ui_btn_del_word">⌫⌫ Выдаліць слова</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Выдаліць наступнае слова</string>

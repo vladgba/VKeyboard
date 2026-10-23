@@ -99,6 +99,10 @@
     <string name="ui_set_clip_history_sub">Remember copied text; open it with a swipe up on 123</string>
     <string name="ui_set_clip_expiry">Keep clips for</string>
     <string name="ui_set_clip_expiry_sub">Unpinned clips are forgotten after this time; pinned ones stay</string>
+    <string name="ui_set_number_row">Number row</string>
+    <string name="ui_set_number_row_sub">Adds a row of digits above typing layouts that don\'t have one</string>
+    <string name="ui_nr_digits">Digits</string>
+    <string name="ui_nr_symbols">Digits + symbols</string>
     <string name="ui_clip_never">Never expire</string>
     <string name="ui_joy_letter_title">Joystick on a letter key</string>
     <string name="ui_joy_letter_msg">A clockwise circle on this key types its capital. In joystick mode the same finger movements also fire the swipe actions, so a circle that isn\'t round enough may move or delete instead of capitalizing. Keep joystick mode?</string>

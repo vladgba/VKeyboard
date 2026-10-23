@@ -68,6 +68,8 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     private var lastTextLayout = ""
     private var autoNumSwitched = false
     private val loaded = HashMap<String, KeybLayout>()
+    /** Number row setting the cached layouts were built with. */
+    private var loadedNumberRow = -1
     lateinit var currentLayout: KeybLayout
         private set
 
@@ -1047,6 +1049,11 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     /** Makes [name] current. Returns false if it can't be loaded. */
     private fun pickLayout(name: String): Boolean {
         if (name.isBlank()) return false
+        val numberRow = Settings.num(SETTING_NUMBER_ROW, NumberRow.OFF)
+        if (numberRow != loadedNumberRow) {
+            loaded.clear()
+            loadedNumberRow = numberRow
+        }
         val cached = loaded[name]
         val file = PFile(ctx, name)
         if (!file.exists()) PFile.install(ctx, name)
@@ -1063,7 +1070,10 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     fun loadLayout(name: String): KeybLayout? {
         val file = PFile(ctx, name)
         if (!file.exists()) return null
-        val layout = KeybLayout(this, FlexParser.parse(file.read()))
+        val node = FlexParser.parse(file.read())
+        // The layout editor shows (and saves) the file exactly as it is.
+        if (!isEditor) NumberRow.apply(node, name, Settings.num(SETTING_NUMBER_ROW, NumberRow.OFF))
+        val layout = KeybLayout(this, node)
         layout.lastModified = file.lastModified()
         return layout.takeIf { it.loaded }
     }
