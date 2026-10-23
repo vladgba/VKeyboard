@@ -143,8 +143,8 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
                 if (mode == KEY_MODE_RANDOM && this[KEY_RANDOM].childCount() > 0) {
                     val rnd = this[KEY_RANDOM]
                     c.onText(rnd.str((0 until rnd.childCount()).random()))
-                } else if (bool(KEY_VOICE)) {
-                    c.voice.toggle()
+                } else if (bool(KEY_VOICE) || isTrVoiceKey()) {
+                    c.voice.toggle(trVoiceSpec())
                 } else if (has(KEY_MACRO) && str(KEY_MACRO).isNotBlank()) {
                     c.runMacro(str(KEY_MACRO).trim())
                 } else if (has(KEY_COMBO) && c.sendCombo(str(KEY_COMBO), requireModifier = false)) {
@@ -579,15 +579,39 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
     private fun drawChar(pos: Int, ox: Float, oy: Float, canvas: Canvas, paint: Paint, sh: Boolean) {
         val raw = str(pos)
         if (raw.isBlank()) return
-        val s = if (raw == VOICE_ACTION) "🎤" else raw
+        val s = when {
+            raw == VOICE_ACTION -> "🎤"
+            raw.startsWith(TR_VOICE_PREFIX) || raw.startsWith(TR_VOICE_ALT_PREFIX) -> "🎤🌐"
+            else -> raw
+        }
         // Bug fix: shifted popup chars were computed but never drawn.
         val shown = if (s.length == 1) c.getShifted(s[0].code, sh).toChar().toString() else s
         canvas.drawText(shown, ox, oy + (paint.textSize - paint.descent()) / 2, paint)
     }
 
     private fun shiftedLabel(): String {
-        val lb = Labels.resolve(c.ctx, str(KEY_KEY))
+        val raw = str(KEY_KEY).trim()
+        val lb = when {
+            raw == VOICE_ACTION -> "🎤"
+            raw.startsWith(TR_VOICE_PREFIX) || raw.startsWith(TR_VOICE_ALT_PREFIX) -> "🎤🌐"
+            else -> Labels.resolve(c.ctx, raw)
+        }
         return if (c.letterShift() && lb.length == 1) c.getShifted(lb[0].code, true).toChar().toString() else lb
+    }
+
+    private fun isTrVoiceKey(): Boolean {
+        val v = str(KEY_VOICE).trim()
+        val k = str(KEY_KEY).trim()
+        return v.startsWith(TR_VOICE_PREFIX) || v.startsWith(TR_VOICE_ALT_PREFIX) ||
+               k.startsWith(TR_VOICE_PREFIX) || k.startsWith(TR_VOICE_ALT_PREFIX)
+    }
+
+    private fun trVoiceSpec(): TranslationSpec? {
+        val v = str(KEY_VOICE).trim()
+        if (v.startsWith(TR_VOICE_PREFIX) || v.startsWith(TR_VOICE_ALT_PREFIX)) return VoiceInput.parseTrVoiceSpec(v)
+        val k = str(KEY_KEY).trim()
+        if (k.startsWith(TR_VOICE_PREFIX) || k.startsWith(TR_VOICE_ALT_PREFIX)) return VoiceInput.parseTrVoiceSpec(k)
+        return null
     }
 
     companion object {

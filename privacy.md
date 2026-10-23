@@ -30,8 +30,7 @@ Uninstalling the app, or clearing its data in Android settings, deletes all of t
 |---|---|
 | Vibrate | Key-press vibration feedback |
 | Microphone (`RECORD_AUDIO`) | Voice typing only. Asked the first time you start voice typing; you can refuse or revoke it at any time |
-
-There is no internet, location, contacts, storage or other permission.
+| Internet (`INTERNET`) | Voice translation fallback (`@tr_voice`) when on-device translation is unavailable. No analytics, tracking or telemetry |
 
 ## Voice typing
 

@@ -513,7 +513,12 @@
     <string name="vo_perm_granted">Microphone allowed. Tap 🎤 again to speak.</string>
     <string name="vo_perm_denied">Voice typing needs the microphone.</string>
     <string name="vo_perm_settings">Allow the microphone for VKeyboard in Permissions, then tap 🎤 again.</string>
+    <string name="vo_translating">Translating…</string>
+    <string name="vo_err_translate">Translation failed</string>
+    <string name="vo_tr_action">Voice translation</string>
+    <string name="vo_tr_action_desc">Voice translation: %1$s → %2$s</string>
     <string name="ui_btn_voice">🎤 Voice</string>
+    <string name="ui_btn_tr_voice">🎤🌐 Translate</string>
     <string name="ui_tap_opt_voice">Start voice typing</string>
     <string name="ui_tap_voice">Tap: voice typing</string>
 

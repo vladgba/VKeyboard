@@ -32,6 +32,9 @@ internal const val SETTING_PORTRAIT_HEIGHT = "portraitHeight"
 internal const val LAYOUT_ACTION_PREFIX = "layout:"
 /** Action value (hold, hard press, swipe, popup) that starts voice typing; drawn as 🎤. */
 internal const val VOICE_ACTION = "@VOICE"
+/** Action value prefix that translates text caught by voice input, e.g. `"@tr_voice/ru-en"`. */
+internal const val TR_VOICE_PREFIX = "@tr_voice"
+internal const val TR_VOICE_ALT_PREFIX = "tr_voice:"
 /** Key param: a tap starts/stops voice typing. */
 internal const val KEY_VOICE = "voice"
 /** Layout param: speech language for this layout (BCP 47, e.g. "uk-UA"). */

@@ -398,7 +398,9 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         val status = when (voice.state) {
             VoiceInput.State.STARTING -> ctx.getString(R.string.vo_starting)
             VoiceInput.State.LISTENING -> voice.partial.ifEmpty { ctx.getString(R.string.vo_listening) }
-            VoiceInput.State.PROCESSING -> voice.partial.ifEmpty { ctx.getString(R.string.vo_processing) }
+            VoiceInput.State.PROCESSING -> voice.partial.ifEmpty {
+                ctx.getString(if (voice.isTranslating) R.string.vo_translating else R.string.vo_processing)
+            }
             VoiceInput.State.IDLE -> ""
         }
         p.color = color(COLOR_TEXT_PREVIEW, node)
@@ -411,7 +413,11 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
         p.color = color(COLOR_KEY_SECONDARY, node)
         p.textSize = cardH * 0.075f
-        canvas.drawText(ctx.getString(R.string.vo_tap_to_stop, voice.language()), cx, top + cardH * 0.9f, p)
+        val footer = voice.translationSpec?.let { spec ->
+            val src = if (spec.sourceLang == "auto") voice.language().substringBefore("-") else spec.sourceLang
+            ctx.getString(R.string.vo_tap_to_stop, "$src → ${spec.targetLang}")
+        } ?: ctx.getString(R.string.vo_tap_to_stop, voice.language())
+        canvas.drawText(footer, cx, top + cardH * 0.9f, p)
     }
 
     // ======================= hardware keys =======================
@@ -724,8 +730,13 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
     /** `"macro:name"` runs a macro, `"ctrl+c"` sends a combination. Returns false for anything else. */
     fun runSpecial(value: String): Boolean {
-        if (value.trim() == VOICE_ACTION) {
+        val trimmed = value.trim()
+        if (trimmed == VOICE_ACTION) {
             voice.toggle()
+            return true
+        }
+        if (trimmed.startsWith(TR_VOICE_PREFIX) || trimmed.startsWith(TR_VOICE_ALT_PREFIX)) {
+            voice.toggle(VoiceInput.parseTrVoiceSpec(trimmed))
             return true
         }
         if (value.startsWith(LAYOUT_ACTION_PREFIX)) {

@@ -13,6 +13,8 @@ import x.vladgba.keyboard.R
 import x.vladgba.keyboard.core.*
 import x.vladgba.keyboard.keyboard.Combos
 import x.vladgba.keyboard.keyboard.Macros
+import x.vladgba.keyboard.keyboard.TranslationSpec
+import x.vladgba.keyboard.keyboard.VoiceInput
 
 /** Searchable list of all Android key codes. */
 internal object KeyCodePicker {
@@ -181,6 +183,16 @@ internal object ActionPrompt {
         val v = value.trim()
         if (value.isEmpty()) return ctx.getString(R.string.ui_action_nothing) to true
         if (v == VOICE_ACTION) return ctx.getString(R.string.vo_action) to true
+        if (v.startsWith(TR_VOICE_PREFIX) || v.startsWith(TR_VOICE_ALT_PREFIX)) {
+            val spec = VoiceInput.parseTrVoiceSpec(v)
+            val desc = if (spec != null) {
+                val src = if (spec.sourceLang == "auto") ctx.getString(R.string.vo_lang_auto) else spec.sourceLang
+                ctx.getString(R.string.vo_tr_action_desc, src, spec.targetLang)
+            } else {
+                ctx.getString(R.string.vo_tr_action)
+            }
+            return desc to true
+        }
         if (v.startsWith(LAYOUT_ACTION_PREFIX)) {
             val t = v.removePrefix(LAYOUT_ACTION_PREFIX).trim()
             return ctx.getString(R.string.ui_action_layout, layoutTargetName(ctx, t)) to t.isNotEmpty()
@@ -229,6 +241,7 @@ internal object ActionPrompt {
             addView(small(R.string.ui_btn_macro) { pickMacro(ctx) { input.setText(Macros.PREFIX + it) } })
             addView(small(R.string.ui_btn_layout) { pickLayout(ctx) { input.setText(LAYOUT_ACTION_PREFIX + it) } })
             addView(small(R.string.ui_btn_voice) { input.setText(VOICE_ACTION) })
+            addView(small(R.string.ui_btn_tr_voice) { input.setText("$TR_VOICE_PREFIX/auto-en") })
             addView(small(R.string.ui_btn_clear) { input.setText("") })
         }
         val box = LinearLayout(ctx).apply {
