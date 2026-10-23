@@ -350,6 +350,14 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
         if (state == State.PRESSED) state = State.MOVED
         val v = str(dir).trim()
         val n = FlexNode.parseInt(v)
+        // Selection slider: with Shift on or text selected, cursor steps grow/shrink the selection.
+        if (n != null && c.selectionMode()) when (-n) {
+            KeyEvent.KEYCODE_DPAD_LEFT -> { c.extendSelection(-1); c.vibrate(this, KEY_VIBRATE_TICK); return }
+            KeyEvent.KEYCODE_DPAD_RIGHT -> { c.extendSelection(1); c.vibrate(this, KEY_VIBRATE_TICK); return }
+            KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_DPAD_DOWN -> {
+                c.extendSelectionVertically(-n); c.vibrate(this, KEY_VIBRATE_TICK); return
+            }
+        }
         when {
             v.isEmpty() -> c.onKey(code())
             n != null -> c.onKey(n)

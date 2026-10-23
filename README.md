@@ -33,6 +33,7 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 
 New features & options:
 - **Undo text expansion on Backspace**: Tapping Backspace immediately after an abbreviation expands reverts the text back to the abbreviation.
+- **Selection slider**: with Shift on, or while text is selected, dragging the space bar (any joystick key whose left/right are the cursor arrows) grows or shrinks the selection one character per step instead of moving the cursor; up/down extend it by lines.
 - **Compose key (`@COMPOSE` / `"compose": "1"`)**: Sequential character composition, e.g. tap `⎄` then `'` + `e` → `é`, `c` + `o` → `©`, `s` + `s` → `ß`, `1` + `2` → `½`, `a` + `e` → `æ`.
 - **Modifier indicators**: Distinct pip indicator for one-shot active modifiers and auto-shift; solid bar for locked modifiers (Caps Lock).
 - Key option `"holdRepeat": "1"` repeats the key while it is held. All bundled layouts now use it on Backspace.
