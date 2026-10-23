@@ -93,7 +93,14 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
     }
 
     fun onDraw(canvas: Canvas) {
-        canvas.drawColor(c.color(COLOR_KEYBOARD_BACKGROUND, this))
+        // Only the keyboard's own area: the IME frame doesn't clip its children (popups reach
+        // above the keyboard), so drawColor() would also paint the transparent head-room.
+        val p = c.paint
+        val old = p.style
+        p.style = android.graphics.Paint.Style.FILL
+        p.color = c.color(COLOR_KEYBOARD_BACKGROUND, this)
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), p)
+        p.style = old
         for (row in rows) row.onDraw(canvas)
     }
 
