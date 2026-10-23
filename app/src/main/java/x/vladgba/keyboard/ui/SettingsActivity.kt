@@ -70,6 +70,25 @@ class SettingsActivity : LocalizedActivity() {
         row.setOnLongClickListener { reset(key); true }
     }
 
+    /** "Keep clips for": a slider over fixed steps (minutes; 0 = never expire). Other stored values snap to the nearest step. */
+    private fun clipExpiryRow() {
+        val steps = intArrayOf(0, 1, 5, 10, 15, 20, 30, 40, 60, 120, 180, 360, 540, 720, 960, 1440)
+        val cur = Settings.num(SETTING_CLIP_EXPIRY, 15)
+        val index = steps.indices.minByOrNull { kotlin.math.abs(steps[it] - cur) } ?: 4
+        fun label(i: Int) = steps[i].let { m ->
+            when {
+                m == 0 -> getString(R.string.ui_clip_never)
+                m < 60 -> "$m min"
+                else -> "${m / 60} h"
+            }
+        }
+        val (row, _) = page.sliderRow(getString(R.string.ui_set_clip_expiry), getString(R.string.ui_set_clip_expiry_sub),
+            0f, (steps.size - 1).toFloat(), 1f, index.toFloat(), { label(it.toInt()) }) {
+            set(SETTING_CLIP_EXPIRY, steps[it.toInt().coerceIn(steps.indices)].toString())
+        }
+        row.setOnLongClickListener { reset(SETTING_CLIP_EXPIRY); true }
+    }
+
     /** Label sizes are stored as "key height / N"; shown as a percentage of the default. */
     private fun textSize(key: String, title: Int, sub: Int, base: Float) {
         val pct = base / Settings.float(key, base).coerceAtLeast(0.1f) * 100f
@@ -187,14 +206,7 @@ class SettingsActivity : LocalizedActivity() {
         if (android.os.Build.VERSION.SDK_INT >= 29)
             bool(SETTING_EDGE_GESTURE_GUARD, R.string.ui_set_edge_guard, R.string.ui_set_edge_guard_sub, true)
         bool(SETTING_CLIP_HISTORY, R.string.ui_set_clip_history, R.string.ui_set_clip_history_sub, true)
-        int(SETTING_CLIP_EXPIRY, R.string.ui_set_clip_expiry, R.string.ui_set_clip_expiry_sub, 0, 1440, 5, 15) {
-            when {
-                it == 0 -> getString(R.string.ui_clip_never)
-                it < 60 -> "$it min"
-                it % 60 == 0 -> "${it / 60} h"
-                else -> "${it / 60} h ${it % 60} min"
-            }
-        }
+        clipExpiryRow()
         int(SENSE_HARD_PRESS, R.string.ui_set_hard, R.string.ui_set_hard_sub, 0, 1000, 25, 400) {
             if (it == 0) getString(R.string.ui_off) else "$it"
         }
