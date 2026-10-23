@@ -5,7 +5,7 @@
         ("key": "8"),
         ("key": "9"),
         ("key": "/"),
-        ("key": "⌫", "width": "1", "code": "-67", "holdRepeat": "1", "mode": "joy", "top": "0", "bottom": "0", "right": "-112")
+        ("key": "⌫", "width": "1", "code": "-67", "holdRepeat": "1", "mode": "joy", "top": "@DELETE_WORD", "bottom": "@DELETE_WORD_FORWARD", "right": "-112")
     ),
     (
         ("key": "4"),

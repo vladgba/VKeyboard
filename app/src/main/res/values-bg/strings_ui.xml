@@ -75,6 +75,10 @@
     <string name="ui_set_sel_slider_sub">При включен Shift или маркиран текст плъзгането по интервала разширява или стеснява маркирането</string>
     <string name="ui_set_circle">Жестове с кръг</string>
     <string name="ui_set_circle_sub">Начертайте кръг върху клавиш: главна буква, изтриване на дума с Backspace, Caps Lock с Shift</string>
+    <string name="ui_btn_del_word">⌫⌫ Изтрий дума</string>
+    <string name="ui_btn_del_word_fwd">⌦⌦ Изтрий следваща дума</string>
+    <string name="ui_action_del_word">Изтриване на думата преди курсора</string>
+    <string name="ui_action_del_word_fwd">Изтриване на думата след курсора</string>
     <string name="ui_joy_letter_title">Джойстик на буквен клавиш</string>
     <string name="ui_joy_letter_msg">Кръг по часовниковата стрелка върху този клавиш въвежда главна буква. В режим джойстик същите движения задействат и плъзгащите действия, така че недостатъчно кръгъл кръг може да премести курсора или да изтрие вместо главна буква. Да остане ли режим джойстик?</string>
     <string name="ui_joy_letter_keep">Остави джойстик</string>

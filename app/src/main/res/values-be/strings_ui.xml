@@ -75,6 +75,10 @@
     <string name="ui_set_sel_slider_sub">Калі ўключаны Shift або вылучаны тэкст, рух па прабеле павялічвае ці памяншае вылучэнне</string>
     <string name="ui_set_circle">Жэсты кругам</string>
     <string name="ui_set_circle_sub">Намалюйце круг на клавішы: вялікая літара, выдаленне слова на Backspace, Caps Lock на Shift</string>
+    <string name="ui_btn_del_word">⌫⌫ Выдаліць слова</string>
+    <string name="ui_btn_del_word_fwd">⌦⌦ Выдаліць наступнае слова</string>
+    <string name="ui_action_del_word">Выдаліць слова перад курсорам</string>
+    <string name="ui_action_del_word_fwd">Выдаліць слова пасля курсора</string>
     <string name="ui_joy_letter_title">Джойсцік на клавішы літары</string>
     <string name="ui_joy_letter_msg">Круг па гадзіннікавай стрэлцы на гэтай клавішы друкуе вялікую літару. У рэжыме джойсціка тыя ж рухі пальца запускаюць дзеянні свайпаў, таму недастаткова круглы круг можа перамясціць курсор або выдаліць тэкст замест вялікай літары. Пакінуць рэжым джойсціка?</string>
     <string name="ui_joy_letter_keep">Пакінуць джойсцік</string>

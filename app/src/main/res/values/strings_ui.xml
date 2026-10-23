@@ -538,6 +538,10 @@
     <string name="ui_btn_tr_voice">🎤🌐 Translate</string>
     <string name="ui_btn_compose">⎄ Compose</string>
     <string name="ui_action_compose">Compose key (⎄ character combination)</string>
+    <string name="ui_btn_del_word">⌫⌫ Delete word</string>
+    <string name="ui_btn_del_word_fwd">⌦⌦ Delete next word</string>
+    <string name="ui_action_del_word">Delete the word before the cursor</string>
+    <string name="ui_action_del_word_fwd">Delete the word after the cursor</string>
     <string name="ui_tap_opt_voice">Start voice typing</string>
     <string name="ui_tap_voice">Tap: voice typing</string>
 

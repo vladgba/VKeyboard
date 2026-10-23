@@ -75,6 +75,10 @@
     <string name="ui_set_sel_slider_sub">Avec Maj activée ou du texte sélectionné, glisser sur la barre d\'espace agrandit ou réduit la sélection</string>
     <string name="ui_set_circle">Gestes circulaires</string>
     <string name="ui_set_circle_sub">Tracez un cercle sur une touche : majuscule, effacer un mot sur Retour arrière, verrouillage Maj sur Maj</string>
+    <string name="ui_btn_del_word">⌫⌫ Effacer le mot</string>
+    <string name="ui_btn_del_word_fwd">⌦⌦ Effacer le mot suivant</string>
+    <string name="ui_action_del_word">Effacer le mot avant le curseur</string>
+    <string name="ui_action_del_word_fwd">Effacer le mot après le curseur</string>
     <string name="ui_joy_letter_title">Joystick sur une touche de lettre</string>
     <string name="ui_joy_letter_msg">Un cercle dans le sens horaire sur cette touche tape sa majuscule. En mode joystick, les mêmes mouvements déclenchent aussi les actions de glissement : un cercle pas assez rond peut déplacer le curseur ou effacer au lieu de mettre en majuscule. Garder le mode joystick ?</string>
     <string name="ui_joy_letter_keep">Garder le joystick</string>

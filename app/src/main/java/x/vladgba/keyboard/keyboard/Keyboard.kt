@@ -758,16 +758,55 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             clickModified(KEYCODE_DEL, metaState or META_CTRL_ON)
             return
         }
-        var i = before.length
-        while (i > 0 && before[i - 1].isWhitespace()) i--
-        if (i > 0) {
-            val word = before[i - 1].isLetterOrDigit() || before[i - 1] == '_'
-            while (i > 0 && !before[i - 1].isWhitespace() &&
-                (before[i - 1].isLetterOrDigit() || before[i - 1] == '_') == word) i--
-        }
-        val n = before.length - i
+        val n = before.length - wordStart(before)
         if (n > 0) ic.deleteSurroundingText(n, 0)
         scheduleAutoShift()
+    }
+
+    /**
+     * Deletes the word after the cursor: leading spaces, then a run of letters/digits (or of
+     * other symbols). A selection is simply deleted. Without access to the text, sends
+     * Ctrl+Forward Delete.
+     */
+    fun deleteWordAfter() {
+        val ic = inputConnection ?: return
+        textExpander.clearUndo()
+        if (selStart >= 0 && selStart != selEnd) {
+            ic.commitText("", 1)
+            return
+        }
+        val after = ic.getTextAfterCursor(256, 0)?.toString()
+        if (after == null) {
+            clickModified(KEYCODE_FORWARD_DEL, metaState or META_CTRL_ON)
+            return
+        }
+        val n = wordEnd(after)
+        if (n > 0) ic.deleteSurroundingText(0, n)
+        scheduleAutoShift()
+    }
+
+    private fun isWordChar(ch: Char) = ch.isLetterOrDigit() || ch == '_'
+
+    /** Index in [s] where the last word (plus the spaces after it) begins. */
+    private fun wordStart(s: CharSequence): Int {
+        var i = s.length
+        while (i > 0 && s[i - 1].isWhitespace()) i--
+        if (i > 0) {
+            val word = isWordChar(s[i - 1])
+            while (i > 0 && !s[i - 1].isWhitespace() && isWordChar(s[i - 1]) == word) i--
+        }
+        return i
+    }
+
+    /** Length of the first word in [s], including the spaces before it. */
+    private fun wordEnd(s: CharSequence): Int {
+        var i = 0
+        while (i < s.length && s[i].isWhitespace()) i++
+        if (i < s.length) {
+            val word = isWordChar(s[i])
+            while (i < s.length && !s[i].isWhitespace() && isWordChar(s[i]) == word) i++
+        }
+        return i
     }
 
     /** Up/down while selecting: Shift + the arrow key, which editors extend line by line. */
@@ -921,6 +960,14 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         if (trimmed == COMPOSE_ACTION) {
             compose.toggle()
             invalidate()
+            return true
+        }
+        if (trimmed == DELETE_WORD_ACTION) {
+            deleteWordBefore()
+            return true
+        }
+        if (trimmed == DELETE_WORD_FORWARD_ACTION) {
+            deleteWordAfter()
             return true
         }
         if (trimmed.startsWith(TR_VOICE_PREFIX) || trimmed.startsWith(TR_VOICE_ALT_PREFIX)) {

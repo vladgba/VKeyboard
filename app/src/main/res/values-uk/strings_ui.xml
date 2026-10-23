@@ -75,6 +75,10 @@
     <string name="ui_set_sel_slider_sub">Коли увімкнено Shift або виділено текст, рух по пробілу розширює чи звужує виділення</string>
     <string name="ui_set_circle">Жести колом</string>
     <string name="ui_set_circle_sub">Намалюйте коло на клавіші: велика літера, видалення слова на Backspace, Caps Lock на Shift</string>
+    <string name="ui_btn_del_word">⌫⌫ Видалити слово</string>
+    <string name="ui_btn_del_word_fwd">⌦⌦ Видалити наступне слово</string>
+    <string name="ui_action_del_word">Видалити слово перед курсором</string>
+    <string name="ui_action_del_word_fwd">Видалити слово після курсора</string>
     <string name="ui_joy_letter_title">Джойстик на клавіші літери</string>
     <string name="ui_joy_letter_msg">Коло за годинниковою стрілкою на цій клавіші друкує велику літеру. У режимі джойстика ті самі рухи пальця запускають і дії свайпів, тому недостатньо кругле коло може зсунути курсор або видалити текст замість великої літери. Залишити режим джойстика?</string>
     <string name="ui_joy_letter_keep">Залишити джойстик</string>

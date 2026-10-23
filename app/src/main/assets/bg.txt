@@ -191,8 +191,8 @@
             "code": "-67",
             "holdRepeat": "1",
             "mode": "joy",
-            "top": "0",
-            "bottom": "0",
+            "top": "@DELETE_WORD",
+            "bottom": "@DELETE_WORD_FORWARD",
             "right": "-112"
         )
     ),

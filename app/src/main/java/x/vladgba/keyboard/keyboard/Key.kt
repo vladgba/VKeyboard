@@ -213,6 +213,8 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
                 } else if (bool(KEY_COMPOSE) || str(KEY_KEY).trim() == COMPOSE_ACTION) {
                     c.compose.toggle()
                     c.invalidate()
+                } else if (str(KEY_KEY).trim().let { it == DELETE_WORD_ACTION || it == DELETE_WORD_FORWARD_ACTION }) {
+                    c.runSpecial(str(KEY_KEY))
                 } else if (has(KEY_MACRO) && str(KEY_MACRO).isNotBlank()) {
                     c.runMacro(str(KEY_MACRO).trim())
                 } else if (has(KEY_COMBO) && c.sendCombo(str(KEY_COMBO), requireModifier = false)) {
@@ -800,6 +802,8 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == VOICE_ACTION -> "🎤"
             raw.startsWith(TR_VOICE_PREFIX) || raw.startsWith(TR_VOICE_ALT_PREFIX) -> "🎤🌐"
             raw == COMPOSE_ACTION -> "⎄"
+            raw == DELETE_WORD_ACTION -> "⌫⌫"
+            raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
             else -> raw
         }
         return if (s.length == 1) c.getShifted(s[0].code, sh).toChar().toString() else s
@@ -864,6 +868,8 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == VOICE_ACTION -> "🎤"
             raw.startsWith(TR_VOICE_PREFIX) || raw.startsWith(TR_VOICE_ALT_PREFIX) -> "🎤🌐"
             raw == COMPOSE_ACTION -> "⎄"
+            raw == DELETE_WORD_ACTION -> "⌫⌫"
+            raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
             else -> raw
         }
         // Bug fix: shifted popup chars were computed but never drawn.
@@ -877,6 +883,8 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == VOICE_ACTION || bool(KEY_VOICE) -> "🎤"
             raw.startsWith(TR_VOICE_PREFIX) || raw.startsWith(TR_VOICE_ALT_PREFIX) || isTrVoiceKey() -> "🎤🌐"
             raw == COMPOSE_ACTION || bool(KEY_COMPOSE) -> "⎄"
+            raw == DELETE_WORD_ACTION -> "⌫⌫"
+            raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
             else -> Labels.resolve(c.ctx, raw)
         }
         return if (c.letterShift() && lb.length == 1) c.getShifted(lb[0].code, true).toChar().toString() else lb

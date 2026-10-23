@@ -78,6 +78,10 @@ internal const val SETTING_SMART_PUNCTUATION = "smartPunctuation"
 internal const val SETTING_APP_LAYOUTS = "appLayouts"
 /** Action value (tap, hold, swipe) that starts compose sequence, drawn as ⎄. */
 internal const val COMPOSE_ACTION = "@COMPOSE"
+/** Action: delete the word before the cursor (drawn as ⌫⌫). */
+internal const val DELETE_WORD_ACTION = "@DELETE_WORD"
+/** Action: delete the word after the cursor (drawn as ⌦⌦). */
+internal const val DELETE_WORD_FORWARD_ACTION = "@DELETE_WORD_FORWARD"
 /** Key param: tap toggles compose mode. */
 internal const val KEY_COMPOSE = "compose"
 
