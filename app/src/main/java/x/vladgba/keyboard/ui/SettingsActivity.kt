@@ -70,6 +70,24 @@ class SettingsActivity : LocalizedActivity() {
         row.setOnLongClickListener { reset(key); true }
     }
 
+    /** "Split keyboard": off / wide screens / always, stored as 0 / 1 / 2. */
+    private fun splitChoice() {
+        val names = listOf(getString(R.string.ui_off), getString(R.string.ui_split_wide), getString(R.string.ui_split_always))
+        val cur = Settings.num(SETTING_SPLIT, 1).coerceIn(0, 2)
+        val row = page.row(getString(R.string.ui_set_split), getString(R.string.ui_set_split_sub)) {
+            Ask.choice(this, getString(R.string.ui_set_split), names, cur) {
+                set(SETTING_SPLIT, it.toString())
+                render()
+            }
+        }
+        row.end.addView(android.widget.TextView(this).apply {
+            text = names[cur]
+            setTextColor(COLOR_ACCENT)
+            textSize = 15f
+        })
+        row.setOnLongClickListener { reset(SETTING_SPLIT); true }
+    }
+
     /** "Number row": off / digits / digits + symbols, stored as 0 / 1 / 2. */
     private fun numberRowChoice() {
         val names = listOf(getString(R.string.ui_off), getString(R.string.ui_nr_digits), getString(R.string.ui_nr_symbols))
@@ -204,6 +222,8 @@ class SettingsActivity : LocalizedActivity() {
             if (it == 0) getString(R.string.ui_off) else "$it dp"
         }
         numberRowChoice()
+        splitChoice()
+        int(SETTING_SPLIT_GAP, R.string.ui_set_split_gap, R.string.ui_set_split_gap_sub, 5, 60, 5, 25) { "$it%" }
         textSize(KEY_TEXT_SIZE_PRIMARY, R.string.ui_set_label_size, R.string.ui_set_label_size_sub, 2.5f)
         textSize(KEY_TEXT_SIZE_SECONDARY, R.string.ui_set_hint_size, R.string.ui_set_hint_size_sub, 5f)
         int(KEY_PADDING, R.string.ui_set_padding, R.string.ui_set_padding_sub, 0, 40, 1, 10) { "$it px" }
@@ -224,6 +244,9 @@ class SettingsActivity : LocalizedActivity() {
         bool(SETTING_CIRCLE_GESTURES, R.string.ui_set_circle, R.string.ui_set_circle_sub, true)
         if (android.os.Build.VERSION.SDK_INT >= 29)
             bool(SETTING_EDGE_GESTURE_GUARD, R.string.ui_set_edge_guard, R.string.ui_set_edge_guard_sub, true)
+        bool(SETTING_SUGGESTIONS, R.string.ui_set_suggestions, R.string.ui_set_suggestions_sub, true)
+        bool(SETTING_SPACE_ACCEPT, R.string.ui_set_space_accept, R.string.ui_set_space_accept_sub, false)
+        bool(SETTING_EMOJI_SUGGEST, R.string.ui_set_emoji_suggest, R.string.ui_set_emoji_suggest_sub, true)
         bool(SETTING_CLIP_HISTORY, R.string.ui_set_clip_history, R.string.ui_set_clip_history_sub, true)
         clipExpiryRow()
         int(SENSE_HARD_PRESS, R.string.ui_set_hard, R.string.ui_set_hard_sub, 0, 1000, 25, 400) {

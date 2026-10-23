@@ -162,6 +162,8 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD,
             InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD,
         ) || info.imeOptions and EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING != 0
+        updateSuggestionsShown(info)
+        scheduleSuggestions()
     }
 
     /** Called when the keyboard becomes visible. */
@@ -208,6 +210,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         compose.cancel()
         resetTouches()
         TouchStats.flush(ctx)
+        UserWords.flush(ctx)
     }
 
     fun resetTouches() {
@@ -610,12 +613,15 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
                     return
                 }
                 if (code == KEYCODE_DEL) {
+                    if (undoSpaceAccept()) return
                     val ic = inputConnection
                     if (ic != null && textExpander.undo(ic)) return
                 } else {
+                    autoAccepted = null
                     textExpander.clearUndo()
                 }
-                if (code == KEYCODE_SPACE || code == KEYCODE_ENTER) expandText(if (code == KEYCODE_SPACE) " " else "\n")
+                if (code == KEYCODE_SPACE && metaState == 0 && spaceAccept()) return
+                if (code == KEYCODE_SPACE || code == KEYCODE_ENTER) wordBoundary(if (code == KEYCODE_SPACE) " " else "\n")
                 if (code == KEYCODE_ENTER && performEditorAction()) return
                 clickModified(code)
             }
@@ -631,6 +637,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             return
         }
         val s = chars.toString()
+        autoAccepted = null
         if (!TextExpander.isSeparator(chars)) textExpander.clearUndo()
         lastSpaceTime = 0L
         scheduleAutoShift()
@@ -642,7 +649,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             }
         }
         if (smartPunctuation(s)) return
-        if (TextExpander.isSeparator(chars)) expandText(s)
+        if (TextExpander.isSeparator(chars)) wordBoundary(s)
         setText(s)
     }
 
@@ -680,6 +687,24 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         endBatchEdit()
     }
 
+    /** A space, Enter or punctuation is about to be typed after a word: learn it, then expand abbreviations. */
+    private fun wordBoundary(sep: String) {
+        learnLastWord()
+        expandText(sep)
+    }
+
+    /** Counts the word just before the cursor in the learned dictionary (see [UserWords]). */
+    private fun learnLastWord() {
+        if (isEditor || privateField || !Settings.bool(SETTING_LEARN_WORDS, true)) return
+        val before = inputConnection?.getTextBeforeCursor(64, 0)?.toString() ?: return
+        var i = before.length
+        while (i > 0 && (before[i - 1].isLetter() || before[i - 1] == '\'' || before[i - 1] == '’' || before[i - 1] == '-')) i--
+        if (i > 0 && before[i - 1].isLetterOrDigit()) return  // e.g. digits glued to the word
+        val word = before.substring(i).trim('\'', '’', '-')
+        if (word.isEmpty() || textExpander.isAbbreviation(word)) return
+        UserWords.learn(ctx, word)
+    }
+
     private fun expandText(sep: String = "") {
         if (!Settings.bool(SETTING_TEXT_EXPANSION, true)) return
         inputConnection?.let { textExpander.expand(it, sep) }
@@ -709,6 +734,136 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     }
 
     /** The cursor moved (tap in the text, arrows...): capitals may be needed now or no longer. */
+    // ======================= word suggestions =======================
+
+    /** One entry of the suggestion bar: a word, or an emoji to add after the word. */
+    data class Suggestion(val text: String, val emoji: Boolean = false)
+
+    /** Current suggestions, best first (at most 3; an emoji, if any, is last). */
+    var suggestions: List<Suggestion> = emptyList()
+        private set
+
+    /** Last word replaced by space auto-complete (typed → accepted), for Backspace to undo. */
+    private var autoAccepted: Pair<String, String>? = null
+
+    /** Word whose auto-complete was undone: the next space keeps it as typed. */
+    private var autoRejected: String? = null
+
+    /** The suggestion bar is shown for this field. */
+    var suggestionsShown = false
+        private set
+
+    /** Called when [suggestions] or [suggestionsShown] change (the IME frame redraws / resizes). */
+    var onSuggestionsChanged: (() -> Unit)? = null
+
+    /** The part of the word before the cursor the suggestions complete. */
+    private var suggestionPrefix = ""
+
+    private val suggestRunnable = Runnable { refreshSuggestions() }
+
+    private fun scheduleSuggestions() {
+        if (!suggestionsShown) return
+        handler.removeCallbacks(suggestRunnable)
+        handler.post(suggestRunnable)
+    }
+
+    /** Whether this field gets the bar: text fields only, not passwords or "no suggestions" fields. */
+    private fun updateSuggestionsShown(info: EditorInfo) {
+        val cls = info.inputType and InputType.TYPE_MASK_CLASS
+        val noSuggest = info.inputType and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS != 0
+        val shown = !isEditor && Settings.bool(SETTING_SUGGESTIONS, true) && cls == InputType.TYPE_CLASS_TEXT &&
+            !privateField && !noSuggest
+        if (shown != suggestionsShown) {
+            suggestionsShown = shown
+            onSuggestionsChanged?.invoke()
+        }
+        if (!shown) setSuggestions(emptyList())
+    }
+
+    private fun setSuggestions(list: List<Suggestion>) {
+        if (list == suggestions) return
+        suggestions = list
+        onSuggestionsChanged?.invoke()
+    }
+
+    /** Learned words that complete the word before the cursor, in the case being typed. */
+    private fun refreshSuggestions() {
+        if (!suggestionsShown || (selStart >= 0 && selStart != selEnd)) return setSuggestions(emptyList())
+        val before = inputConnection?.getTextBeforeCursor(48, 0)?.toString() ?: return setSuggestions(emptyList())
+        var i = before.length
+        while (i > 0 && (before[i - 1].isLetter() || before[i - 1] == '\'' || before[i - 1] == '’')) i--
+        val prefix = before.substring(i)
+        // A word whose auto-complete was undone stays protected until a different word is typed.
+        if (prefix != suggestionPrefix && prefix != autoRejected) autoRejected = null
+        suggestionPrefix = prefix
+        if (prefix.isEmpty() || (i > 0 && before[i - 1].isDigit())) return setSuggestions(emptyList())
+        val upper = prefix.length > 1 && prefix.all { !it.isLetter() || it.isUpperCase() }
+        val capital = prefix[0].isUpperCase()
+        fun cased(w: UserWords.Word) = when {
+            upper -> w.form.uppercase()
+            capital -> w.form.replaceFirstChar { it.uppercaseChar() }
+            else -> w.form
+        }
+        // Completions first; typos one edit away from an unknown word after them.
+        val found = LinkedHashMap<String, UserWords.Word>()
+        for (w in UserWords.complete(ctx, prefix, 3)) found[w.form.lowercase()] = w
+        if (!UserWords.contains(ctx, prefix)) for (w in UserWords.corrections(ctx, prefix, 3)) found.putIfAbsent(w.form.lowercase(), w)
+        val words = found.values.take(3).map { Suggestion(cased(it)) }
+        val emoji = if (Settings.bool(SETTING_EMOJI_SUGGEST, true)) EmojiKeywords.lookup(ctx, prefix).firstOrNull() else null
+        setSuggestions(if (emoji != null) words.take(2) + Suggestion(emoji, emoji = true) else words)
+    }
+
+    /** Space auto-complete: replaces a word that isn't a learned word with the top suggestion. */
+    private fun spaceAccept(): Boolean {
+        if (!suggestionsShown || !Settings.bool(SETTING_SPACE_ACCEPT, false)) return false
+        refreshSuggestions()
+        val typed = suggestionPrefix
+        val top = suggestions.firstOrNull()?.takeIf { !it.emoji } ?: return false
+        if (typed.isEmpty() || typed == autoRejected || UserWords.contains(ctx, typed) || top.text.equals(typed, true)) return false
+        acceptSuggestion(0)
+        autoAccepted = typed to top.text
+        return true
+    }
+
+    /** Backspace right after space auto-complete: back to the word as typed. */
+    private fun undoSpaceAccept(): Boolean {
+        val (typed, accepted) = autoAccepted ?: return false
+        autoAccepted = null
+        val ic = inputConnection ?: return false
+        val tail = "$accepted "
+        if (ic.getTextBeforeCursor(tail.length, 0)?.toString() != tail) return false
+        ic.beginBatchEdit()
+        ic.deleteSurroundingText(tail.length, 0)
+        ic.commitText(typed, 1)
+        ic.endBatchEdit()
+        autoRejected = typed
+        return true
+    }
+
+    /** Adds the emoji suggestion after the word being typed. */
+    fun acceptEmoji() {
+        val e = suggestions.firstOrNull { it.emoji } ?: return
+        val ic = inputConnection ?: return
+        ic.commitText(" " + e.text + " ", 1)
+        setSuggestions(emptyList())
+    }
+
+    /** Replaces the word being typed with suggestion [rank] (0 = best) and adds a space. */
+    fun acceptSuggestion(rank: Int) {
+        val s = suggestions.getOrNull(rank) ?: return
+        if (s.emoji) return acceptEmoji()
+        val word = s.text
+        val ic = inputConnection ?: return
+        ic.beginBatchEdit()
+        if (suggestionPrefix.isNotEmpty()) ic.deleteSurroundingText(suggestionPrefix.length, 0)
+        ic.commitText("$word ", 1)
+        ic.endBatchEdit()
+        if (!privateField && Settings.bool(SETTING_LEARN_WORDS, true)) UserWords.learn(ctx, word)
+        textExpander.clearUndo()
+        setSuggestions(emptyList())
+        scheduleAutoShift()
+    }
+
     /** Last selection reported by the editor (start == end: just a cursor; -1: unknown). */
     private var selStart = -1
     private var selEnd = -1
@@ -718,6 +873,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         selEnd = end
         textExpander.clearUndo()
         scheduleAutoShift()
+        scheduleSuggestions()
     }
 
     // ======================= selection slider =======================
@@ -979,6 +1135,14 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
                 compose.arm(name)
             }
             invalidate()
+            return true
+        }
+        if (trimmed == COMPLETE_EMOJI_ACTION) {
+            acceptEmoji()
+            return true
+        }
+        if (trimmed.startsWith(COMPLETE_ACTION_PREFIX)) {
+            trimmed.removePrefix(COMPLETE_ACTION_PREFIX).toIntOrNull()?.let { acceptSuggestion(it - 1) }
             return true
         }
         if (trimmed == CLIPBOARD_ACTION) {

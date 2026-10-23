@@ -103,6 +103,8 @@ class KeybWrapper : InputMethodService() {
         Macros.invalidate()
         TouchStats.reload(this)
         ClipHistory.reload()
+        x.vladgba.keyboard.core.UserWords.reload()
+        x.vladgba.keyboard.core.EmojiKeywords.reload()
 
         keyboard.onDestroy()
         keyboard = Keyboard(this, this)
@@ -132,12 +134,12 @@ class KeybWrapper : InputMethodService() {
         if (!f.isShown || isFullscreenMode) return
         val kv = f.keyboardView
         val loc = IntArray(2)
-        kv.getLocationInWindow(loc)
-        val top = loc[1]
+        f.getLocationInWindow(loc)
+        val top = loc[1] + f.visibleTop  // suggestion bar (if shown) and keys
         outInsets.contentTopInsets = top
         outInsets.visibleTopInsets = top
         outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_REGION
-        outInsets.touchableRegion.set(0, top, f.width, top + kv.height)
+        outInsets.touchableRegion.set(0, top, f.width, top + f.barHeight + kv.height)
     }
 
     override fun onStartInput(attr: EditorInfo, restarting: Boolean) {

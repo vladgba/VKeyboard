@@ -20,6 +20,8 @@ import x.vladgba.keyboard.core.Settings
  * The head-room never takes touches and never resizes the app: [KeybWrapper.onComputeInsets]
  * reports only the keyboard itself as content and touchable area.
  *
+ * Between the head-room and the keys sits the word suggestion bar (when shown).
+ *
  * Below the keyboard sits a strip as tall as the navigation bar: since Android 15 the input
  * method window is drawn edge-to-edge, so without it the bottom row hides under the nav buttons.
  */
@@ -27,6 +29,17 @@ import x.vladgba.keyboard.core.Settings
 class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
     val keyboardView: KeyboardView = kb.view
     private val overlay = Overlay(ctx)
+    private val bar = SuggestionBar(ctx, kb)
+
+    /** Height of the suggestion bar (0 when hidden), in px. */
+    var barHeight = 0
+        private set
+
+    /** Top of the visible keyboard (suggestion bar or keys) in this view. */
+    val visibleTop get() = headroom
+
+    /** Top of the keys in this view. */
+    private val keysTop get() = headroom + barHeight
 
     /** Space reserved above the keyboard, in px. */
     var headroom = 0
@@ -61,7 +74,13 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
     init {
         (keyboardView.parent as? ViewGroup)?.removeView(keyboardView)
         addView(keyboardView)
+        addView(bar)
         addView(overlay)
+        kb.onSuggestionsChanged = {
+            val want = if (kb.suggestionsShown) (40 * resources.displayMetrics.density).toInt() else 0
+            if (want != barHeight) requestLayout()
+            bar.invalidate()
+        }
         keyboardView.overlay = overlay
         setWillNotDraw(true)
         clipChildren = false
@@ -72,9 +91,12 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
         val w = keyboardView.measuredWidth
         val h = keyboardView.measuredHeight
         headroom = kb.popupHeadroom()
-        overlay.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h + headroom, MeasureSpec.EXACTLY))
+        barHeight = if (kb.suggestionsShown) (40 * resources.displayMetrics.density).toInt() else 0
+        bar.visibility = if (barHeight > 0) VISIBLE else GONE
+        bar.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(barHeight, MeasureSpec.EXACTLY))
+        overlay.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h + keysTop, MeasureSpec.EXACTLY))
         drawer?.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY))
-        setMeasuredDimension(w, h + headroom + navInset)
+        setMeasuredDimension(w, h + keysTop + navInset)
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
@@ -90,7 +112,7 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
         if (navInset > 0) {
             val p = kb.paint
             p.color = kb.color(COLOR_KEYBOARD_BACKGROUND, kb.currentLayout)
-            val top = (headroom + keyboardView.height).toFloat()
+            val top = (keysTop + keyboardView.height).toFloat()
             val old = p.style
             p.style = android.graphics.Paint.Style.FILL
             canvas.drawRect(0f, top, width.toFloat(), top + navInset, p)
@@ -101,9 +123,10 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         val w = r - l
-        keyboardView.layout(0, headroom, w, headroom + keyboardView.measuredHeight)
+        keyboardView.layout(0, keysTop, w, keysTop + keyboardView.measuredHeight)
+        bar.layout(0, headroom, w, headroom + barHeight)
         overlay.layout(0, 0, w, b - t)
-        drawer?.layout(0, headroom, w, headroom + keyboardView.measuredHeight)
+        drawer?.layout(0, keysTop, w, keysTop + keyboardView.measuredHeight)
         updateGestureExclusion(w)
     }
 
@@ -115,7 +138,7 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
     private fun updateGestureExclusion(w: Int) {
         if (Build.VERSION.SDK_INT < 29) return
         systemGestureExclusionRects =
-            if (Settings.bool(SETTING_EDGE_GESTURE_GUARD, true)) listOf(Rect(0, headroom, w, headroom + keyboardView.measuredHeight))
+            if (Settings.bool(SETTING_EDGE_GESTURE_GUARD, true)) listOf(Rect(0, headroom, w, keysTop + keyboardView.measuredHeight))
             else emptyList()
     }
 
@@ -129,8 +152,8 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
 
         override fun onDraw(canvas: Canvas) {
             canvas.save()
-            canvas.translate(0f, headroom.toFloat())
-            kb.drawPopups(canvas, keyboardView.width, keyboardView.height, headroom)
+            canvas.translate(0f, keysTop.toFloat())
+            kb.drawPopups(canvas, keyboardView.width, keyboardView.height, keysTop)
             canvas.restore()
         }
     }
