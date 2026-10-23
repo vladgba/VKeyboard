@@ -71,6 +71,8 @@
     <string name="ui_set_joy_v_sub">Разстояние на плъзгане за една стъпка нагоре/надолу при клавиши джойстик</string>
     <string name="ui_set_joy_accel">Ускоряване на курсора</string>
     <string name="ui_set_joy_accel_sub">Бързото плъзгане по интервала мести курсора по-далеч</string>
+    <string name="ui_set_sel_slider">Плъзгач за маркиране</string>
+    <string name="ui_set_sel_slider_sub">При включен Shift или маркиран текст плъзгането по интервала разширява или стеснява маркирането</string>
     <string name="ui_set_hard">Сила на силното натискане</string>
     <string name="ui_set_hard_sub">Натиск, нужен за действието при силно натискане. Само на екрани, които отчитат натиск.</string>
     <string name="ui_sec_feedback">Вибрация</string>

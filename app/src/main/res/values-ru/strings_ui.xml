@@ -71,6 +71,8 @@
     <string name="ui_set_joy_v_sub">Расстояние скольжения для одного шага вверх/вниз на клавишах-джойстиках</string>
     <string name="ui_set_joy_accel">Ускорение курсора</string>
     <string name="ui_set_joy_accel_sub">Быстрое движение по пробелу перемещает курсор дальше</string>
+    <string name="ui_set_sel_slider">Ползунок выделения</string>
+    <string name="ui_set_sel_slider_sub">При включённом Shift или выделенном тексте движение по пробелу расширяет или сужает выделение</string>
     <string name="ui_set_hard">Сила сильного нажатия</string>
     <string name="ui_set_hard_sub">Давление для действия сильного нажатия. Только на экранах, которые измеряют давление.</string>
     <string name="ui_sec_feedback">Вибрация</string>

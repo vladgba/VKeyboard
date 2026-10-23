@@ -71,6 +71,8 @@
     <string name="ui_set_joy_v_sub">Адлегласць слізгання для аднаго кроку ўверх/уніз на клавішах-джойсціках</string>
     <string name="ui_set_joy_accel">Паскарэнне курсора</string>
     <string name="ui_set_joy_accel_sub">Хуткі рух па прабеле перамяшчае курсор далей</string>
+    <string name="ui_set_sel_slider">Паўзунок вылучэння</string>
+    <string name="ui_set_sel_slider_sub">Калі ўключаны Shift або вылучаны тэкст, рух па прабеле павялічвае ці памяншае вылучэнне</string>
     <string name="ui_set_hard">Сіла моцнага націскання</string>
     <string name="ui_set_hard_sub">Ціск для дзеяння моцнага націскання. Толькі на экранах, якія вымяраюць ціск.</string>
     <string name="ui_sec_feedback">Вібрацыя</string>

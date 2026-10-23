@@ -80,6 +80,8 @@
     <string name="ui_set_joy_v_sub">Sliding distance for one step up/down on joystick keys</string>
     <string name="ui_set_joy_accel">Cursor acceleration</string>
     <string name="ui_set_joy_accel_sub">Fast drags on the space bar move the cursor further</string>
+    <string name="ui_set_sel_slider">Selection slider</string>
+    <string name="ui_set_sel_slider_sub">With Shift on or text selected, dragging the space bar grows or shrinks the selection</string>
     <string name="ui_set_hard">Heavy press force</string>
     <string name="ui_set_hard_sub">Pressure needed for the heavy-press action. Only on screens that report pressure.</string>
     <string name="ui_sec_feedback">Vibration</string>

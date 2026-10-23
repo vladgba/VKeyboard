@@ -716,7 +716,8 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     // ======================= selection slider =======================
 
     /** Cursor-key steps extend the selection: Shift is on (not just auto-capitals) or text is selected. */
-    fun selectionMode() = !isEditor && (shiftPressed() || (selStart >= 0 && selStart != selEnd))
+    fun selectionMode() = !isEditor && Settings.bool(SETTING_SELECTION_SLIDER, true) &&
+        (shiftPressed() || (selStart >= 0 && selStart != selEnd))
 
     /**
      * One step of the selection slider: moves the selection's moving end by one character

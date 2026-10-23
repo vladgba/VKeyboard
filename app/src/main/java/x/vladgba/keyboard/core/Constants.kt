@@ -193,6 +193,8 @@ internal const val SENSE_HORIZONTAL_TICK = "horTick"
 internal const val SENSE_VERTICAL_TICK = "verTick"
 /** Joystick keys (e.g. the space bar cursor slider): how much faster drags move further, in %; 0 = off. */
 internal const val SENSE_JOY_ACCELERATION = "joyAcceleration"
+/** With Shift on or text selected, cursor steps of joystick keys grow/shrink the selection. */
+internal const val SETTING_SELECTION_SLIDER = "selectionSlider"
 
 // Layout Switch
 internal const val LAYOUT_PREV = "@PREV"
