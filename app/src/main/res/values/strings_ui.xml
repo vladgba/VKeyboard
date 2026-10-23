@@ -120,6 +120,19 @@
     <string name="ft_title">Text field tester</string>
     <string name="ft_home_sub">Try the keyboard in every kind of text field</string>
     <string name="ft_intro">Each field below asks the keyboard for a different kind of input, named as in Android\'s inputType. Try typing, the suggestion bar, the Enter key and the number layouts in each.</string>
+    <string name="ui_set_space_accept">Space accepts suggestion</string>
+    <string name="ui_set_space_accept_sub">Space replaces a word that isn\'t a learned word with the top suggestion; Backspace right after undoes it</string>
+    <string name="ui_set_emoji_suggest">Emoji suggestions</string>
+    <string name="ui_set_emoji_suggest_sub">Suggest an emoji for the typed word, from imported keywords</string>
+    <string name="ui_action_complete_emoji">Accept the emoji suggestion</string>
+    <string name="emoji_kw_title">Emoji keywords</string>
+    <string name="emoji_kw_intro">%1$d keywords. Import Unicode CLDR emoji annotations (annotations/&lt;language&gt;.xml or annotations.json) or a list of keyword&lt;TAB&gt;emoji lines; nothing is bundled.</string>
+    <string name="emoji_kw_import">Import emoji keywords</string>
+    <string name="emoji_kw_import_sub">CLDR .xml / .json, or keyword&lt;TAB&gt;emoji lines</string>
+    <string name="emoji_kw_clear">Delete all emoji keywords</string>
+    <string name="emoji_kw_clear_confirm">Delete all emoji keywords?</string>
+    <string name="emoji_kw_imported">Imported %1$d keyword pairs (%2$d keywords in total)</string>
+    <string name="emoji_kw_none">No emoji keywords found in this file</string>
     <string name="ui_btn_complete">✓ Suggestion</string>
     <string name="ui_action_complete">Accept suggestion %1$d (1 = best)</string>
     <string name="words_transfer">Import and export</string>

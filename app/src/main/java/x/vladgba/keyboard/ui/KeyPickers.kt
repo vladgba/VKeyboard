@@ -188,6 +188,7 @@ internal object ActionPrompt {
         if (v == DELETE_WORD_ACTION) return ctx.getString(R.string.ui_action_del_word) to true
         if (v == DELETE_WORD_FORWARD_ACTION) return ctx.getString(R.string.ui_action_del_word_fwd) to true
         if (v == CLIPBOARD_ACTION) return ctx.getString(R.string.ui_action_clipboard) to true
+        if (v == COMPLETE_EMOJI_ACTION) return ctx.getString(R.string.ui_action_complete_emoji) to true
         if (v.startsWith(COMPLETE_ACTION_PREFIX)) {
             val n = v.removePrefix(COMPLETE_ACTION_PREFIX).toIntOrNull()
             return if (n != null && n in 1..3) ctx.getString(R.string.ui_action_complete, n) to true
@@ -263,8 +264,9 @@ internal object ActionPrompt {
             addView(small(R.string.ui_btn_del_word_fwd) { input.setText(DELETE_WORD_FORWARD_ACTION) })
             addView(small(R.string.ui_btn_clipboard) { input.setText(CLIPBOARD_ACTION) })
             addView(small(R.string.ui_btn_complete) {
-                Ask.choice(ctx, ctx.getString(R.string.ui_btn_complete), (1..3).map { ctx.getString(R.string.ui_action_complete, it) }) {
-                    input.setText(COMPLETE_ACTION_PREFIX + (it + 1))
+                Ask.choice(ctx, ctx.getString(R.string.ui_btn_complete),
+                    (1..3).map { ctx.getString(R.string.ui_action_complete, it) } + ctx.getString(R.string.ui_action_complete_emoji)) {
+                    input.setText(if (it == 3) COMPLETE_EMOJI_ACTION else COMPLETE_ACTION_PREFIX + (it + 1))
                 }
             })
             addView(small(R.string.ui_btn_dead) {

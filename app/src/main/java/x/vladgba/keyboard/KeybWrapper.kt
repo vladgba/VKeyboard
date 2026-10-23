@@ -104,6 +104,7 @@ class KeybWrapper : InputMethodService() {
         TouchStats.reload(this)
         ClipHistory.reload()
         x.vladgba.keyboard.core.UserWords.reload()
+        x.vladgba.keyboard.core.EmojiKeywords.reload()
 
         keyboard.onDestroy()
         keyboard = Keyboard(this, this)

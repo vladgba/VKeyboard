@@ -45,7 +45,7 @@ class SuggestionBar(ctx: Context, private val kb: Keyboard) : View(ctx) {
                 paint.color = kb.color(COLOR_KEY_SECONDARY, node)
                 canvas.drawRect(left - 0.5f, height * 0.25f, left + 0.5f, height * 0.75f, paint)
             }
-            val word = words.getOrNull(rankAt[slot]) ?: continue
+            val word = words.getOrNull(rankAt[slot])?.text ?: continue
             paint.color = kb.color(COLOR_TEXT_PRIMARY, node)
             paint.typeface = if (rankAt[slot] == 0) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
             val text = TextUtils.ellipsize(word, android.text.TextPaint(paint), slotW * 0.9f, TextUtils.TruncateAt.END).toString()

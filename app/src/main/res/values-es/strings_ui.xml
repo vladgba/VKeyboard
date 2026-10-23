@@ -111,6 +111,19 @@
     <string name="ft_title">Probador de campos de texto</string>
     <string name="ft_home_sub">Prueba el teclado en todo tipo de campos</string>
     <string name="ft_intro">Cada campo pide un tipo de entrada distinto (con el nombre de inputType de Android). Prueba a escribir, la barra de sugerencias, Intro y las distribuciones numéricas.</string>
+    <string name="ui_set_space_accept">Espacio acepta la sugerencia</string>
+    <string name="ui_set_space_accept_sub">Espacio sustituye una palabra no aprendida por la mejor sugerencia; Retroceso justo después lo deshace</string>
+    <string name="ui_set_emoji_suggest">Sugerencias de emoji</string>
+    <string name="ui_set_emoji_suggest_sub">Sugerir un emoji para la palabra escrita, con palabras clave importadas</string>
+    <string name="ui_action_complete_emoji">Aceptar la sugerencia de emoji</string>
+    <string name="emoji_kw_title">Palabras clave de emoji</string>
+    <string name="emoji_kw_intro">%1$d palabras clave. Importa anotaciones de emoji de Unicode CLDR (annotations/&lt;idioma&gt;.xml o annotations.json) o una lista de líneas palabra&lt;TAB&gt;emoji; no hay nada incluido.</string>
+    <string name="emoji_kw_import">Importar palabras clave de emoji</string>
+    <string name="emoji_kw_import_sub">CLDR .xml / .json o líneas palabra&lt;TAB&gt;emoji</string>
+    <string name="emoji_kw_clear">Borrar todas las palabras clave de emoji</string>
+    <string name="emoji_kw_clear_confirm">¿Borrar todas las palabras clave de emoji?</string>
+    <string name="emoji_kw_imported">Importados %1$d pares (%2$d palabras clave en total)</string>
+    <string name="emoji_kw_none">No se encontraron palabras clave de emoji en este archivo</string>
     <string name="ui_btn_complete">✓ Sugerencia</string>
     <string name="ui_action_complete">Aceptar sugerencia %1$d (1 = mejor)</string>
     <string name="words_transfer">Importar y exportar</string>

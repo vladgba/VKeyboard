@@ -111,6 +111,19 @@
     <string name="ft_title">Тест на текстови полета</string>
     <string name="ft_home_sub">Пробвайте клавиатурата в различни видове полета</string>
     <string name="ft_intro">Всяко поле по-долу иска различен вид въвеждане (име като inputType в Android). Пробвайте писане, лентата с предложения, Enter и цифровите подредби.</string>
+    <string name="ui_set_space_accept">Интервалът приема предложение</string>
+    <string name="ui_set_space_accept_sub">Интервалът заменя ненаучена дума с най-доброто предложение; Backspace веднага след това отменя</string>
+    <string name="ui_set_emoji_suggest">Предложения за емоджи</string>
+    <string name="ui_set_emoji_suggest_sub">Предлагане на емоджи за въведената дума от внесени ключови думи</string>
+    <string name="ui_action_complete_emoji">Приемане на предложението за емоджи</string>
+    <string name="emoji_kw_title">Ключови думи за емоджи</string>
+    <string name="emoji_kw_intro">%1$d ключови думи. Внесете анотации на емоджи от Unicode CLDR (annotations/&lt;език&gt;.xml или annotations.json) или списък с редове ключова_дума&lt;TAB&gt;емоджи; нищо не е вградено.</string>
+    <string name="emoji_kw_import">Внасяне на ключови думи за емоджи</string>
+    <string name="emoji_kw_import_sub">CLDR .xml / .json или редове ключова_дума&lt;TAB&gt;емоджи</string>
+    <string name="emoji_kw_clear">Изтриване на всички ключови думи за емоджи</string>
+    <string name="emoji_kw_clear_confirm">Да се изтрият ли всички ключови думи за емоджи?</string>
+    <string name="emoji_kw_imported">Внесени %1$d двойки (общо %2$d ключови думи)</string>
+    <string name="emoji_kw_none">Във файла няма ключови думи за емоджи</string>
     <string name="ui_btn_complete">✓ Предложение</string>
     <string name="ui_action_complete">Приемане на предложение %1$d (1 = най-добро)</string>
     <string name="words_transfer">Внасяне и изнасяне</string>

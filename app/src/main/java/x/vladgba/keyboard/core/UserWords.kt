@@ -53,6 +53,41 @@ object UserWords {
 
     fun contains(ctx: Context, word: String) = mapOf(ctx).containsKey(word.lowercase())
 
+    /**
+     * Learned words one edit away from [typed] (a letter wrong, missing, extra, or two neighbours
+     * swapped), most used first: "helo" → hello.
+     */
+    fun corrections(ctx: Context, typed: String, limit: Int): List<Word> {
+        val t = typed.lowercase()
+        if (t.length < 3) return emptyList()
+        return mapOf(ctx).entries.asSequence()
+            .filter { (k, _) -> k != t && kotlin.math.abs(k.length - t.length) <= 1 && oneEditApart(k, t) }
+            .map { it.value }
+            .sortedByDescending { it.count }
+            .take(limit)
+            .toList()
+    }
+
+    private fun oneEditApart(a: String, b: String): Boolean {
+        if (a.length == b.length) {
+            var first = -1
+            var diffs = 0
+            for (i in a.indices) if (a[i] != b[i]) {
+                if (diffs == 0) first = i
+                diffs++
+                if (diffs > 2) return false
+            }
+            if (diffs <= 1) return true
+            // Two neighbouring letters swapped.
+            return first + 1 < a.length && a[first] == b[first + 1] && a[first + 1] == b[first] &&
+                a.substring(first + 2) == b.substring(first + 2)
+        }
+        val (s, l) = if (a.length < b.length) a to b else b to a
+        var i = 0
+        while (i < s.length && s[i] == l[i]) i++
+        return s.substring(i) == l.substring(i + 1)
+    }
+
     /** Counts a word the user typed. Casing: a word typed in lower case once stays lower case. */
     fun learn(ctx: Context, typed: String) {
         if (!isLearnable(typed)) return

@@ -111,6 +111,19 @@
     <string name="ft_title">Textfeld-Tester</string>
     <string name="ft_home_sub">Die Tastatur in allen Arten von Textfeldern testen</string>
     <string name="ft_intro">Jedes Feld unten fordert eine andere Eingabeart an (benannt wie Androids inputType). Teste Tippen, die Vorschlagsleiste, die Eingabetaste und die Ziffernlayouts.</string>
+    <string name="ui_set_space_accept">Leertaste übernimmt Vorschlag</string>
+    <string name="ui_set_space_accept_sub">Die Leertaste ersetzt ein nicht gelerntes Wort durch den besten Vorschlag; Rücktaste direkt danach macht es rückgängig</string>
+    <string name="ui_set_emoji_suggest">Emoji-Vorschläge</string>
+    <string name="ui_set_emoji_suggest_sub">Ein Emoji für das getippte Wort vorschlagen, aus importierten Schlüsselwörtern</string>
+    <string name="ui_action_complete_emoji">Emoji-Vorschlag übernehmen</string>
+    <string name="emoji_kw_title">Emoji-Schlüsselwörter</string>
+    <string name="emoji_kw_intro">%1$d Schlüsselwörter. Importiere Unicode-CLDR-Emoji-Annotationen (annotations/&lt;Sprache&gt;.xml oder annotations.json) oder eine Liste mit Zeilen Schlüsselwort&lt;TAB&gt;Emoji; nichts ist mitgeliefert.</string>
+    <string name="emoji_kw_import">Emoji-Schlüsselwörter importieren</string>
+    <string name="emoji_kw_import_sub">CLDR .xml / .json oder Zeilen Schlüsselwort&lt;TAB&gt;Emoji</string>
+    <string name="emoji_kw_clear">Alle Emoji-Schlüsselwörter löschen</string>
+    <string name="emoji_kw_clear_confirm">Alle Emoji-Schlüsselwörter löschen?</string>
+    <string name="emoji_kw_imported">%1$d Paare importiert (insgesamt %2$d Schlüsselwörter)</string>
+    <string name="emoji_kw_none">Keine Emoji-Schlüsselwörter in dieser Datei gefunden</string>
     <string name="ui_btn_complete">✓ Vorschlag</string>
     <string name="ui_action_complete">Vorschlag %1$d übernehmen (1 = bester)</string>
     <string name="words_transfer">Import und Export</string>

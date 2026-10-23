@@ -36,7 +36,9 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 | `split` | `1` | Split keyboard: `0` off, `1` on wide screens (keyboard at least 600dp wide: unfolded foldables, tablets, phones in landscape), `2` always. Each row splits at the key boundary nearest the middle; a wide key across the middle (the space bar) is stretched over the gap. |
 | `splitGap` | `25` | Width of the empty middle of a split keyboard, in % of its width. |
 | `learnWords` | `1` | Learn words as they are typed, for suggestions (never in password fields or where the app asks not to). Learned words are in `learned.words` (`word<TAB>count`), part of backups. |
-| `suggestions` | `1` | Word suggestion bar above the keys in text fields (not in password, number or "no suggestions" fields): completes the word being typed from learned words, best in the middle; tap one (or use `@COMPLETE_1`/`_2`/`_3`, 1 = best) to replace the word and add a space. |
+| `suggestions` | `1` | Word suggestion bar above the keys in text fields (not in password, number or "no suggestions" fields): completes the word being typed from learned words, best in the middle; tap one (or use `@COMPLETE_1`/`_2`/`_3`, `@COMPLETE_EMOJI`, 1 = best) to replace the word and add a space. |
+| `spaceAccept` | `0` | Space replaces a typed word that isn't a learned word with the top suggestion (completion or one-edit typo correction); Backspace right after restores the typed word. |
+| `emojiSuggestions` | `1` | Suggest an emoji for the typed word from imported keywords (Learned words → Import emoji keywords: Unicode CLDR annotations `.xml`/`.json`, or `keyword<TAB>emoji` lines; kept in `emoji.keywords`). Tapping it (or `@COMPLETE_EMOJI`) adds the emoji after the word. |
 | `smartPunctuation` | `1` | Cleans space before punctuation: typing punctuation (. , ! ? : ;) after a space removes the space. |
 | `appLayouts` | `()` | Default layout per app package, e.g. `("com.termux": "code")`. |
 | `errorToasts` | `1` | Shows errors as toasts. With `0`, errors are only logged. |

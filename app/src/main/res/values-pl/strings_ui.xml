@@ -111,6 +111,19 @@
     <string name="ft_title">Tester pól tekstowych</string>
     <string name="ft_home_sub">Wypróbuj klawiaturę w różnych rodzajach pól</string>
     <string name="ft_intro">Każde pole poniżej prosi o inny rodzaj wprowadzania (nazwa jak inputType w Androidzie). Wypróbuj pisanie, pasek podpowiedzi, Enter i układy numeryczne.</string>
+    <string name="ui_set_space_accept">Spacja przyjmuje podpowiedź</string>
+    <string name="ui_set_space_accept_sub">Spacja zastępuje nienauczone słowo najlepszą podpowiedzią; Backspace zaraz potem cofa</string>
+    <string name="ui_set_emoji_suggest">Podpowiedzi emoji</string>
+    <string name="ui_set_emoji_suggest_sub">Podpowiadaj emoji do wpisanego słowa z zaimportowanych słów kluczowych</string>
+    <string name="ui_action_complete_emoji">Przyjmij podpowiedź emoji</string>
+    <string name="emoji_kw_title">Słowa kluczowe emoji</string>
+    <string name="emoji_kw_intro">Słów kluczowych: %1$d. Zaimportuj adnotacje emoji Unicode CLDR (annotations/&lt;język&gt;.xml lub annotations.json) albo listę wierszy słowo&lt;TAB&gt;emoji; nic nie jest wbudowane.</string>
+    <string name="emoji_kw_import">Importuj słowa kluczowe emoji</string>
+    <string name="emoji_kw_import_sub">CLDR .xml / .json lub wiersze słowo&lt;TAB&gt;emoji</string>
+    <string name="emoji_kw_clear">Usuń wszystkie słowa kluczowe emoji</string>
+    <string name="emoji_kw_clear_confirm">Usunąć wszystkie słowa kluczowe emoji?</string>
+    <string name="emoji_kw_imported">Zaimportowano par: %1$d (łącznie słów kluczowych: %2$d)</string>
+    <string name="emoji_kw_none">Nie znaleziono słów kluczowych emoji w tym pliku</string>
     <string name="ui_btn_complete">✓ Podpowiedź</string>
     <string name="ui_action_complete">Przyjmij podpowiedź %1$d (1 = najlepsza)</string>
     <string name="words_transfer">Import i eksport</string>

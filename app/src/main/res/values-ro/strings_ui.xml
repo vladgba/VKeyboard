@@ -111,6 +111,19 @@
     <string name="ft_title">Tester câmpuri text</string>
     <string name="ft_home_sub">Încearcă tastatura în toate tipurile de câmpuri</string>
     <string name="ft_intro">Fiecare câmp de mai jos cere alt tip de introducere (denumit ca inputType din Android). Încearcă scrierea, bara de sugestii, Enter și aranjamentele numerice.</string>
+    <string name="ui_set_space_accept">Spațiul acceptă sugestia</string>
+    <string name="ui_set_space_accept_sub">Spațiul înlocuiește un cuvânt neînvățat cu cea mai bună sugestie; Backspace imediat după anulează</string>
+    <string name="ui_set_emoji_suggest">Sugestii emoji</string>
+    <string name="ui_set_emoji_suggest_sub">Sugerează un emoji pentru cuvântul scris, din cuvinte cheie importate</string>
+    <string name="ui_action_complete_emoji">Acceptă sugestia emoji</string>
+    <string name="emoji_kw_title">Cuvinte cheie emoji</string>
+    <string name="emoji_kw_intro">%1$d cuvinte cheie. Importă adnotări emoji Unicode CLDR (annotations/&lt;limbă&gt;.xml sau annotations.json) sau o listă de rânduri cuvânt&lt;TAB&gt;emoji; nimic nu este inclus.</string>
+    <string name="emoji_kw_import">Importă cuvinte cheie emoji</string>
+    <string name="emoji_kw_import_sub">CLDR .xml / .json sau rânduri cuvânt&lt;TAB&gt;emoji</string>
+    <string name="emoji_kw_clear">Șterge toate cuvintele cheie emoji</string>
+    <string name="emoji_kw_clear_confirm">Ștergi toate cuvintele cheie emoji?</string>
+    <string name="emoji_kw_imported">Importate %1$d perechi (%2$d cuvinte cheie în total)</string>
+    <string name="emoji_kw_none">Niciun cuvânt cheie emoji găsit în acest fișier</string>
     <string name="ui_btn_complete">✓ Sugestie</string>
     <string name="ui_action_complete">Acceptă sugestia %1$d (1 = cea mai bună)</string>
     <string name="words_transfer">Import și export</string>

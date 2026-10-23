@@ -111,6 +111,19 @@
     <string name="ft_title">Testeur de champs de texte</string>
     <string name="ft_home_sub">Essayer le clavier dans tous les types de champs</string>
     <string name="ft_intro">Chaque champ ci-dessous demande un type de saisie différent (nommé comme l\'inputType d\'Android). Essayez la saisie, la barre de suggestions, Entrée et les dispositions numériques.</string>
+    <string name="ui_set_space_accept">Espace accepte la suggestion</string>
+    <string name="ui_set_space_accept_sub">Espace remplace un mot non appris par la meilleure suggestion ; Retour arrière juste après annule</string>
+    <string name="ui_set_emoji_suggest">Suggestions d\'emoji</string>
+    <string name="ui_set_emoji_suggest_sub">Suggérer un emoji pour le mot tapé, à partir de mots-clés importés</string>
+    <string name="ui_action_complete_emoji">Accepter la suggestion d\'emoji</string>
+    <string name="emoji_kw_title">Mots-clés d\'emoji</string>
+    <string name="emoji_kw_intro">%1$d mots-clés. Importez les annotations d\'emoji Unicode CLDR (annotations/&lt;langue&gt;.xml ou annotations.json) ou une liste de lignes mot&lt;TAB&gt;emoji ; rien n\'est inclus.</string>
+    <string name="emoji_kw_import">Importer des mots-clés d\'emoji</string>
+    <string name="emoji_kw_import_sub">CLDR .xml / .json, ou lignes mot&lt;TAB&gt;emoji</string>
+    <string name="emoji_kw_clear">Supprimer tous les mots-clés d\'emoji</string>
+    <string name="emoji_kw_clear_confirm">Supprimer tous les mots-clés d\'emoji ?</string>
+    <string name="emoji_kw_imported">%1$d paires importées (%2$d mots-clés au total)</string>
+    <string name="emoji_kw_none">Aucun mot-clé d\'emoji trouvé dans ce fichier</string>
     <string name="ui_btn_complete">✓ Suggestion</string>
     <string name="ui_action_complete">Accepter la suggestion %1$d (1 = meilleure)</string>
     <string name="words_transfer">Importer et exporter</string>

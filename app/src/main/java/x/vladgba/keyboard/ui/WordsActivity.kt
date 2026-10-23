@@ -58,6 +58,17 @@ class WordsActivity : LocalizedActivity() {
             }
         }
 
+        page.header(getString(R.string.emoji_kw_title))
+        page.note(getString(R.string.emoji_kw_intro, EmojiKeywords.size(this)))
+        page.row(getString(R.string.emoji_kw_import), getString(R.string.emoji_kw_import_sub)) { pick(REQ_IMPORT_EMOJI) }
+        if (EmojiKeywords.size(this) > 0) page.row(getString(R.string.emoji_kw_clear), null) {
+            confirm(this, R.string.confirm_title, R.string.emoji_kw_clear_confirm) {
+                EmojiKeywords.clear(this)
+                build()
+            }
+        }
+
+        page.header(getString(R.string.words_title))
         page.add(EditText(this).apply {
             hint = getString(R.string.dict_search)
             setSingleLine()
@@ -147,6 +158,11 @@ class WordsActivity : LocalizedActivity() {
                 val added = UserWords.merge(this, words)
                 getString(if (words.isEmpty()) R.string.words_import_none else R.string.words_imported, added, words.size)
             }
+            REQ_IMPORT_EMOJI -> background {
+                val bytes = contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: ByteArray(0)
+                val n = EmojiKeywords.import(this, bytes)
+                getString(if (n == 0) R.string.emoji_kw_none else R.string.emoji_kw_imported, n, EmojiKeywords.size(this))
+            }
             REQ_EXPORT_PLAIN -> background {
                 contentResolver.openOutputStream(uri)?.use { it.write(UserWords.exportPlain(this).toByteArray()) }
                 getString(R.string.file_saved)
@@ -218,6 +234,7 @@ class WordsActivity : LocalizedActivity() {
         const val REQ_IMPORT = 1
         const val REQ_EXPORT_PLAIN = 2
         const val REQ_EXPORT_GBOARD = 3
+        const val REQ_IMPORT_EMOJI = 4
         const val MAX_SHOWN = 300
     }
 }

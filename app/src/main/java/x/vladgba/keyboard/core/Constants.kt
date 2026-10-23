@@ -24,6 +24,9 @@ internal const val CLIP_PINS_EXT = "pins"
 /** Words learned from typing (`learned.words`). */
 internal const val LEARNED_FILENAME = "learned"
 internal const val LEARNED_EXT = "words"
+/** Imported emoji keywords (`emoji.keywords`). */
+internal const val EMOJI_KEYWORDS_FILENAME = "emoji"
+internal const val EMOJI_KEYWORDS_EXT = "keywords"
 /** Record touch positions for the touch heatmap (aggregates only, never in password fields). */
 internal const val SETTING_TOUCH_STATS = "touchStats"
 /** Move each key's touch area toward where the user really touches it (learned from touch stats). */
@@ -92,6 +95,8 @@ internal const val DELETE_WORD_FORWARD_ACTION = "@DELETE_WORD_FORWARD"
 internal const val CLIPBOARD_ACTION = "@CLIPBOARD"
 /** Actions: accept the 1st (best) / 2nd / 3rd word suggestion. */
 internal const val COMPLETE_ACTION_PREFIX = "@COMPLETE_"
+/** Action: accept the emoji suggestion. */
+internal const val COMPLETE_EMOJI_ACTION = "@COMPLETE_EMOJI"
 /** Key param: tap toggles compose mode. */
 internal const val KEY_COMPOSE = "compose"
 
@@ -227,6 +232,10 @@ internal const val SETTING_SPLIT_GAP = "splitGap"
 internal const val SETTING_LEARN_WORDS = "learnWords"
 /** Word suggestion bar above the keys. */
 internal const val SETTING_SUGGESTIONS = "suggestions"
+/** Space accepts the top suggestion when the typed word isn't a learned word. */
+internal const val SETTING_SPACE_ACCEPT = "spaceAccept"
+/** Emoji suggestions from imported keywords. */
+internal const val SETTING_EMOJI_SUGGEST = "emojiSuggestions"
 /** Key option: action for a clockwise circle drawn on the key. Default: capital letter on letter keys,
  *  delete the previous word on Backspace, Caps Lock on Shift. */
 internal const val KEY_CIRCLE = "circle"

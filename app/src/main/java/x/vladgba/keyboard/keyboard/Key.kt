@@ -806,6 +806,7 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
             raw == CLIPBOARD_ACTION -> "📋"
             DeadKeys.isDeadKey(raw) -> DeadKeys.symbol(DeadKeys.nameOf(raw))
+            raw == COMPLETE_EMOJI_ACTION -> "✓🙂"
             raw.startsWith(COMPLETE_ACTION_PREFIX) -> "✓" + raw.removePrefix(COMPLETE_ACTION_PREFIX)
             else -> raw
         }
@@ -875,6 +876,7 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
             raw == CLIPBOARD_ACTION -> "📋"
             DeadKeys.isDeadKey(raw) -> DeadKeys.symbol(DeadKeys.nameOf(raw))
+            raw == COMPLETE_EMOJI_ACTION -> "✓🙂"
             raw.startsWith(COMPLETE_ACTION_PREFIX) -> "✓" + raw.removePrefix(COMPLETE_ACTION_PREFIX)
             else -> raw
         }

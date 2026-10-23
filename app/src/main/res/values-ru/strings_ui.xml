@@ -111,6 +111,19 @@
     <string name="ft_title">Проверка текстовых полей</string>
     <string name="ft_home_sub">Попробуйте клавиатуру в разных типах полей</string>
     <string name="ft_intro">Каждое поле ниже запрашивает у клавиатуры свой тип ввода (название как в inputType Android). Попробуйте набор, панель подсказок, Enter и цифровые раскладки.</string>
+    <string name="ui_set_space_accept">Пробел принимает подсказку</string>
+    <string name="ui_set_space_accept_sub">Пробел заменяет невыученное слово лучшей подсказкой; Backspace сразу после отменяет</string>
+    <string name="ui_set_emoji_suggest">Подсказки эмодзи</string>
+    <string name="ui_set_emoji_suggest_sub">Предлагать эмодзи для набранного слова из импортированных ключевых слов</string>
+    <string name="ui_action_complete_emoji">Принять подсказку эмодзи</string>
+    <string name="emoji_kw_title">Ключевые слова эмодзи</string>
+    <string name="emoji_kw_intro">Ключевых слов: %1$d. Импортируйте аннотации эмодзи Unicode CLDR (annotations/&lt;язык&gt;.xml или annotations.json) или список строк ключевое_слово&lt;TAB&gt;эмодзи; ничего не встроено.</string>
+    <string name="emoji_kw_import">Импортировать ключевые слова эмодзи</string>
+    <string name="emoji_kw_import_sub">CLDR .xml / .json или строки ключевое_слово&lt;TAB&gt;эмодзи</string>
+    <string name="emoji_kw_clear">Удалить все ключевые слова эмодзи</string>
+    <string name="emoji_kw_clear_confirm">Удалить все ключевые слова эмодзи?</string>
+    <string name="emoji_kw_imported">Импортировано пар: %1$d (всего ключевых слов: %2$d)</string>
+    <string name="emoji_kw_none">В файле не найдено ключевых слов эмодзи</string>
     <string name="ui_btn_complete">✓ Подсказка</string>
     <string name="ui_action_complete">Принять подсказку %1$d (1 = лучшая)</string>
     <string name="words_transfer">Импорт и экспорт</string>

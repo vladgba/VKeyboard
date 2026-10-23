@@ -245,6 +245,8 @@ class SettingsActivity : LocalizedActivity() {
         if (android.os.Build.VERSION.SDK_INT >= 29)
             bool(SETTING_EDGE_GESTURE_GUARD, R.string.ui_set_edge_guard, R.string.ui_set_edge_guard_sub, true)
         bool(SETTING_SUGGESTIONS, R.string.ui_set_suggestions, R.string.ui_set_suggestions_sub, true)
+        bool(SETTING_SPACE_ACCEPT, R.string.ui_set_space_accept, R.string.ui_set_space_accept_sub, false)
+        bool(SETTING_EMOJI_SUGGEST, R.string.ui_set_emoji_suggest, R.string.ui_set_emoji_suggest_sub, true)
         bool(SETTING_CLIP_HISTORY, R.string.ui_set_clip_history, R.string.ui_set_clip_history_sub, true)
         clipExpiryRow()
         int(SENSE_HARD_PRESS, R.string.ui_set_hard, R.string.ui_set_hard_sub, 0, 1000, 25, 400) {
