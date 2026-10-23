@@ -386,6 +386,10 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
         return l.takeIf { it.codePointCount(0, it.length) == 1 && Character.isLetter(it.codePointAt(0)) }
     }
 
+    /** A clockwise circle on this key types its letter as a capital (the default circle action). */
+    fun circleCapitalizes() = Settings.bool(SETTING_CIRCLE_GESTURES, true) &&
+        str(KEY_CIRCLE).isBlank() && letterLabel() != null
+
     /** True if a circle or roundtrip on this key would do something. */
     private fun hasGestures(): Boolean {
         if (!gesturesOn()) return false

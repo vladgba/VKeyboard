@@ -75,6 +75,9 @@
     <string name="ui_set_sel_slider_sub">Przy włączonym Shift lub zaznaczonym tekście przesuwanie po spacji powiększa lub zmniejsza zaznaczenie</string>
     <string name="ui_set_circle">Gesty okręgu</string>
     <string name="ui_set_circle_sub">Narysuj okrąg na klawiszu: wielka litera, usuń słowo na Backspace, Caps Lock na Shift</string>
+    <string name="ui_joy_letter_title">Joystick na klawiszu litery</string>
+    <string name="ui_joy_letter_msg">Okrąg zgodnie z ruchem wskazówek zegara na tym klawiszu wpisuje wielką literę. W trybie joysticka te same ruchy palca uruchamiają też akcje przesunięć, więc niedostatecznie okrągły okrąg może przesunąć kursor lub usunąć tekst zamiast wpisać wielką literę. Zachować tryb joysticka?</string>
+    <string name="ui_joy_letter_keep">Zachowaj joystick</string>
     <string name="ui_set_hard">Siła mocnego naciśnięcia</string>
     <string name="ui_set_hard_sub">Nacisk potrzebny do akcji mocnego naciśnięcia. Tylko na ekranach mierzących nacisk.</string>
     <string name="ui_sec_feedback">Wibracje</string>

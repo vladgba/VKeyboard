@@ -75,6 +75,9 @@
     <string name="ui_set_sel_slider_sub">Bei aktivem Shift oder markiertem Text vergrößert oder verkleinert Wischen auf der Leertaste die Auswahl</string>
     <string name="ui_set_circle">Kreisgesten</string>
     <string name="ui_set_circle_sub">Kreis auf einer Taste: Großbuchstabe, Wort löschen auf Rücktaste, Feststelltaste auf Shift</string>
+    <string name="ui_joy_letter_title">Joystick auf einer Buchstabentaste</string>
+    <string name="ui_joy_letter_msg">Ein Kreis im Uhrzeigersinn auf dieser Taste schreibt den Großbuchstaben. Im Joystick-Modus lösen dieselben Fingerbewegungen auch die Wischaktionen aus, sodass ein nicht ganz runder Kreis den Cursor bewegen oder löschen kann, statt groß zu schreiben. Joystick-Modus behalten?</string>
+    <string name="ui_joy_letter_keep">Joystick behalten</string>
     <string name="ui_set_hard">Druckstärke für festes Drücken</string>
     <string name="ui_set_hard_sub">Nötiger Druck für die Festdruck-Aktion. Nur auf Bildschirmen, die Druck messen.</string>
     <string name="ui_sec_feedback">Vibration</string>
