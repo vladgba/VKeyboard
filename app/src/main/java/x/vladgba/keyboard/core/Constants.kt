@@ -191,6 +191,8 @@ internal const val SENSE_HOLD_PRESS_REPEAT = "longPressRepeatTime"
 internal const val SENSE_ADDITIONAL_CHARS = "extSense"
 internal const val SENSE_HORIZONTAL_TICK = "horTick"
 internal const val SENSE_VERTICAL_TICK = "verTick"
+/** Joystick keys (e.g. the space bar cursor slider): how much faster drags move further, in %; 0 = off. */
+internal const val SENSE_JOY_ACCELERATION = "joyAcceleration"
 
 // Layout Switch
 internal const val LAYOUT_PREV = "@PREV"

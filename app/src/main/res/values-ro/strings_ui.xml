@@ -69,6 +69,8 @@
     <string name="ui_set_joy_h_sub">Distanța de glisare pentru un pas stânga/dreapta pe tastele joystick</string>
     <string name="ui_set_joy_v">Pas joystick (vertical)</string>
     <string name="ui_set_joy_v_sub">Distanța de glisare pentru un pas sus/jos pe tastele joystick</string>
+    <string name="ui_set_joy_accel">Accelerarea cursorului</string>
+    <string name="ui_set_joy_accel_sub">Glisarea rapidă pe bara de spațiu mută cursorul mai departe</string>
     <string name="ui_set_hard">Forța apăsării puternice</string>
     <string name="ui_set_hard_sub">Presiunea necesară pentru acțiunea de apăsare puternică. Doar pe ecranele care măsoară presiunea.</string>
     <string name="ui_sec_feedback">Vibrații</string>

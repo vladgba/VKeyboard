@@ -100,6 +100,14 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
 
     private var press = Point(0, 0)
     private var relative: Point? = null
+
+    // Joystick drag tracking: last finger position/time and smoothed horizontal speed (px/ms).
+    private var joyLastX = 0
+    private var joyLastY = 0
+    private var joyLastTime = 0L
+    private var joySpeed = 0f
+    private var joyDirX = 0f   // smoothed recent movement, to tell sideways drags from vertical ones
+    private var joyDirY = 0f
     var charPos = 0
         private set
 
@@ -123,6 +131,12 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
         state = State.PRESSED
         press = Point(curX, curY)
         charPos = 0
+        joyLastX = curX
+        joyLastY = curY
+        joyLastTime = SystemClock.uptimeMillis()
+        joySpeed = 0f
+        joyDirX = 0f
+        joyDirY = 0f
 
         if (isMeta && has(KEY_CODE) && has(KEY_MOD_META)) {
             c.metaPressed(this)
@@ -280,16 +294,50 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
         }
     }
 
+    /**
+     * Joystick mode, e.g. the space bar as a cursor slider: every `horTick`/`verTick` px of drag
+     * fires the left/right/top/bottom action once.
+     *  - Faster drags need less distance per step (`joyAcceleration`), slow drags stay precise.
+     *  - Mostly sideways movement doesn't count towards vertical steps, so scrubbing along a line
+     *    doesn't jump to the next one.
+     *  - With Ctrl held (word jumps) steps need twice the distance.
+     */
     private fun joystick(curX: Int, curY: Int) {
         if (mode != KEY_MODE_JOY) return
         val r = relative ?: return
-        while (true) r.x = joyTick(curX, r.x, SENSE_HORIZONTAL_TICK, KEY_RIGHT_ACTION, KEY_LEFT_ACTION) ?: break
-        while (true) r.y = joyTick(curY, r.y, SENSE_VERTICAL_TICK, KEY_BOTTOM_ACTION, KEY_TOP_ACTION) ?: break
+
+        val now = SystemClock.uptimeMillis()
+        val dx = curX - joyLastX
+        val dy = curY - joyLastY
+        val dt = (now - joyLastTime).coerceAtLeast(1L).toFloat()
+        joySpeed = joySpeed * 0.6f + abs(dx) / dt * 0.4f
+        joyDirX = joyDirX * 0.8f + dx * 0.2f
+        joyDirY = joyDirY * 0.8f + dy * 0.2f
+        // Vertical dampening: drift while moving mostly sideways doesn't add up to a line jump.
+        if (abs(joyDirY) * 2 < abs(joyDirX)) r.y += dy
+        joyLastX = curX
+        joyLastY = curY
+        joyLastTime = now
+
+        val ctrl = c.metaState and KeyEvent.META_CTRL_ON != 0
+        val hFactor = if (ctrl) 0.5f else joyAcceleration()
+        val vFactor = if (ctrl) 0.5f else 1f
+        while (true) r.x = joyTick(curX, r.x, SENSE_HORIZONTAL_TICK, hFactor, KEY_RIGHT_ACTION, KEY_LEFT_ACTION) ?: break
+        while (true) r.y = joyTick(curY, r.y, SENSE_VERTICAL_TICK, vFactor, KEY_BOTTOM_ACTION, KEY_TOP_ACTION) ?: break
     }
 
-    private fun joyTick(cur: Int, initial: Int, senseName: String, pos: String, neg: String): Int? {
-        val tick = num(senseName)
-        if (tick < 1) return null
+    /** Step-size divisor from the drag speed: 1 when slow, growing with speed (up to 4x). */
+    private fun joyAcceleration(): Float {
+        val strength = num(SENSE_JOY_ACCELERATION, 100).coerceIn(0, 300) / 100f
+        if (strength <= 0f) return 1f
+        val dpPerMs = joySpeed / c.ctx.resources.displayMetrics.density
+        return (1f + strength * (dpPerMs - 0.15f).coerceAtLeast(0f) * 1.5f).coerceAtMost(4f)
+    }
+
+    private fun joyTick(cur: Int, initial: Int, senseName: String, factor: Float, pos: String, neg: String): Int? {
+        val base = num(senseName)
+        if (base < 1) return null
+        val tick = (base / factor).toInt().coerceAtLeast(4)
         return when {
             cur - tick > initial -> joyAction(pos).let { initial + tick }
             cur + tick < initial -> joyAction(neg).let { initial - tick }

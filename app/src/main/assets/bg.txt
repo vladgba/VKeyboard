@@ -224,8 +224,8 @@
             "mode": "joy",
             "left": "-21",
             "right": "-22",
-            "top": "0",
-            "bottom": "0"
+            "top": "-19",
+            "bottom": "-20"
         ),
         (
             "key": ".",

@@ -69,6 +69,8 @@
     <string name="ui_set_joy_h_sub">Distance de glissement pour un pas à gauche/droite sur les touches joystick</string>
     <string name="ui_set_joy_v">Pas du joystick (vertical)</string>
     <string name="ui_set_joy_v_sub">Distance de glissement pour un pas en haut/bas sur les touches joystick</string>
+    <string name="ui_set_joy_accel">Accélération du curseur</string>
+    <string name="ui_set_joy_accel_sub">Un glissement rapide sur la barre d\'espace déplace le curseur plus loin</string>
     <string name="ui_set_hard">Force de l\'appui fort</string>
     <string name="ui_set_hard_sub">Pression nécessaire pour l\'action d\'appui fort. Uniquement sur les écrans qui mesurent la pression.</string>
     <string name="ui_sec_feedback">Vibration</string>

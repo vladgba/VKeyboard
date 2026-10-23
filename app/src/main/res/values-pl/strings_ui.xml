@@ -69,6 +69,8 @@
     <string name="ui_set_joy_h_sub">Odległość przesunięcia na jeden krok w lewo/prawo na klawiszach-joystickach</string>
     <string name="ui_set_joy_v">Krok joysticka (pionowo)</string>
     <string name="ui_set_joy_v_sub">Odległość przesunięcia na jeden krok w górę/dół na klawiszach-joystickach</string>
+    <string name="ui_set_joy_accel">Przyspieszenie kursora</string>
+    <string name="ui_set_joy_accel_sub">Szybkie przesunięcie po spacji przesuwa kursor dalej</string>
     <string name="ui_set_hard">Siła mocnego naciśnięcia</string>
     <string name="ui_set_hard_sub">Nacisk potrzebny do akcji mocnego naciśnięcia. Tylko na ekranach mierzących nacisk.</string>
     <string name="ui_sec_feedback">Wibracje</string>

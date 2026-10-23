@@ -69,6 +69,8 @@
     <string name="ui_set_joy_h_sub">Відстань ковзання для одного кроку вліво/вправо на клавішах-джойстиках</string>
     <string name="ui_set_joy_v">Крок джойстика (по вертикалі)</string>
     <string name="ui_set_joy_v_sub">Відстань ковзання для одного кроку вгору/вниз на клавішах-джойстиках</string>
+    <string name="ui_set_joy_accel">Прискорення курсора</string>
+    <string name="ui_set_joy_accel_sub">Швидкий рух по пробілу переміщує курсор далі</string>
     <string name="ui_set_hard">Сила сильного натискання</string>
     <string name="ui_set_hard_sub">Тиск для дії сильного натискання. Лише на екранах, що вимірюють тиск.</string>
     <string name="ui_sec_feedback">Вібрація</string>

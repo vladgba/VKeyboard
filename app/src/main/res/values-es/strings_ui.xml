@@ -69,6 +69,8 @@
     <string name="ui_set_joy_h_sub">Distancia de deslizamiento para un paso a izquierda/derecha en teclas joystick</string>
     <string name="ui_set_joy_v">Paso del joystick (vertical)</string>
     <string name="ui_set_joy_v_sub">Distancia de deslizamiento para un paso arriba/abajo en teclas joystick</string>
+    <string name="ui_set_joy_accel">Aceleración del cursor</string>
+    <string name="ui_set_joy_accel_sub">Deslizar rápido en la barra espaciadora mueve el cursor más lejos</string>
     <string name="ui_set_hard">Fuerza de pulsación fuerte</string>
     <string name="ui_set_hard_sub">Presión necesaria para la acción de pulsación fuerte. Solo en pantallas que miden la presión.</string>
     <string name="ui_sec_feedback">Vibración</string>

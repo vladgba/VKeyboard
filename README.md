@@ -26,6 +26,7 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 | `autoNumLayout` | `1` | Switches to the `123` layout in number, phone and date fields. |
 | `landscapeHeight` | `1` | Keyboard height multiplier in landscape, e.g. `0.75`. |
 | `bottomPadding` | `0` | Bottom margin in dp elevating the keyboard from the gesture navigation bar. |
+| `joyAcceleration` | `100` | Joystick keys (`"mode": "joy"`, e.g. the space bar cursor slider): fast drags need less distance per step, in %; `0` turns it off. Sideways drags never jump lines, and with Ctrl held steps need twice the distance. |
 | `smartPunctuation` | `1` | Cleans space before punctuation: typing punctuation (. , ! ? : ;) after a space removes the space. |
 | `appLayouts` | `()` | Default layout per app package, e.g. `("com.termux": "code")`. |
 | `errorToasts` | `1` | Shows errors as toasts. With `0`, errors are only logged. |

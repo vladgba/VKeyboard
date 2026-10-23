@@ -69,6 +69,8 @@
     <string name="ui_set_joy_h_sub">Wischweg für einen Schritt nach links/rechts auf Joystick-Tasten</string>
     <string name="ui_set_joy_v">Joystick-Schritt (vertikal)</string>
     <string name="ui_set_joy_v_sub">Wischweg für einen Schritt nach oben/unten auf Joystick-Tasten</string>
+    <string name="ui_set_joy_accel">Cursor-Beschleunigung</string>
+    <string name="ui_set_joy_accel_sub">Schnelles Wischen auf der Leertaste bewegt den Cursor weiter</string>
     <string name="ui_set_hard">Druckstärke für festes Drücken</string>
     <string name="ui_set_hard_sub">Nötiger Druck für die Festdruck-Aktion. Nur auf Bildschirmen, die Druck messen.</string>
     <string name="ui_sec_feedback">Vibration</string>
