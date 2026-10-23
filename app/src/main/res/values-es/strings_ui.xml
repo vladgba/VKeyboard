@@ -86,6 +86,9 @@
     <string name="clip_empty">El texto copiado aparece aquí. Toca para pegar, ☆ para fijar.</string>
     <string name="ui_btn_clipboard">📋 Portapapeles</string>
     <string name="ui_action_clipboard">Abrir el historial del portapapeles</string>
+    <string name="ui_btn_dead">◌́ Tecla muerta</string>
+    <string name="ui_action_dead">Tecla muerta %1$s (%2$s): cambia el siguiente carácter</string>
+    <string name="ui_action_dead_unknown">Tecla muerta desconocida: %1$s</string>
     <string name="ui_set_clip_history">Historial del portapapeles</string>
     <string name="ui_set_clip_history_sub">Recordar el texto copiado; se abre deslizando hacia arriba en 123</string>
     <string name="ui_set_clip_expiry">Conservar recortes</string>

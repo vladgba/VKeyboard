@@ -86,6 +86,9 @@
     <string name="clip_empty">Тут з\'явиться скопійований текст. Торкніться, щоб вставити, ☆ — щоб закріпити.</string>
     <string name="ui_btn_clipboard">📋 Буфер</string>
     <string name="ui_action_clipboard">Відкрити історію буфера обміну</string>
+    <string name="ui_btn_dead">◌́ Мертва клавіша</string>
+    <string name="ui_action_dead">Мертва клавіша %1$s (%2$s): змінює наступний символ</string>
+    <string name="ui_action_dead_unknown">Невідома мертва клавіша: %1$s</string>
     <string name="ui_set_clip_history">Історія буфера обміну</string>
     <string name="ui_set_clip_history_sub">Запам\'ятовувати скопійований текст; відкрити свайпом угору по 123</string>
     <string name="ui_set_clip_expiry">Зберігати записи</string>

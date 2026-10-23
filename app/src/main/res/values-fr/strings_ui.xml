@@ -86,6 +86,9 @@
     <string name="clip_empty">Le texte copié apparaît ici. Touchez pour coller, ☆ pour épingler.</string>
     <string name="ui_btn_clipboard">📋 Presse-papiers</string>
     <string name="ui_action_clipboard">Ouvrir l\'historique du presse-papiers</string>
+    <string name="ui_btn_dead">◌́ Touche morte</string>
+    <string name="ui_action_dead">Touche morte %1$s (%2$s) : modifie le caractère suivant</string>
+    <string name="ui_action_dead_unknown">Touche morte inconnue : %1$s</string>
     <string name="ui_set_clip_history">Historique du presse-papiers</string>
     <string name="ui_set_clip_history_sub">Retenir le texte copié ; s\'ouvre en glissant vers le haut sur 123</string>
     <string name="ui_set_clip_expiry">Conserver les extraits</string>

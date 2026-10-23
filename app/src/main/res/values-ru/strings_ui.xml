@@ -86,6 +86,9 @@
     <string name="clip_empty">Здесь появится скопированный текст. Нажмите, чтобы вставить, ☆ — чтобы закрепить.</string>
     <string name="ui_btn_clipboard">📋 Буфер</string>
     <string name="ui_action_clipboard">Открыть историю буфера обмена</string>
+    <string name="ui_btn_dead">◌́ Мёртвая клавиша</string>
+    <string name="ui_action_dead">Мёртвая клавиша %1$s (%2$s): меняет следующий символ</string>
+    <string name="ui_action_dead_unknown">Неизвестная мёртвая клавиша: %1$s</string>
     <string name="ui_set_clip_history">История буфера обмена</string>
     <string name="ui_set_clip_history_sub">Запоминать скопированный текст; открыть свайпом вверх по 123</string>
     <string name="ui_set_clip_expiry">Хранить записи</string>

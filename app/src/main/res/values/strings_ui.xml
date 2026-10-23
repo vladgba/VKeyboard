@@ -95,6 +95,9 @@
     <string name="clip_empty">Copied text shows up here. Tap a clip to paste it, ☆ to pin it.</string>
     <string name="ui_btn_clipboard">📋 Clipboard</string>
     <string name="ui_action_clipboard">Open the clipboard history</string>
+    <string name="ui_btn_dead">◌́ Dead key</string>
+    <string name="ui_action_dead">Dead key %1$s (%2$s): changes the next character</string>
+    <string name="ui_action_dead_unknown">Unknown dead key: %1$s</string>
     <string name="ui_set_clip_history">Clipboard history</string>
     <string name="ui_set_clip_history_sub">Remember copied text; open it with a swipe up on 123</string>
     <string name="ui_set_clip_expiry">Keep clips for</string>

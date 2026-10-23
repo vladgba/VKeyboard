@@ -86,6 +86,9 @@
     <string name="clip_empty">Textul copiat apare aici. Atingeți pentru a lipi, ☆ pentru a fixa.</string>
     <string name="ui_btn_clipboard">📋 Clipboard</string>
     <string name="ui_action_clipboard">Deschide istoricul clipboard-ului</string>
+    <string name="ui_btn_dead">◌́ Tastă moartă</string>
+    <string name="ui_action_dead">Tastă moartă %1$s (%2$s): schimbă următorul caracter</string>
+    <string name="ui_action_dead_unknown">Tastă moartă necunoscută: %1$s</string>
     <string name="ui_set_clip_history">Istoric clipboard</string>
     <string name="ui_set_clip_history_sub">Reține textul copiat; se deschide glisând în sus pe 123</string>
     <string name="ui_set_clip_expiry">Păstrează intrările</string>

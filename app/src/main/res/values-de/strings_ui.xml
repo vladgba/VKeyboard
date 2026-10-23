@@ -86,6 +86,9 @@
     <string name="clip_empty">Kopierter Text erscheint hier. Tippen zum Einfügen, ☆ zum Anheften.</string>
     <string name="ui_btn_clipboard">📋 Zwischenablage</string>
     <string name="ui_action_clipboard">Verlauf der Zwischenablage öffnen</string>
+    <string name="ui_btn_dead">◌́ Tottaste</string>
+    <string name="ui_action_dead">Tottaste %1$s (%2$s): ändert das nächste Zeichen</string>
+    <string name="ui_action_dead_unknown">Unbekannte Tottaste: %1$s</string>
     <string name="ui_set_clip_history">Zwischenablage-Verlauf</string>
     <string name="ui_set_clip_history_sub">Kopierten Text merken; öffnen mit Wischen nach oben auf 123</string>
     <string name="ui_set_clip_expiry">Einträge behalten für</string>

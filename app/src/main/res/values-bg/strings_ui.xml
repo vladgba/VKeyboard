@@ -86,6 +86,9 @@
     <string name="clip_empty">Тук се показва копираният текст. Докоснете за поставяне, ☆ за закачане.</string>
     <string name="ui_btn_clipboard">📋 Клипборд</string>
     <string name="ui_action_clipboard">Отваряне на историята на клипборда</string>
+    <string name="ui_btn_dead">◌́ Мъртъв клавиш</string>
+    <string name="ui_action_dead">Мъртъв клавиш %1$s (%2$s): променя следващия символ</string>
+    <string name="ui_action_dead_unknown">Непознат мъртъв клавиш: %1$s</string>
     <string name="ui_set_clip_history">История на клипборда</string>
     <string name="ui_set_clip_history_sub">Запомняне на копирания текст; отваря се с плъзгане нагоре по 123</string>
     <string name="ui_set_clip_expiry">Пазене на записите</string>

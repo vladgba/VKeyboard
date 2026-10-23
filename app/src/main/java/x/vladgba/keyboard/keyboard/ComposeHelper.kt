@@ -13,14 +13,27 @@ class ComposeHelper {
     var firstChar: String? = null
         private set
 
+    /** Armed dead key ([DeadKeys] name): the next character is changed by it. */
+    var dead: String? = null
+        private set
+
     fun start() {
         active = true
         firstChar = null
+        dead = null
+    }
+
+    /** Arms dead key [name]; the next [feed] returns the changed character. */
+    fun arm(name: String) {
+        active = true
+        firstChar = null
+        dead = name
     }
 
     fun cancel() {
         active = false
         firstChar = null
+        dead = null
     }
 
     fun toggle(): Boolean {
@@ -36,6 +49,10 @@ class ComposeHelper {
      */
     fun feed(s: String): String? {
         if (!active) return s
+        dead?.let { name ->
+            cancel()
+            return DeadKeys.apply(name, s)
+        }
         val first = firstChar
         if (first == null) {
             firstChar = s

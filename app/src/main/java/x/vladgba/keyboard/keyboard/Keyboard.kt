@@ -453,7 +453,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
     private fun drawComposeOverlay(canvas: Canvas, w: Int, h: Int) {
         val p = voicePaint
-        val text = "⎄ Compose: ${compose.firstChar ?: "…"}"
+        val text = compose.dead?.let { "${DeadKeys.symbol(it)}  …" } ?: "⎄ Compose: ${compose.firstChar ?: "…"}"
         val density = ctx.resources.displayMetrics.density
         p.textSize = 14f * density
         val tw = p.measureText(text)
@@ -602,6 +602,11 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
                 if (compose.active && (code == KEYCODE_DEL || code == KEYCODE_ESCAPE)) {
                     compose.cancel()
                     invalidate()
+                    return
+                }
+                // Space after a dead key types the accent on its own.
+                if (compose.dead != null && code == KEYCODE_SPACE) {
+                    feedCompose(" ")
                     return
                 }
                 if (code == KEYCODE_DEL) {
@@ -961,6 +966,18 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         }
         if (trimmed == COMPOSE_ACTION) {
             compose.toggle()
+            invalidate()
+            return true
+        }
+        if (DeadKeys.isDeadKey(trimmed)) {
+            val name = DeadKeys.nameOf(trimmed)
+            if (compose.dead == name) {
+                // Same dead key twice: type the accent itself.
+                compose.cancel()
+                DeadKeys.spacing(name).takeIf { it.isNotEmpty() }?.let { setText(it) }
+            } else {
+                compose.arm(name)
+            }
             invalidate()
             return true
         }
