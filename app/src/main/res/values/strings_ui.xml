@@ -84,6 +84,8 @@
     <string name="ui_set_sel_slider_sub">With Shift on or text selected, dragging the space bar grows or shrinks the selection</string>
     <string name="ui_set_circle">Circle gestures</string>
     <string name="ui_set_circle_sub">Draw a circle on a key: capital letter, delete a word on Backspace, Caps Lock on Shift</string>
+    <string name="ui_set_edge_guard">Keep edge swipes on the keyboard</string>
+    <string name="ui_set_edge_guard_sub">With gesture navigation, swipes that start at the screen edge over the keyboard don\'t go Back</string>
     <string name="ui_joy_letter_title">Joystick on a letter key</string>
     <string name="ui_joy_letter_msg">A clockwise circle on this key types its capital. In joystick mode the same finger movements also fire the swipe actions, so a circle that isn\'t round enough may move or delete instead of capitalizing. Keep joystick mode?</string>
     <string name="ui_joy_letter_keep">Use joystick</string>

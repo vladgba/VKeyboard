@@ -75,6 +75,8 @@
     <string name="ui_set_sel_slider_sub">При включённом Shift или выделенном тексте движение по пробелу расширяет или сужает выделение</string>
     <string name="ui_set_circle">Жесты кругом</string>
     <string name="ui_set_circle_sub">Нарисуйте круг на клавише: заглавная буква, удаление слова на Backspace, Caps Lock на Shift</string>
+    <string name="ui_set_edge_guard">Свайпы от края на клавиатуре</string>
+    <string name="ui_set_edge_guard_sub">При навигации жестами свайпы от края экрана над клавиатурой не выполняют «Назад»</string>
     <string name="ui_btn_del_word">⌫⌫ Удалить слово</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Удалить следующее слово</string>
     <string name="ui_action_del_word">Удалить слово перед курсором</string>

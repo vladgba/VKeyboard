@@ -75,6 +75,8 @@
     <string name="ui_set_sel_slider_sub">Bei aktivem Shift oder markiertem Text vergrößert oder verkleinert Wischen auf der Leertaste die Auswahl</string>
     <string name="ui_set_circle">Kreisgesten</string>
     <string name="ui_set_circle_sub">Kreis auf einer Taste: Großbuchstabe, Wort löschen auf Rücktaste, Feststelltaste auf Shift</string>
+    <string name="ui_set_edge_guard">Randwischen auf der Tastatur behalten</string>
+    <string name="ui_set_edge_guard_sub">Bei Gestennavigation löst Wischen vom Bildschirmrand über der Tastatur kein Zurück aus</string>
     <string name="ui_btn_del_word">⌫⌫ Wort löschen</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Nächstes Wort löschen</string>
     <string name="ui_action_del_word">Wort vor dem Cursor löschen</string>

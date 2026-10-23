@@ -75,6 +75,8 @@
     <string name="ui_set_sel_slider_sub">Коли увімкнено Shift або виділено текст, рух по пробілу розширює чи звужує виділення</string>
     <string name="ui_set_circle">Жести колом</string>
     <string name="ui_set_circle_sub">Намалюйте коло на клавіші: велика літера, видалення слова на Backspace, Caps Lock на Shift</string>
+    <string name="ui_set_edge_guard">Свайпи від краю на клавіатурі</string>
+    <string name="ui_set_edge_guard_sub">За навігації жестами свайпи від краю екрана над клавіатурою не виконують «Назад»</string>
     <string name="ui_btn_del_word">⌫⌫ Видалити слово</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Видалити наступне слово</string>
     <string name="ui_action_del_word">Видалити слово перед курсором</string>

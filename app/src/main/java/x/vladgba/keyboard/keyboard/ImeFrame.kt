@@ -3,11 +3,14 @@ package x.vladgba.keyboard.keyboard
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import x.vladgba.keyboard.core.COLOR_KEYBOARD_BACKGROUND
+import x.vladgba.keyboard.core.SETTING_EDGE_GESTURE_GUARD
+import x.vladgba.keyboard.core.Settings
 
 /**
  * What the input method shows: the keyboard at the bottom plus transparent head-room above it,
@@ -76,6 +79,19 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
         val w = r - l
         keyboardView.layout(0, headroom, w, headroom + keyboardView.measuredHeight)
         overlay.layout(0, 0, w, b - t)
+        updateGestureExclusion(w)
+    }
+
+    /**
+     * Gesture navigation (Android 10+): a swipe that starts at the screen edge over the keyboard
+     * (e.g. sliding along the space bar from the side) goes to the keyboard instead of
+     * triggering Back. The system honours at most 200dp of height per edge, counted from the bottom.
+     */
+    private fun updateGestureExclusion(w: Int) {
+        if (Build.VERSION.SDK_INT < 29) return
+        systemGestureExclusionRects =
+            if (Settings.bool(SETTING_EDGE_GESTURE_GUARD, true)) listOf(Rect(0, headroom, w, headroom + keyboardView.measuredHeight))
+            else emptyList()
     }
 
     /** Draws popups in the keyboard's coordinates, shifted down by the head-room. Takes no touches. */

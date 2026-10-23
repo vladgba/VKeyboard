@@ -75,6 +75,8 @@
     <string name="ui_set_sel_slider_sub">Przy włączonym Shift lub zaznaczonym tekście przesuwanie po spacji powiększa lub zmniejsza zaznaczenie</string>
     <string name="ui_set_circle">Gesty okręgu</string>
     <string name="ui_set_circle_sub">Narysuj okrąg na klawiszu: wielka litera, usuń słowo na Backspace, Caps Lock na Shift</string>
+    <string name="ui_set_edge_guard">Przesunięcia od krawędzi na klawiaturze</string>
+    <string name="ui_set_edge_guard_sub">Przy nawigacji gestami przesunięcie od krawędzi ekranu nad klawiaturą nie cofa</string>
     <string name="ui_btn_del_word">⌫⌫ Usuń słowo</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Usuń następne słowo</string>
     <string name="ui_action_del_word">Usuń słowo przed kursorem</string>

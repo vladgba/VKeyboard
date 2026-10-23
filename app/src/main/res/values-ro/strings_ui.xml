@@ -75,6 +75,8 @@
     <string name="ui_set_sel_slider_sub">Cu Shift activ sau text selectat, glisarea pe bara de spațiu mărește sau micșorează selecția</string>
     <string name="ui_set_circle">Gesturi circulare</string>
     <string name="ui_set_circle_sub">Desenați un cerc pe o tastă: majusculă, ștergerea unui cuvânt pe Backspace, Caps Lock pe Shift</string>
+    <string name="ui_set_edge_guard">Glisări de la margine pe tastatură</string>
+    <string name="ui_set_edge_guard_sub">Cu navigarea prin gesturi, glisarea de la marginea ecranului peste tastatură nu face Înapoi</string>
     <string name="ui_btn_del_word">⌫⌫ Șterge cuvântul</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Șterge cuvântul următor</string>
     <string name="ui_action_del_word">Șterge cuvântul dinaintea cursorului</string>
