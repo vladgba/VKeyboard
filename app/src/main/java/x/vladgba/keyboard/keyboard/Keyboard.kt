@@ -742,6 +742,34 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         selEnd = next
     }
 
+    /**
+     * Deletes the word before the cursor: trailing spaces, then a run of letters/digits (or of
+     * other symbols). A selection is simply deleted. Without access to the text, sends Ctrl+Backspace.
+     */
+    fun deleteWordBefore() {
+        val ic = inputConnection ?: return
+        textExpander.clearUndo()
+        if (selStart >= 0 && selStart != selEnd) {
+            ic.commitText("", 1)
+            return
+        }
+        val before = ic.getTextBeforeCursor(256, 0)?.toString()
+        if (before == null) {
+            clickModified(KEYCODE_DEL, metaState or META_CTRL_ON)
+            return
+        }
+        var i = before.length
+        while (i > 0 && before[i - 1].isWhitespace()) i--
+        if (i > 0) {
+            val word = before[i - 1].isLetterOrDigit() || before[i - 1] == '_'
+            while (i > 0 && !before[i - 1].isWhitespace() &&
+                (before[i - 1].isLetterOrDigit() || before[i - 1] == '_') == word) i--
+        }
+        val n = before.length - i
+        if (n > 0) ic.deleteSurroundingText(n, 0)
+        scheduleAutoShift()
+    }
+
     /** Up/down while selecting: Shift + the arrow key, which editors extend line by line. */
     fun extendSelectionVertically(keyCode: Int) {
         clickModified(keyCode, metaState or META_SHIFT_ON)
@@ -812,6 +840,16 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             oneShot && metaLatches[key] == Latch.ONE_SHOT -> metaLatches[key] = Latch.LOCKED
             else -> metaOff(key)
         }
+        invalidate()
+    }
+
+    /** Turns modifier [key] on and keeps it on (like tapping it twice), e.g. Caps Lock from a circle on Shift. */
+    fun lockMeta(key: Key) {
+        if (!isMetaActive(key)) {
+            metaState = metaState or key.num(KEY_MOD_META)
+            keyModified(ACTION_DOWN, key.num(KEY_CODE))
+        }
+        metaLatches[key] = Latch.LOCKED
         invalidate()
     }
 

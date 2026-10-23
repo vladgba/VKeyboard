@@ -195,6 +195,15 @@ internal const val SENSE_VERTICAL_TICK = "verTick"
 internal const val SENSE_JOY_ACCELERATION = "joyAcceleration"
 /** With Shift on or text selected, cursor steps of joystick keys grow/shrink the selection. */
 internal const val SETTING_SELECTION_SLIDER = "selectionSlider"
+/** Circle and roundtrip gestures on keys (see [KEY_CIRCLE]). */
+internal const val SETTING_CIRCLE_GESTURES = "circleGestures"
+/** Key option: action for a clockwise circle drawn on the key. Default: capital letter on letter keys,
+ *  delete the previous word on Backspace, Caps Lock on Shift. */
+internal const val KEY_CIRCLE = "circle"
+/** Key option: action for a counter-clockwise circle drawn on the key. */
+internal const val KEY_ANTICIRCLE = "anticircle"
+/** Key option: action for a swipe out of the key centre and back before lifting the finger. */
+internal const val KEY_ROUNDTRIP = "roundtrip"
 
 // Layout Switch
 internal const val LAYOUT_PREV = "@PREV"

@@ -73,6 +73,8 @@
     <string name="ui_set_joy_accel_sub">Швидкий рух по пробілу переміщує курсор далі</string>
     <string name="ui_set_sel_slider">Повзунок виділення</string>
     <string name="ui_set_sel_slider_sub">Коли увімкнено Shift або виділено текст, рух по пробілу розширює чи звужує виділення</string>
+    <string name="ui_set_circle">Жести колом</string>
+    <string name="ui_set_circle_sub">Намалюйте коло на клавіші: велика літера, видалення слова на Backspace, Caps Lock на Shift</string>
     <string name="ui_set_hard">Сила сильного натискання</string>
     <string name="ui_set_hard_sub">Тиск для дії сильного натискання. Лише на екранах, що вимірюють тиск.</string>
     <string name="ui_sec_feedback">Вібрація</string>

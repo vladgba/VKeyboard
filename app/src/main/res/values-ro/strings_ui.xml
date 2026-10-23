@@ -73,6 +73,8 @@
     <string name="ui_set_joy_accel_sub">Glisarea rapidă pe bara de spațiu mută cursorul mai departe</string>
     <string name="ui_set_sel_slider">Glisor de selecție</string>
     <string name="ui_set_sel_slider_sub">Cu Shift activ sau text selectat, glisarea pe bara de spațiu mărește sau micșorează selecția</string>
+    <string name="ui_set_circle">Gesturi circulare</string>
+    <string name="ui_set_circle_sub">Desenați un cerc pe o tastă: majusculă, ștergerea unui cuvânt pe Backspace, Caps Lock pe Shift</string>
     <string name="ui_set_hard">Forța apăsării puternice</string>
     <string name="ui_set_hard_sub">Presiunea necesară pentru acțiunea de apăsare puternică. Doar pe ecranele care măsoară presiunea.</string>
     <string name="ui_sec_feedback">Vibrații</string>

@@ -73,6 +73,8 @@
     <string name="ui_set_joy_accel_sub">Быстрое движение по пробелу перемещает курсор дальше</string>
     <string name="ui_set_sel_slider">Ползунок выделения</string>
     <string name="ui_set_sel_slider_sub">При включённом Shift или выделенном тексте движение по пробелу расширяет или сужает выделение</string>
+    <string name="ui_set_circle">Жесты кругом</string>
+    <string name="ui_set_circle_sub">Нарисуйте круг на клавише: заглавная буква, удаление слова на Backspace, Caps Lock на Shift</string>
     <string name="ui_set_hard">Сила сильного нажатия</string>
     <string name="ui_set_hard_sub">Давление для действия сильного нажатия. Только на экранах, которые измеряют давление.</string>
     <string name="ui_sec_feedback">Вибрация</string>

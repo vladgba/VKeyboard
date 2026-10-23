@@ -28,6 +28,7 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 | `bottomPadding` | `0` | Bottom margin in dp elevating the keyboard from the gesture navigation bar. |
 | `joyAcceleration` | `100` | Joystick keys (`"mode": "joy"`, e.g. the space bar cursor slider): fast drags need less distance per step, in %; `0` turns it off. Sideways drags never jump lines, and with Ctrl held steps need twice the distance. |
 | `selectionSlider` | `1` | With Shift on or text selected, dragging the space bar grows or shrinks the selection (see below). `0` turns it off. |
+| `circleGestures` | `1` | Circle and roundtrip gestures on keys (see below). `0` turns them off. |
 | `smartPunctuation` | `1` | Cleans space before punctuation: typing punctuation (. , ! ? : ;) after a space removes the space. |
 | `appLayouts` | `()` | Default layout per app package, e.g. `("com.termux": "code")`. |
 | `errorToasts` | `1` | Shows errors as toasts. With `0`, errors are only logged. |
@@ -35,6 +36,7 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 New features & options:
 - **Undo text expansion on Backspace**: Tapping Backspace immediately after an abbreviation expands reverts the text back to the abbreviation.
 - **Selection slider**: with Shift on, or while text is selected, dragging the space bar (any joystick key whose left/right are the cursor arrows) grows or shrinks the selection one character per step instead of moving the cursor; up/down extend it by lines.
+- **Circle gestures**: draw a circle on a key. Clockwise on a letter types it as a capital, on Backspace deletes the previous word, on Shift locks it (Caps Lock). Key options `"circle"` (clockwise), `"anticircle"` (counter-clockwise) and `"roundtrip"` (swipe out from the centre and back before lifting) set any action instead, with the same values as `"hold"` (key code, `ctrl+…` combination, `macro:name` or text).
 - **Compose key (`@COMPOSE` / `"compose": "1"`)**: Sequential character composition, e.g. tap `⎄` then `'` + `e` → `é`, `c` + `o` → `©`, `s` + `s` → `ß`, `1` + `2` → `½`, `a` + `e` → `æ`.
 - **Modifier indicators**: Distinct pip indicator for one-shot active modifiers and auto-shift; solid bar for locked modifiers (Caps Lock).
 - Key option `"holdRepeat": "1"` repeats the key while it is held. All bundled layouts now use it on Backspace.

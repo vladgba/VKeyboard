@@ -73,6 +73,8 @@
     <string name="ui_set_joy_accel_sub">Un glissement rapide sur la barre d\'espace déplace le curseur plus loin</string>
     <string name="ui_set_sel_slider">Curseur de sélection</string>
     <string name="ui_set_sel_slider_sub">Avec Maj activée ou du texte sélectionné, glisser sur la barre d\'espace agrandit ou réduit la sélection</string>
+    <string name="ui_set_circle">Gestes circulaires</string>
+    <string name="ui_set_circle_sub">Tracez un cercle sur une touche : majuscule, effacer un mot sur Retour arrière, verrouillage Maj sur Maj</string>
     <string name="ui_set_hard">Force de l\'appui fort</string>
     <string name="ui_set_hard_sub">Pression nécessaire pour l\'action d\'appui fort. Uniquement sur les écrans qui mesurent la pression.</string>
     <string name="ui_sec_feedback">Vibration</string>

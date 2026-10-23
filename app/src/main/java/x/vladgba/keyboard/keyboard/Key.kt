@@ -108,6 +108,13 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
     private var joySpeed = 0f
     private var joyDirX = 0f   // smoothed recent movement, to tell sideways drags from vertical ones
     private var joyDirY = 0f
+    // Path since the last joystick step, to keep circles from firing steps.
+    private var joyPathLen = 0f
+    private var joyAnchorX = 0
+    private var joyAnchorY = 0
+
+    /** The finger's path on this key (x, y pairs), for circle / roundtrip gestures. */
+    private val path = ArrayList<Float>()
     var charPos = 0
         private set
 
@@ -137,6 +144,12 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
         joySpeed = 0f
         joyDirX = 0f
         joyDirY = 0f
+        joyPathLen = 0f
+        joyAnchorX = curX
+        joyAnchorY = curY
+        path.clear()
+        path.add(curX.toFloat())
+        path.add(curY.toFloat())
 
         if (isMeta && has(KEY_CODE) && has(KEY_MOD_META)) {
             c.metaPressed(this)
@@ -150,6 +163,7 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
     }
 
     fun drag(curX: Int, curY: Int, me: MotionEvent, pointerIndex: Int) {
+        recordPath(curX, curY)
         if (isMeta) return
         if (bool(KEY_CLIPBOARD)) {
             charPos = getExtPos(curX, curY)
@@ -170,8 +184,23 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
         if (isMeta) {
             // Held while other keys were pressed: behaves like a physical modifier and is released now.
             if (state == State.PRESSED) c.metaReleased(this)
+            recordPath(curX, curY)
+            if (detectGesture() == Gesture.CIRCLE) {
+                val custom = str(KEY_CIRCLE).trim()
+                if (custom.isNotEmpty()) emit(custom) else if (isShiftKey()) c.lockMeta(this)
+            }
             state = State.RELEASED
             return
+        }
+
+        if (state == State.PRESSED || state == State.MOVED) {
+            recordPath(curX, curY)
+            if (gestureAction()) {
+                state = State.RELEASED
+                charPos = 0
+                c.releaseOneShotMeta()
+                return
+            }
         }
 
         when (state) {
@@ -319,11 +348,119 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
         joyLastY = curY
         joyLastTime = now
 
+        // Keys with circle gestures (e.g. Backspace) only step while the drag is roughly straight,
+        // so drawing a circle doesn't fire cursor/delete steps on the way.
+        joyPathLen += kotlin.math.hypot(dx.toFloat(), dy.toFloat())
+        if (hasGestures()) {
+            val disp = kotlin.math.hypot((curX - joyAnchorX).toFloat(), (curY - joyAnchorY).toFloat())
+            if (disp > 0f && joyPathLen > disp * 1.35f) return
+        }
+
         val ctrl = c.metaState and KeyEvent.META_CTRL_ON != 0
         val hFactor = if (ctrl) 0.5f else joyAcceleration()
         val vFactor = if (ctrl) 0.5f else 1f
+        val beforeX = r.x
+        val beforeY = r.y
         while (true) r.x = joyTick(curX, r.x, SENSE_HORIZONTAL_TICK, hFactor, KEY_RIGHT_ACTION, KEY_LEFT_ACTION) ?: break
         while (true) r.y = joyTick(curY, r.y, SENSE_VERTICAL_TICK, vFactor, KEY_BOTTOM_ACTION, KEY_TOP_ACTION) ?: break
+        if (r.x != beforeX || r.y != beforeY) {
+            joyPathLen = 0f
+            joyAnchorX = curX
+            joyAnchorY = curY
+        }
+    }
+
+    // ======================= circle / roundtrip gestures =======================
+
+    enum class Gesture { CIRCLE, ANTICIRCLE, ROUNDTRIP }
+
+    private fun gesturesOn() = !c.isEditor && Settings.bool(SETTING_CIRCLE_GESTURES, true)
+
+    private fun isBackspace() = inputMode == InputMode.CODE && num(KEY_CODE) == -KeyEvent.KEYCODE_DEL
+
+    private fun isShiftKey() = isMeta && num(KEY_MOD_META) and KeyEvent.META_SHIFT_MASK != 0
+
+    private fun letterLabel(): String? {
+        if (inputMode != InputMode.LABEL) return null
+        val l = Labels.resolve(c.ctx, str(KEY_KEY))
+        return l.takeIf { it.codePointCount(0, it.length) == 1 && Character.isLetter(it.codePointAt(0)) }
+    }
+
+    /** True if a circle or roundtrip on this key would do something. */
+    private fun hasGestures(): Boolean {
+        if (!gesturesOn()) return false
+        if (str(KEY_CIRCLE).isNotBlank() || str(KEY_ANTICIRCLE).isNotBlank() || str(KEY_ROUNDTRIP).isNotBlank()) return true
+        return isBackspace() || isShiftKey() || letterLabel() != null
+    }
+
+    private fun recordPath(x: Int, y: Int) {
+        if (!hasGestures() || path.size < 2) return
+        val lx = path[path.size - 2]
+        val ly = path[path.size - 1]
+        val step = min(width, height) * 0.06f
+        if (kotlin.math.hypot(x - lx, y - ly) < step && path.size > 2) return
+        path.add(x.toFloat())
+        path.add(y.toFloat())
+        // Moving well away from the press point is a gesture, not a hold: no long-press / repeat.
+        if (state == State.PRESSED &&
+            kotlin.math.hypot(x - path[0], y - path[1]) > min(width, height) * 0.3f)
+            c.handler.removeCallbacks(longPressRunnable)
+    }
+
+    /**
+     * Circle: the path turns by at least ~290 degrees in total and ends near where it started
+     * (clockwise on screen = [Gesture.CIRCLE]). Roundtrip: it went out at least as far as the
+     * popup threshold and came back close to the start.
+     */
+    private fun detectGesture(): Gesture? {
+        if (!gesturesOn() || path.size < 10) return null
+        val unit = min(width, height).toFloat()
+        val sx = path[0]
+        val sy = path[1]
+        var maxD = 0f
+        var turn = 0.0
+        var pdx = 0f
+        var pdy = 0f
+        var i = 2
+        while (i < path.size) {
+            val x = path[i]
+            val y = path[i + 1]
+            maxD = max(maxD, kotlin.math.hypot(x - sx, y - sy))
+            val dx = x - path[i - 2]
+            val dy = y - path[i - 1]
+            if (pdx != 0f || pdy != 0f) turn += atan2((pdx * dy - pdy * dx).toDouble(), (pdx * dx + pdy * dy).toDouble())
+            pdx = dx
+            pdy = dy
+            i += 2
+        }
+        if (maxD < unit * 0.35f) return null
+        val endD = kotlin.math.hypot(path[path.size - 2] - sx, path[path.size - 1] - sy)
+        if (abs(turn) >= Math.PI * 1.6 && endD < maxD * 0.75f)
+            return if (turn > 0) Gesture.CIRCLE else Gesture.ANTICIRCLE
+        val far = max(num(SENSE_ADDITIONAL_CHARS).toFloat(), unit * 0.5f)
+        if (maxD >= far && endD < maxD * 0.35f) return Gesture.ROUNDTRIP
+        return null
+    }
+
+    /** Runs the action of a recognised gesture. False if there was none, so the key acts as usual. */
+    private fun gestureAction(): Boolean {
+        val g = detectGesture() ?: return false
+        val custom = str(when (g) {
+            Gesture.CIRCLE -> KEY_CIRCLE
+            Gesture.ANTICIRCLE -> KEY_ANTICIRCLE
+            Gesture.ROUNDTRIP -> KEY_ROUNDTRIP
+        }).trim()
+        when {
+            custom.isNotEmpty() -> emit(custom)
+            g != Gesture.CIRCLE -> return false
+            isBackspace() -> c.deleteWordBefore()
+            else -> {
+                val letter = letterLabel() ?: return false
+                c.onText(letter.uppercase(java.util.Locale.getDefault()))
+            }
+        }
+        c.vibrate(this, KEY_VIBRATE_ADDITIONAL)
+        return true
     }
 
     /** Step-size divisor from the drag speed: 1 when slow, growing with speed (up to 4x). */

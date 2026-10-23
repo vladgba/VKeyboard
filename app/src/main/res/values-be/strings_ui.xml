@@ -73,6 +73,8 @@
     <string name="ui_set_joy_accel_sub">Хуткі рух па прабеле перамяшчае курсор далей</string>
     <string name="ui_set_sel_slider">Паўзунок вылучэння</string>
     <string name="ui_set_sel_slider_sub">Калі ўключаны Shift або вылучаны тэкст, рух па прабеле павялічвае ці памяншае вылучэнне</string>
+    <string name="ui_set_circle">Жэсты кругам</string>
+    <string name="ui_set_circle_sub">Намалюйце круг на клавішы: вялікая літара, выдаленне слова на Backspace, Caps Lock на Shift</string>
     <string name="ui_set_hard">Сіла моцнага націскання</string>
     <string name="ui_set_hard_sub">Ціск для дзеяння моцнага націскання. Толькі на экранах, якія вымяраюць ціск.</string>
     <string name="ui_sec_feedback">Вібрацыя</string>

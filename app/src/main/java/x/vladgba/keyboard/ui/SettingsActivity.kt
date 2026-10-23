@@ -183,6 +183,7 @@ class SettingsActivity : LocalizedActivity() {
             if (it == 0) getString(R.string.ui_off) else "$it%"
         }
         bool(SETTING_SELECTION_SLIDER, R.string.ui_set_sel_slider, R.string.ui_set_sel_slider_sub, true)
+        bool(SETTING_CIRCLE_GESTURES, R.string.ui_set_circle, R.string.ui_set_circle_sub, true)
         int(SENSE_HARD_PRESS, R.string.ui_set_hard, R.string.ui_set_hard_sub, 0, 1000, 25, 400) {
             if (it == 0) getString(R.string.ui_off) else "$it"
         }
