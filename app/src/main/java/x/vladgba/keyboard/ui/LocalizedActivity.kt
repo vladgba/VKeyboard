@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import x.vladgba.keyboard.core.AppLocale
 
 /**
@@ -24,6 +27,32 @@ abstract class LocalizedActivity : Activity() {
             val res = packageManager.getActivityInfo(componentName, 0).labelRes
             if (res != 0) title = getString(res)
         } catch (_: Exception) {}
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= 35) fitSystemBars()
+    }
+
+    /**
+     * Android 15+ draws every screen of an app targeting SDK 35 edge-to-edge: the content starts
+     * under the status bar and the action bar, ends under the navigation bar, and is no longer
+     * resized by the on-screen keyboard. Pads the content back inside the free area.
+     */
+    private fun fitSystemBars() {
+        val content = findViewById<View>(android.R.id.content) ?: return
+        // The app always uses a light theme: dark status bar icons stay readable over it.
+        window.insetsController?.setSystemBarsAppearance(
+            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+        )
+        // The action bar's own layout already adds its height to the top inset it hands the content.
+        content.setOnApplyWindowInsetsListener { v, insets ->
+            val bars = insets.getInsets(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout() or WindowInsets.Type.ime())
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+            WindowInsets.CONSUMED
+        }
+        content.requestApplyInsets()
     }
 
     override fun onResume() {
