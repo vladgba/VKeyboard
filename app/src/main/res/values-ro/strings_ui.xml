@@ -108,6 +108,9 @@
     <string name="ui_set_learn_sub">Reține cuvintele scrise pentru sugestii</string>
     <string name="ui_set_suggestions">Sugestii de cuvinte</string>
     <string name="ui_set_suggestions_sub">Bară deasupra tastelor care completează cuvântul din cuvintele învățate</string>
+    <string name="ft_title">Tester câmpuri text</string>
+    <string name="ft_home_sub">Încearcă tastatura în toate tipurile de câmpuri</string>
+    <string name="ft_intro">Fiecare câmp de mai jos cere alt tip de introducere (denumit ca inputType din Android). Încearcă scrierea, bara de sugestii, Enter și aranjamentele numerice.</string>
     <string name="ui_btn_complete">✓ Sugestie</string>
     <string name="ui_action_complete">Acceptă sugestia %1$d (1 = cea mai bună)</string>
     <string name="words_transfer">Import și export</string>

@@ -108,6 +108,9 @@
     <string name="ui_set_learn_sub">Zapamiętuj wpisywane słowa do podpowiedzi</string>
     <string name="ui_set_suggestions">Podpowiedzi słów</string>
     <string name="ui_set_suggestions_sub">Pasek nad klawiszami uzupełniający słowo z nauczonych słów</string>
+    <string name="ft_title">Tester pól tekstowych</string>
+    <string name="ft_home_sub">Wypróbuj klawiaturę w różnych rodzajach pól</string>
+    <string name="ft_intro">Każde pole poniżej prosi o inny rodzaj wprowadzania (nazwa jak inputType w Androidzie). Wypróbuj pisanie, pasek podpowiedzi, Enter i układy numeryczne.</string>
     <string name="ui_btn_complete">✓ Podpowiedź</string>
     <string name="ui_action_complete">Przyjmij podpowiedź %1$d (1 = najlepsza)</string>
     <string name="words_transfer">Import i eksport</string>

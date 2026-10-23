@@ -108,6 +108,9 @@
     <string name="ui_set_learn_sub">Retenir les mots tapés pour les suggestions</string>
     <string name="ui_set_suggestions">Suggestions de mots</string>
     <string name="ui_set_suggestions_sub">Barre au-dessus des touches qui complète le mot avec les mots appris</string>
+    <string name="ft_title">Testeur de champs de texte</string>
+    <string name="ft_home_sub">Essayer le clavier dans tous les types de champs</string>
+    <string name="ft_intro">Chaque champ ci-dessous demande un type de saisie différent (nommé comme l\'inputType d\'Android). Essayez la saisie, la barre de suggestions, Entrée et les dispositions numériques.</string>
     <string name="ui_btn_complete">✓ Suggestion</string>
     <string name="ui_action_complete">Accepter la suggestion %1$d (1 = meilleure)</string>
     <string name="words_transfer">Importer et exporter</string>

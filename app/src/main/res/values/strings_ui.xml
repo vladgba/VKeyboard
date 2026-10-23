@@ -117,6 +117,9 @@
     <string name="ui_set_learn_sub">Remember words you type, for suggestions</string>
     <string name="ui_set_suggestions">Word suggestions</string>
     <string name="ui_set_suggestions_sub">Bar above the keys completing the word you type from learned words</string>
+    <string name="ft_title">Text field tester</string>
+    <string name="ft_home_sub">Try the keyboard in every kind of text field</string>
+    <string name="ft_intro">Each field below asks the keyboard for a different kind of input, named as in Android\'s inputType. Try typing, the suggestion bar, the Enter key and the number layouts in each.</string>
     <string name="ui_btn_complete">✓ Suggestion</string>
     <string name="ui_action_complete">Accept suggestion %1$d (1 = best)</string>
     <string name="words_transfer">Import and export</string>

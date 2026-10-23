@@ -108,6 +108,9 @@
     <string name="ui_set_learn_sub">Recordar las palabras que escribes para sugerencias</string>
     <string name="ui_set_suggestions">Sugerencias de palabras</string>
     <string name="ui_set_suggestions_sub">Barra sobre las teclas que completa la palabra con palabras aprendidas</string>
+    <string name="ft_title">Probador de campos de texto</string>
+    <string name="ft_home_sub">Prueba el teclado en todo tipo de campos</string>
+    <string name="ft_intro">Cada campo pide un tipo de entrada distinto (con el nombre de inputType de Android). Prueba a escribir, la barra de sugerencias, Intro y las distribuciones numéricas.</string>
     <string name="ui_btn_complete">✓ Sugerencia</string>
     <string name="ui_action_complete">Aceptar sugerencia %1$d (1 = mejor)</string>
     <string name="words_transfer">Importar y exportar</string>

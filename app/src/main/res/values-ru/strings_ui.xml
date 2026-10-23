@@ -108,6 +108,9 @@
     <string name="ui_set_learn_sub">Запоминать набранные слова для подсказок</string>
     <string name="ui_set_suggestions">Подсказки слов</string>
     <string name="ui_set_suggestions_sub">Панель над клавишами, дополняющая слово из выученных слов</string>
+    <string name="ft_title">Проверка текстовых полей</string>
+    <string name="ft_home_sub">Попробуйте клавиатуру в разных типах полей</string>
+    <string name="ft_intro">Каждое поле ниже запрашивает у клавиатуры свой тип ввода (название как в inputType Android). Попробуйте набор, панель подсказок, Enter и цифровые раскладки.</string>
     <string name="ui_btn_complete">✓ Подсказка</string>
     <string name="ui_action_complete">Принять подсказку %1$d (1 = лучшая)</string>
     <string name="words_transfer">Импорт и экспорт</string>

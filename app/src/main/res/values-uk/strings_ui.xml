@@ -108,6 +108,9 @@
     <string name="ui_set_learn_sub">Запам\'ятовувати набрані слова для підказок</string>
     <string name="ui_set_suggestions">Підказки слів</string>
     <string name="ui_set_suggestions_sub">Панель над клавішами, що доповнює слово з вивчених слів</string>
+    <string name="ft_title">Перевірка текстових полів</string>
+    <string name="ft_home_sub">Спробуйте клавіатуру в різних типах полів</string>
+    <string name="ft_intro">Кожне поле нижче запитує в клавіатури свій тип введення (назва як в inputType Android). Спробуйте набір, панель підказок, Enter і цифрові розкладки.</string>
     <string name="ui_btn_complete">✓ Підказка</string>
     <string name="ui_action_complete">Прийняти підказку %1$d (1 = найкраща)</string>
     <string name="words_transfer">Імпорт і експорт</string>

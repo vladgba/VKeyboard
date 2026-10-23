@@ -108,6 +108,9 @@
     <string name="ui_set_learn_sub">Getippte Wörter für Vorschläge merken</string>
     <string name="ui_set_suggestions">Wortvorschläge</string>
     <string name="ui_set_suggestions_sub">Leiste über den Tasten, die das Wort aus gelernten Wörtern ergänzt</string>
+    <string name="ft_title">Textfeld-Tester</string>
+    <string name="ft_home_sub">Die Tastatur in allen Arten von Textfeldern testen</string>
+    <string name="ft_intro">Jedes Feld unten fordert eine andere Eingabeart an (benannt wie Androids inputType). Teste Tippen, die Vorschlagsleiste, die Eingabetaste und die Ziffernlayouts.</string>
     <string name="ui_btn_complete">✓ Vorschlag</string>
     <string name="ui_action_complete">Vorschlag %1$d übernehmen (1 = bester)</string>
     <string name="words_transfer">Import und Export</string>
