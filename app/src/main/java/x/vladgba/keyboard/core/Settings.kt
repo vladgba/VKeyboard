@@ -75,6 +75,11 @@ object Settings : FlexNode(DEFAULTS) {
         PFile(ctx, SETTINGS_FILENAME).write(toString())
         lastModified = -1L
     }
+
+    /** Forces the next [loadVars] to re-read the file (e.g. the storage changed after unlock). */
+    fun invalidate() {
+        lastModified = -1L
+    }
 }
 
 /**

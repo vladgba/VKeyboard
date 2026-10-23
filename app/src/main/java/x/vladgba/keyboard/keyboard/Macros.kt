@@ -38,6 +38,11 @@ object Macros {
         return Step(if (Combos.parse(s, requireModifier = false) != null) Type.KEY else Type.TEXT, s)
     }
 
+    /** Forces the next load to re-read the file (e.g. the storage changed after unlock). */
+    fun invalidate() {
+        lastModified = -1L
+    }
+
     private fun load(ctx: Context) {
         val file = PFile(ctx, MACROS_FILENAME, MACROS_EXT)
         if (file.lastModified() == lastModified) return

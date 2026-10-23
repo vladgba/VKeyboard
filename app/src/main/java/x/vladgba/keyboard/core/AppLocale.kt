@@ -123,5 +123,7 @@ object AppLocale {
         cfg.setLayoutDirection(l)
     }
 
-    private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    // Before the first unlock after a reboot the normal preferences can't be opened (it throws);
+    // the keyboard then just follows the system language until the phone is unlocked.
+    private fun prefs(ctx: Context) = DirectBoot.storage(ctx).getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 }

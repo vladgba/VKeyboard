@@ -1,6 +1,11 @@
 package x.vladgba.keyboard
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
+import android.os.Build
 import android.inputmethodservice.InputMethodService
 import android.view.Gravity
 import android.view.KeyEvent
@@ -10,9 +15,14 @@ import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import x.vladgba.keyboard.core.AppLocale
+import x.vladgba.keyboard.core.DirectBoot
+import x.vladgba.keyboard.core.Settings
+import x.vladgba.keyboard.core.Theme
 import x.vladgba.keyboard.core.Labels
 import x.vladgba.keyboard.keyboard.ImeFrame
 import x.vladgba.keyboard.keyboard.Keyboard
+import x.vladgba.keyboard.keyboard.Macros
+import x.vladgba.keyboard.keyboard.TouchStats
 
 /**
  * The input method service. Android remembers enabled keyboards by component name
@@ -23,12 +33,51 @@ class KeybWrapper : InputMethodService() {
     private lateinit var keyboard: Keyboard
     private var localeVersion = 0
 
+    /**
+     * Started before the first unlock after a reboot (direct boot): the keyboard runs on the
+     * bundled defaults in device-protected storage until [onUserUnlocked] switches it to the
+     * user's own layouts and settings.
+     */
+    private var startedLocked = false
+    private val unlockReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) = onUserUnlocked()
+    }
+
     override fun onCreate() {
         super.onCreate()
+        startedLocked = DirectBoot.isLocked(this)
+        if (startedLocked) {
+            val filter = IntentFilter(Intent.ACTION_USER_UNLOCKED)
+            if (Build.VERSION.SDK_INT >= 33) registerReceiver(unlockReceiver, filter, RECEIVER_EXPORTED)
+            else registerReceiver(unlockReceiver, filter)
+        }
         AppLocale.migrate(this)
         AppLocale.applyTo(this)
         localeVersion = AppLocale.version
+        keyboard = Keyboard(DirectBoot.storage(this), this)
+    }
+
+    /** First unlock after a direct-boot start: reload everything from the user's own storage. */
+    private fun onUserUnlocked() {
+        if (!startedLocked) return
+        startedLocked = false
+        try { unregisterReceiver(unlockReceiver) } catch (_: Exception) {}
+        AppLocale.migrate(this)
+        AppLocale.applyTo(this)
+        Settings.invalidate()
+        Theme.invalidate()
+        Macros.invalidate()
+        TouchStats.reload(this)
+
+        keyboard.onDestroy()
         keyboard = Keyboard(this, this)
+        frame?.let { (it.parent as? ViewGroup)?.removeView(it) }
+        frame = null
+        if (isInputViewShown) {
+            setInputView(onCreateInputView())
+            currentInputEditorInfo?.let { keyboard.onStartInput(it) }
+            keyboard.onShow()
+        }
     }
 
     private var frame: ImeFrame? = null
@@ -63,6 +112,8 @@ class KeybWrapper : InputMethodService() {
 
     override fun onStartInputView(info: EditorInfo, restarting: Boolean) {
         super.onStartInputView(info, restarting)
+        // In case the unlock broadcast was missed.
+        if (startedLocked && !DirectBoot.isLocked(this)) onUserUnlocked()
         // In-app language changed (or Android reset our resources): refresh translated labels.
         if (AppLocale.applyTo(this) || localeVersion != AppLocale.version) {
             localeVersion = AppLocale.version
@@ -102,6 +153,7 @@ class KeybWrapper : InputMethodService() {
     }
 
     override fun onDestroy() {
+        if (startedLocked) try { unregisterReceiver(unlockReceiver) } catch (_: Exception) {}
         keyboard.onDestroy()
         super.onDestroy()
     }
