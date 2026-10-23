@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
@@ -53,6 +54,16 @@ abstract class LocalizedActivity : Activity() {
             WindowInsets.CONSUMED
         }
         content.requestApplyInsets()
+    }
+
+    /**
+     * The action bar's back arrow behaves like the system Back button, so screens with unsaved
+     * changes ask before closing (without this the arrow closed them silently, or did nothing).
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId != android.R.id.home) return super.onOptionsItemSelected(item)
+        @Suppress("DEPRECATION") onBackPressed()
+        return true
     }
 
     override fun onResume() {

@@ -27,6 +27,7 @@ class LayoutEditor : LocalizedActivity() {
             startActivity(Intent(this, RawEditor::class.java).putExtra("name", name))
             return finish()
         }
+        actionBar?.setDisplayHomeAsUpEnabled(true)
         setContentView(R.layout.layout_edit)
         title = name
 
