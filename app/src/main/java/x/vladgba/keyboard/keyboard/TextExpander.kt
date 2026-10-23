@@ -25,8 +25,12 @@ class TextExpander(private val ctx: Context) {
             .toMap()
     }
 
+    private var lastAbbr: String? = null
+    private var lastReplacement: String? = null
+    private var lastSep: String? = null
+
     /** Replaces the word before the cursor if it is an abbreviation. Returns true when it did. */
-    fun expand(ic: InputConnection): Boolean {
+    fun expand(ic: InputConnection, separator: String = ""): Boolean {
         if (entries.isEmpty()) return false
         val before = ic.getTextBeforeCursor(MAX_WORD, 0)?.toString() ?: return false
         if (before.isEmpty()) return false
@@ -38,7 +42,42 @@ class TextExpander(private val ctx: Context) {
         ic.deleteSurroundingText(word.length, 0)
         ic.commitText(replacement, 1)
         ic.endBatchEdit()
+        lastAbbr = word
+        lastReplacement = replacement
+        lastSep = separator
         return true
+    }
+
+    /** Reverts the last expansion if Backspace is pressed immediately after. */
+    fun undo(ic: InputConnection): Boolean {
+        val abbr = lastAbbr ?: return false
+        val repl = lastReplacement ?: return false
+        val sep = lastSep ?: ""
+        val target = repl + sep
+        val before = ic.getTextBeforeCursor(target.length, 0)?.toString() ?: return false
+        if (before == target) {
+            ic.beginBatchEdit()
+            ic.deleteSurroundingText(target.length, 0)
+            ic.commitText(abbr, 1)
+            ic.endBatchEdit()
+            clearUndo()
+            return true
+        } else if (before.endsWith(repl)) {
+            ic.beginBatchEdit()
+            ic.deleteSurroundingText(repl.length, 0)
+            ic.commitText(abbr, 1)
+            ic.endBatchEdit()
+            clearUndo()
+            return true
+        }
+        clearUndo()
+        return false
+    }
+
+    fun clearUndo() {
+        lastAbbr = null
+        lastReplacement = null
+        lastSep = null
     }
 
     companion object {

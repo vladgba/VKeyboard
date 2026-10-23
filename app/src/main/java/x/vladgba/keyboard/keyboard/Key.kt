@@ -145,6 +145,9 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
                     c.onText(rnd.str((0 until rnd.childCount()).random()))
                 } else if (bool(KEY_VOICE) || isTrVoiceKey()) {
                     c.voice.toggle(trVoiceSpec())
+                } else if (bool(KEY_COMPOSE) || str(KEY_KEY).trim() == COMPOSE_ACTION) {
+                    c.compose.toggle()
+                    c.invalidate()
                 } else if (has(KEY_MACRO) && str(KEY_MACRO).isNotBlank()) {
                     c.runMacro(str(KEY_MACRO).trim())
                 } else if (has(KEY_COMBO) && c.sendCombo(str(KEY_COMBO), requireModifier = false)) {
@@ -493,11 +496,18 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
         val label = shiftedLabel()
         if (label.isNotBlank()) canvas.drawText(label, x + width / 2f, y + (height + p.textSize - p.descent()) / 2, p)
 
-        // locked modifier marker
-        if (isMeta && c.isMetaLocked(this) || bool(KEY_SELECTED)) {
+        // modifier marker: solid bar for locked/selected, distinct pip dot for one-shot / auto-shift
+        val isLocked = isMeta && c.isMetaLocked(this)
+        val isOneShot = isMeta && !isLocked && c.isMetaActive(this)
+        val isAutoShift = c.autoShift && has(KEY_MOD_META) && (num(KEY_MOD_META) and KeyEvent.META_SHIFT_MASK != 0)
+        if (isLocked || bool(KEY_SELECTED)) {
             p.color = c.color(COLOR_TEXT_PRIMARY, this)
             val w = width / 4f
             canvas.drawRect(x + width / 2f - w / 2, body.bottom - padding - 4, x + width / 2f + w / 2, body.bottom - padding, p)
+        } else if (isOneShot || isAutoShift) {
+            p.color = c.color(COLOR_TEXT_PRIMARY, this)
+            val dotR = (height / 24f).coerceAtLeast(3f)
+            canvas.drawCircle(x + width / 2f, body.bottom - padding - dotR - 1f, dotR, p)
         }
     }
 
@@ -582,6 +592,7 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
         val s = when {
             raw == VOICE_ACTION -> "🎤"
             raw.startsWith(TR_VOICE_PREFIX) || raw.startsWith(TR_VOICE_ALT_PREFIX) -> "🎤🌐"
+            raw == COMPOSE_ACTION -> "⎄"
             else -> raw
         }
         // Bug fix: shifted popup chars were computed but never drawn.
@@ -592,8 +603,9 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
     private fun shiftedLabel(): String {
         val raw = str(KEY_KEY).trim()
         val lb = when {
-            raw == VOICE_ACTION -> "🎤"
-            raw.startsWith(TR_VOICE_PREFIX) || raw.startsWith(TR_VOICE_ALT_PREFIX) -> "🎤🌐"
+            raw == VOICE_ACTION || bool(KEY_VOICE) -> "🎤"
+            raw.startsWith(TR_VOICE_PREFIX) || raw.startsWith(TR_VOICE_ALT_PREFIX) || isTrVoiceKey() -> "🎤🌐"
+            raw == COMPOSE_ACTION || bool(KEY_COMPOSE) -> "⎄"
             else -> Labels.resolve(c.ctx, raw)
         }
         return if (c.letterShift() && lb.length == 1) c.getShifted(lb[0].code, true).toChar().toString() else lb

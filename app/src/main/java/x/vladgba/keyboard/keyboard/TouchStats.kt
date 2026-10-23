@@ -216,6 +216,13 @@ object TouchStats {
         version++
     }
 
+    fun reload(ctx: Context) {
+        data.clear()
+        loaded = false
+        load(ctx)
+        version++
+    }
+
     private fun load(ctx: Context) {
         if (loaded) return
         loaded = true

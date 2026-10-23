@@ -25,10 +25,18 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 | `textExpansion` | `1` | Expands abbreviations from the Dictionary (Settings → Dictionary) when you type a space, Enter or punctuation. |
 | `autoNumLayout` | `1` | Switches to the `123` layout in number, phone and date fields. |
 | `landscapeHeight` | `1` | Keyboard height multiplier in landscape, e.g. `0.75`. |
+| `bottomPadding` | `0` | Bottom margin in dp elevating the keyboard from the gesture navigation bar. |
+| `smartPunctuation` | `1` | Cleans space before punctuation: typing punctuation (. , ! ? : ;) after a space removes the space. |
+| `appLayouts` | `()` | Default layout per app package, e.g. `("com.termux": "code")`. |
 | `errorToasts` | `1` | Shows errors as toasts. With `0`, errors are only logged. |
 
-New key option: `"holdRepeat": "1"` repeats the key while it is held. All bundled layouts now use it on Backspace.
-New theme colors: `keyPressedBackgroundColor` (key being pressed) and `metaPressedBackgroundColor` (locked modifier).
+New features & options:
+- **Undo text expansion on Backspace**: Tapping Backspace immediately after an abbreviation expands reverts the text back to the abbreviation.
+- **Compose key (`@COMPOSE` / `"compose": "1"`)**: Sequential character composition, e.g. tap `⎄` then `'` + `e` → `é`, `c` + `o` → `©`, `s` + `s` → `ß`, `1` + `2` → `½`, `a` + `e` → `æ`.
+- **Modifier indicators**: Distinct pip indicator for one-shot active modifiers and auto-shift; solid bar for locked modifiers (Caps Lock).
+- Key option `"holdRepeat": "1"` repeats the key while it is held. All bundled layouts now use it on Backspace.
+- Theme colors: `keyPressedBackgroundColor` (key being pressed) and `metaPressedBackgroundColor` (locked modifier).
+- **Backup & restore**: Full backup (`.zip`) covering all settings (`settings.txt`), custom layouts (`.txt`), color themes (`.ini`), dictionary abbreviations (`dictionary.dic`), macros (`macros.macro`), and hitbox autotune calibration (`touchstats.stats`). Partial backups support standalone `settings.txt` export/import, config-only, or layouts & themes only. Backup archives can also be opened directly from external file managers to restore.
 
 ## Layout format (Flexaml)
 
@@ -41,4 +49,4 @@ New theme colors: `keyPressedBackgroundColor` (key being pressed) and `metaPress
 )
 ```
 
-`code`: a negative value is an Android `KeyEvent` keycode. `mode`: `popup` / `joy` / `meta` / `random`. `layout`: `@NEXT`, `@PREV`, `@NUM`, `@TEXT`, `@EMOJI` or a layout name. Other options: `hold`, `hard`, `text`, `textCurOffset`, `clipboard`, `record`, `action`, `@VOICE`, `@tr_voice/<src>-<dst>` (e.g. `@tr_voice/ru-en` for voice translation), `sound*`, `vib*`, and the style keys listed in `core/Constants.kt`.
+`code`: a negative value is an Android `KeyEvent` keycode. `mode`: `popup` / `joy` / `meta` / `random`. `layout`: `@NEXT`, `@PREV`, `@NUM`, `@TEXT`, `@EMOJI` or a layout name. Other options: `hold`, `hard`, `text`, `textCurOffset`, `clipboard`, `record`, `action`, `@VOICE`, `@COMPOSE`, `@tr_voice/<src>-<dst>` (e.g. `@tr_voice/ru-en` for voice translation), `sound*`, `vib*`, and the style keys listed in `core/Constants.kt`.

@@ -82,6 +82,7 @@ class MainActivity : LocalizedActivity() {
         }
 
         page.header(getString(R.string.ui_home_tools))
+        nav(R.string.bk_title, R.string.bk_sub) { open(BackupActivity::class.java) }
         nav(R.string.ui_key_tester, R.string.ui_key_tester_sub) { open(PhysicalKeysActivity::class.java) }
         nav(R.string.ts_title, R.string.ts_home_sub) { open(TouchStatsActivity::class.java) }
         nav(R.string.ui_keycodes_title, R.string.ui_home_keycodes_sub) { KeyCodePicker.show(this) }
