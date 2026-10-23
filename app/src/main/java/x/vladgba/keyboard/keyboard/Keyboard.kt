@@ -208,6 +208,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         compose.cancel()
         resetTouches()
         TouchStats.flush(ctx)
+        UserWords.flush(ctx)
     }
 
     fun resetTouches() {
@@ -615,7 +616,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
                 } else {
                     textExpander.clearUndo()
                 }
-                if (code == KEYCODE_SPACE || code == KEYCODE_ENTER) expandText(if (code == KEYCODE_SPACE) " " else "\n")
+                if (code == KEYCODE_SPACE || code == KEYCODE_ENTER) wordBoundary(if (code == KEYCODE_SPACE) " " else "\n")
                 if (code == KEYCODE_ENTER && performEditorAction()) return
                 clickModified(code)
             }
@@ -642,7 +643,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             }
         }
         if (smartPunctuation(s)) return
-        if (TextExpander.isSeparator(chars)) expandText(s)
+        if (TextExpander.isSeparator(chars)) wordBoundary(s)
         setText(s)
     }
 
@@ -678,6 +679,24 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         if (del > 0) deleteSurroundingText(del, 0)
         commitText(text, 1)
         endBatchEdit()
+    }
+
+    /** A space, Enter or punctuation is about to be typed after a word: learn it, then expand abbreviations. */
+    private fun wordBoundary(sep: String) {
+        learnLastWord()
+        expandText(sep)
+    }
+
+    /** Counts the word just before the cursor in the learned dictionary (see [UserWords]). */
+    private fun learnLastWord() {
+        if (isEditor || privateField || !Settings.bool(SETTING_LEARN_WORDS, true)) return
+        val before = inputConnection?.getTextBeforeCursor(64, 0)?.toString() ?: return
+        var i = before.length
+        while (i > 0 && (before[i - 1].isLetter() || before[i - 1] == '\'' || before[i - 1] == '’' || before[i - 1] == '-')) i--
+        if (i > 0 && before[i - 1].isLetterOrDigit()) return  // e.g. digits glued to the word
+        val word = before.substring(i).trim('\'', '’', '-')
+        if (word.isEmpty() || textExpander.isAbbreviation(word)) return
+        UserWords.learn(ctx, word)
     }
 
     private fun expandText(sep: String = "") {

@@ -25,6 +25,8 @@ class TextExpander(private val ctx: Context) {
             .toMap()
     }
 
+    fun isAbbreviation(word: String) = entries.containsKey(word)
+
     private var lastAbbr: String? = null
     private var lastReplacement: String? = null
     private var lastSep: String? = null

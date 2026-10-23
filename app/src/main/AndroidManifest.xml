@@ -40,6 +40,7 @@
                 android:excludeFromRecents="true"
                 android:noHistory="true"/>
         <activity android:name=".ui.DictionaryActivity" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".ui.WordsActivity" android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".ui.TouchStatsActivity" android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".ui.LayoutEditor"/>
         <activity

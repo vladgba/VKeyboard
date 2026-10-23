@@ -80,6 +80,7 @@ class MainActivity : LocalizedActivity() {
         nav(R.string.dictionary, R.string.ui_set_dict_sub) {
             startActivity(Intent(this, DictionaryActivity::class.java))
         }
+        nav(R.string.words_title, R.string.words_home_sub) { open(WordsActivity::class.java) }
 
         page.header(getString(R.string.ui_home_tools))
         nav(R.string.bk_title, R.string.bk_sub) { open(BackupActivity::class.java) }

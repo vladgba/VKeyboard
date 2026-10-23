@@ -103,6 +103,7 @@ class KeybWrapper : InputMethodService() {
         Macros.invalidate()
         TouchStats.reload(this)
         ClipHistory.reload()
+        x.vladgba.keyboard.core.UserWords.reload()
 
         keyboard.onDestroy()
         keyboard = Keyboard(this, this)

@@ -21,6 +21,9 @@ internal const val STATS_EXT = "stats"
 /** Pinned clipboard clips (`clipboard.pins`). */
 internal const val CLIP_PINS_FILENAME = "clipboard"
 internal const val CLIP_PINS_EXT = "pins"
+/** Words learned from typing (`learned.words`). */
+internal const val LEARNED_FILENAME = "learned"
+internal const val LEARNED_EXT = "words"
 /** Record touch positions for the touch heatmap (aggregates only, never in password fields). */
 internal const val SETTING_TOUCH_STATS = "touchStats"
 /** Move each key's touch area toward where the user really touches it (learned from touch stats). */
@@ -218,6 +221,8 @@ internal const val SETTING_NUMBER_ROW = "numberRow"
 internal const val SETTING_SPLIT = "split"
 /** Width of the empty middle of a split keyboard, in % of the keyboard width. */
 internal const val SETTING_SPLIT_GAP = "splitGap"
+/** Learn words as they are typed (never in password / no-learning fields). */
+internal const val SETTING_LEARN_WORDS = "learnWords"
 /** Key option: action for a clockwise circle drawn on the key. Default: capital letter on letter keys,
  *  delete the previous word on Backspace, Caps Lock on Shift. */
 internal const val KEY_CIRCLE = "circle"

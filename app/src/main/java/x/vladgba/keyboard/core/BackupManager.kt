@@ -20,7 +20,7 @@ object BackupManager {
         LAYOUTS_THEMES  // Layouts and themes only
     }
 
-    private val ALLOWED_EXTS = setOf(LAYOUT_EXT, THEME_EXT, DICT_EXT, MACROS_EXT, STATS_EXT, CLIP_PINS_EXT)
+    private val ALLOWED_EXTS = setOf(LAYOUT_EXT, THEME_EXT, DICT_EXT, MACROS_EXT, STATS_EXT, CLIP_PINS_EXT, LEARNED_EXT)
 
     class RestoreResult(val success: Boolean, val count: Int, val message: String)
 
@@ -39,7 +39,7 @@ object BackupManager {
 
                     val include = when (scope) {
                         BackupScope.FULL -> true
-                        BackupScope.CONFIG_ONLY -> (base == SETTINGS_FILENAME && ext == LAYOUT_EXT) || ext == DICT_EXT || ext == MACROS_EXT || ext == STATS_EXT || ext == CLIP_PINS_EXT
+                        BackupScope.CONFIG_ONLY -> (base == SETTINGS_FILENAME && ext == LAYOUT_EXT) || ext == DICT_EXT || ext == MACROS_EXT || ext == STATS_EXT || ext == CLIP_PINS_EXT || ext == LEARNED_EXT
                         BackupScope.LAYOUTS_THEMES -> (base != SETTINGS_FILENAME && ext == LAYOUT_EXT) || ext == THEME_EXT
                     }
                     if (!include) continue
