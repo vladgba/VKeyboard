@@ -213,7 +213,7 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
                 } else if (bool(KEY_COMPOSE) || str(KEY_KEY).trim() == COMPOSE_ACTION) {
                     c.compose.toggle()
                     c.invalidate()
-                } else if (str(KEY_KEY).trim().let { it == DELETE_WORD_ACTION || it == DELETE_WORD_FORWARD_ACTION }) {
+                } else if (str(KEY_KEY).trim().let { it == DELETE_WORD_ACTION || it == DELETE_WORD_FORWARD_ACTION || it == CLIPBOARD_ACTION || DeadKeys.isDeadKey(it) }) {
                     c.runSpecial(str(KEY_KEY))
                 } else if (has(KEY_MACRO) && str(KEY_MACRO).isNotBlank()) {
                     c.runMacro(str(KEY_MACRO).trim())
@@ -804,6 +804,8 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == COMPOSE_ACTION -> "⎄"
             raw == DELETE_WORD_ACTION -> "⌫⌫"
             raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
+            raw == CLIPBOARD_ACTION -> "📋"
+            DeadKeys.isDeadKey(raw) -> DeadKeys.symbol(DeadKeys.nameOf(raw))
             else -> raw
         }
         return if (s.length == 1) c.getShifted(s[0].code, sh).toChar().toString() else s
@@ -870,6 +872,8 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == COMPOSE_ACTION -> "⎄"
             raw == DELETE_WORD_ACTION -> "⌫⌫"
             raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
+            raw == CLIPBOARD_ACTION -> "📋"
+            DeadKeys.isDeadKey(raw) -> DeadKeys.symbol(DeadKeys.nameOf(raw))
             else -> raw
         }
         // Bug fix: shifted popup chars were computed but never drawn.
@@ -885,6 +889,8 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == COMPOSE_ACTION || bool(KEY_COMPOSE) -> "⎄"
             raw == DELETE_WORD_ACTION -> "⌫⌫"
             raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
+            raw == CLIPBOARD_ACTION -> "📋"
+            DeadKeys.isDeadKey(raw) -> DeadKeys.symbol(DeadKeys.nameOf(raw))
             else -> Labels.resolve(c.ctx, raw)
         }
         return if (c.letterShift() && lb.length == 1) c.getShifted(lb[0].code, true).toChar().toString() else lb

@@ -68,6 +68,8 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     private var lastTextLayout = ""
     private var autoNumSwitched = false
     private val loaded = HashMap<String, KeybLayout>()
+    /** Number row setting the cached layouts were built with. */
+    private var loadedNumberRow = -1
     lateinit var currentLayout: KeybLayout
         private set
 
@@ -451,7 +453,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
     private fun drawComposeOverlay(canvas: Canvas, w: Int, h: Int) {
         val p = voicePaint
-        val text = "⎄ Compose: ${compose.firstChar ?: "…"}"
+        val text = compose.dead?.let { "${DeadKeys.symbol(it)}  …" } ?: "⎄ Compose: ${compose.firstChar ?: "…"}"
         val density = ctx.resources.displayMetrics.density
         p.textSize = 14f * density
         val tw = p.measureText(text)
@@ -600,6 +602,11 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
                 if (compose.active && (code == KEYCODE_DEL || code == KEYCODE_ESCAPE)) {
                     compose.cancel()
                     invalidate()
+                    return
+                }
+                // Space after a dead key types the accent on its own.
+                if (compose.dead != null && code == KEYCODE_SPACE) {
+                    feedCompose(" ")
                     return
                 }
                 if (code == KEYCODE_DEL) {
@@ -962,6 +969,22 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             invalidate()
             return true
         }
+        if (DeadKeys.isDeadKey(trimmed)) {
+            val name = DeadKeys.nameOf(trimmed)
+            if (compose.dead == name) {
+                // Same dead key twice: type the accent itself.
+                compose.cancel()
+                DeadKeys.spacing(name).takeIf { it.isNotEmpty() }?.let { setText(it) }
+            } else {
+                compose.arm(name)
+            }
+            invalidate()
+            return true
+        }
+        if (trimmed == CLIPBOARD_ACTION) {
+            ime?.showClipboard()
+            return true
+        }
         if (trimmed == DELETE_WORD_ACTION) {
             deleteWordBefore()
             return true
@@ -1043,6 +1066,11 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     /** Makes [name] current. Returns false if it can't be loaded. */
     private fun pickLayout(name: String): Boolean {
         if (name.isBlank()) return false
+        val numberRow = Settings.num(SETTING_NUMBER_ROW, NumberRow.OFF)
+        if (numberRow != loadedNumberRow) {
+            loaded.clear()
+            loadedNumberRow = numberRow
+        }
         val cached = loaded[name]
         val file = PFile(ctx, name)
         if (!file.exists()) PFile.install(ctx, name)
@@ -1059,7 +1087,10 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     fun loadLayout(name: String): KeybLayout? {
         val file = PFile(ctx, name)
         if (!file.exists()) return null
-        val layout = KeybLayout(this, FlexParser.parse(file.read()))
+        val node = FlexParser.parse(file.read())
+        // The layout editor shows (and saves) the file exactly as it is.
+        if (!isEditor) NumberRow.apply(node, name, Settings.num(SETTING_NUMBER_ROW, NumberRow.OFF))
+        val layout = KeybLayout(this, node)
         layout.lastModified = file.lastModified()
         return layout.takeIf { it.loaded }
     }

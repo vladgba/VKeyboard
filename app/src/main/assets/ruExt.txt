@@ -306,7 +306,10 @@
     (
         (
             "key": "123",
-            "layout": "@NUM"
+            "layout": "@NUM",
+
+            "",
+            "@CLIPBOARD"
         ),
         (
             "key": "\ud83c\uddf7\ud83c\uddfa",

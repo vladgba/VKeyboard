@@ -70,6 +70,43 @@ class SettingsActivity : LocalizedActivity() {
         row.setOnLongClickListener { reset(key); true }
     }
 
+    /** "Number row": off / digits / digits + symbols, stored as 0 / 1 / 2. */
+    private fun numberRowChoice() {
+        val names = listOf(getString(R.string.ui_off), getString(R.string.ui_nr_digits), getString(R.string.ui_nr_symbols))
+        val cur = Settings.num(SETTING_NUMBER_ROW, 0).coerceIn(0, 2)
+        val row = page.row(getString(R.string.ui_set_number_row), getString(R.string.ui_set_number_row_sub)) {
+            Ask.choice(this, getString(R.string.ui_set_number_row), names, cur) {
+                set(SETTING_NUMBER_ROW, it.toString())
+                render()
+            }
+        }
+        row.end.addView(android.widget.TextView(this).apply {
+            text = names[cur]
+            setTextColor(COLOR_ACCENT)
+            textSize = 15f
+        })
+        row.setOnLongClickListener { reset(SETTING_NUMBER_ROW); true }
+    }
+
+    /** "Keep clips for": a slider over fixed steps (minutes; 0 = never expire). Other stored values snap to the nearest step. */
+    private fun clipExpiryRow() {
+        val steps = intArrayOf(0, 1, 5, 10, 15, 20, 30, 40, 60, 120, 180, 360, 540, 720, 960, 1440)
+        val cur = Settings.num(SETTING_CLIP_EXPIRY, 15)
+        val index = steps.indices.minByOrNull { kotlin.math.abs(steps[it] - cur) } ?: 4
+        fun label(i: Int) = steps[i].let { m ->
+            when {
+                m == 0 -> getString(R.string.ui_clip_never)
+                m < 60 -> "$m min"
+                else -> "${m / 60} h"
+            }
+        }
+        val (row, _) = page.sliderRow(getString(R.string.ui_set_clip_expiry), getString(R.string.ui_set_clip_expiry_sub),
+            0f, (steps.size - 1).toFloat(), 1f, index.toFloat(), { label(it.toInt()) }) {
+            set(SETTING_CLIP_EXPIRY, steps[it.toInt().coerceIn(steps.indices)].toString())
+        }
+        row.setOnLongClickListener { reset(SETTING_CLIP_EXPIRY); true }
+    }
+
     /** Label sizes are stored as "key height / N"; shown as a percentage of the default. */
     private fun textSize(key: String, title: Int, sub: Int, base: Float) {
         val pct = base / Settings.float(key, base).coerceAtLeast(0.1f) * 100f
@@ -166,6 +203,7 @@ class SettingsActivity : LocalizedActivity() {
         int(SETTING_BOTTOM_PADDING, R.string.ui_set_bottom_padding, R.string.ui_set_bottom_padding_sub, 0, 80, 5, 0) {
             if (it == 0) getString(R.string.ui_off) else "$it dp"
         }
+        numberRowChoice()
         textSize(KEY_TEXT_SIZE_PRIMARY, R.string.ui_set_label_size, R.string.ui_set_label_size_sub, 2.5f)
         textSize(KEY_TEXT_SIZE_SECONDARY, R.string.ui_set_hint_size, R.string.ui_set_hint_size_sub, 5f)
         int(KEY_PADDING, R.string.ui_set_padding, R.string.ui_set_padding_sub, 0, 40, 1, 10) { "$it px" }
@@ -186,6 +224,8 @@ class SettingsActivity : LocalizedActivity() {
         bool(SETTING_CIRCLE_GESTURES, R.string.ui_set_circle, R.string.ui_set_circle_sub, true)
         if (android.os.Build.VERSION.SDK_INT >= 29)
             bool(SETTING_EDGE_GESTURE_GUARD, R.string.ui_set_edge_guard, R.string.ui_set_edge_guard_sub, true)
+        bool(SETTING_CLIP_HISTORY, R.string.ui_set_clip_history, R.string.ui_set_clip_history_sub, true)
+        clipExpiryRow()
         int(SENSE_HARD_PRESS, R.string.ui_set_hard, R.string.ui_set_hard_sub, 0, 1000, 25, 400) {
             if (it == 0) getString(R.string.ui_off) else "$it"
         }

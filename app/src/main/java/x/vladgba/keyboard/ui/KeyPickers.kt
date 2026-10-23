@@ -10,6 +10,7 @@ import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.widget.*
 import x.vladgba.keyboard.R
+import x.vladgba.keyboard.keyboard.DeadKeys
 import x.vladgba.keyboard.core.*
 import x.vladgba.keyboard.keyboard.Combos
 import x.vladgba.keyboard.keyboard.Macros
@@ -186,6 +187,13 @@ internal object ActionPrompt {
         if (v == COMPOSE_ACTION) return ctx.getString(R.string.ui_action_compose) to true
         if (v == DELETE_WORD_ACTION) return ctx.getString(R.string.ui_action_del_word) to true
         if (v == DELETE_WORD_FORWARD_ACTION) return ctx.getString(R.string.ui_action_del_word_fwd) to true
+        if (v == CLIPBOARD_ACTION) return ctx.getString(R.string.ui_action_clipboard) to true
+        if (v.startsWith(DeadKeys.PREFIX)) {
+            val dk = DeadKeys
+            val name = dk.nameOf(v)
+            return if (dk.isDeadKey(v)) ctx.getString(R.string.ui_action_dead, dk.symbol(name), name) to true
+            else ctx.getString(R.string.ui_action_dead_unknown, name) to false
+        }
         if (v.startsWith(TR_VOICE_PREFIX) || v.startsWith(TR_VOICE_ALT_PREFIX)) {
             val spec = VoiceInput.parseTrVoiceSpec(v)
             val desc = if (spec != null) {
@@ -248,6 +256,13 @@ internal object ActionPrompt {
             addView(small(R.string.ui_btn_compose) { input.setText(COMPOSE_ACTION) })
             addView(small(R.string.ui_btn_del_word) { input.setText(DELETE_WORD_ACTION) })
             addView(small(R.string.ui_btn_del_word_fwd) { input.setText(DELETE_WORD_FORWARD_ACTION) })
+            addView(small(R.string.ui_btn_clipboard) { input.setText(CLIPBOARD_ACTION) })
+            addView(small(R.string.ui_btn_dead) {
+                val dk = DeadKeys
+                Ask.choice(ctx, ctx.getString(R.string.ui_btn_dead), dk.NAMES.map { "${dk.symbol(it)}   $it" }) {
+                    input.setText(dk.PREFIX + dk.NAMES[it])
+                }
+            })
             addView(small(R.string.ui_btn_clear) { input.setText("") })
         }
         val box = LinearLayout(ctx).apply {
