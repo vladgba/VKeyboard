@@ -54,6 +54,10 @@
     <string name="ui_set_padding_sub">Адступ вакол кожнай клавішы</string>
     <string name="ui_set_radius">Акругленне вуглоў</string>
     <string name="ui_set_radius_sub">0 = квадратныя клавішы</string>
+    <string name="ui_set_popup_bubble">Памер бурбалак</string>
+    <string name="ui_set_popup_bubble_sub" formatted="false">Дадатковыя сімвалы пры ўтрыманні або свайпе клавішы, % ад клавішы</string>
+    <string name="ui_set_popup_main">Памер цэнтральнай бурбалкі</string>
+    <string name="ui_set_popup_main_sub" formatted="false">Уласны сімвал клавішы ва ўсплывальным акне, % ад клавішы</string>
     <string name="ui_sec_touch">Дотыкі і час</string>
     <string name="ui_set_long_press">Затрымка доўгага націскання</string>
     <string name="ui_set_long_press_sub">Колькі трымаць клавішу для дзеяння доўгага націскання</string>

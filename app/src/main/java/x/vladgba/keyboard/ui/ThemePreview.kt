@@ -10,6 +10,9 @@ import android.view.MotionEvent
 import android.view.View
 import x.vladgba.keyboard.R
 import x.vladgba.keyboard.core.*
+import x.vladgba.keyboard.keyboard.POPUP_SELECTED_SCALE
+import x.vladgba.keyboard.keyboard.popupRing
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -154,28 +157,36 @@ internal class ThemePreview(ctx: Context, private val compact: Boolean = false) 
         c.drawRect(x0, y0, x0 + w, y0 + h, p)
         region(x0, y0, x0 + w, y0 + h, COLOR_KEY_SHADOW)
 
+        // Same look as the keyboard: one bubble per swipe direction around the pressed key.
         val size = min(w - context.dp(10), h - context.dp(10))
-        val left = x0 + (w - size) / 2
-        val top = y0 + (h - size) / 2
-        val cell = size / 3
-        val radius = cell / 4
-        p.color = colors(COLOR_KEY_BORDER)
-        c.drawRoundRect(RectF(left - 2, top - 2, left + size + 2, top + size + 4), radius, radius, p)
-        p.color = colors(COLOR_KEY_POPUP_BACKGROUND)
-        val box = RectF(left, top, left + size, top + size)
-        c.drawRoundRect(box, radius, radius, p)
-        region(box.left, box.top, box.right, box.bottom, COLOR_KEY_POPUP_BACKGROUND)
-
+        val cx0 = x0 + w / 2
+        val cy0 = y0 + h / 2
+        // Same proportions as the keyboard (bubble sizes from the settings), scaled to fit the box.
+        val unit = 1f
+        var r = unit * Settings.num(KEY_POPUP_BUBBLE_SIZE, 60).coerceIn(20, 150) / 200f
+        var rMain = unit * Settings.num(KEY_POPUP_MAIN_BUBBLE_SIZE, 60).coerceIn(20, 150) / 200f
+        var ring = popupRing(r, rMain, unit)
+        val k = (size / 2) / max(ring + r * POPUP_SELECTED_SCALE, rMain * POPUP_SELECTED_SCALE)
+        r *= k; rMain *= k; ring *= k
+        val d = 0.7071f
+        val dirs = listOf(-d to -d, 0f to -1f, d to -d, -1f to 0f, 0f to 0f, 1f to 0f, -d to d, 0f to 1f, d to d)
         val chars = listOf("1", "2", "3", "!", "e", "?", "é", "è", "ê")
         val selected = 1
-        p.textSize = cell / 1.8f
         for ((i, s) in chars.withIndex()) {
-            val cx = left + cell * (i % 3) + cell / 2
-            val cy = top + cell * (i / 3) + cell / 2
+            val cx = cx0 + dirs[i].first * ring
+            val cy = cy0 + dirs[i].second * ring
+            val base = if (i == 4) rMain else r
+            val rr = if (i == selected) base * POPUP_SELECTED_SCALE else base
+            p.textSize = rr * 1.1f
+            p.color = colors(COLOR_KEY_BORDER)
+            c.drawCircle(cx, cy, rr + base * 0.06f, p)
+            p.color = colors(COLOR_KEY_POPUP_BACKGROUND)
+            c.drawCircle(cx, cy, rr, p)
+            region(cx - rr, cy - rr, cx + rr, cy + rr, COLOR_KEY_POPUP_BACKGROUND)
             if (i == selected) {
                 p.color = colors(COLOR_KEY_POPUP_SELECTED)
-                c.drawCircle(cx, cy, cell * 0.48f, p)
-                region(cx - cell / 2, cy - cell / 2, cx + cell / 2, cy + cell / 2, COLOR_KEY_POPUP_SELECTED)
+                c.drawCircle(cx, cy, rr, p)
+                region(cx - rr, cy - rr, cx + rr, cy + rr, COLOR_KEY_POPUP_SELECTED)
             }
             p.color = colors(COLOR_TEXT_PREVIEW)
             val ty = cy + (p.textSize - p.descent()) / 2

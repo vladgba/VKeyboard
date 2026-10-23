@@ -152,6 +152,10 @@ internal const val KEY_TEXT_SIZE_SECONDARY = "fontSizeSecondary"
 internal const val KEY_PADDING = "padding"
 internal const val KEY_HIDE_BORDERS = "borderHide"
 internal const val KEY_BORDER_RADIUS = "radius"
+/** Long-press popup: diameter of the extra-character bubbles, in % of the key's smaller side. */
+internal const val KEY_POPUP_BUBBLE_SIZE = "popupBubbleSize"
+/** Long-press popup: diameter of the middle bubble (the key's own character), in % of the key. */
+internal const val KEY_POPUP_MAIN_BUBBLE_SIZE = "popupMainBubbleSize"
 internal const val KEY_SHADOW = "shadow"
 
 // Color

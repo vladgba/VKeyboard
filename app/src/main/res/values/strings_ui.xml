@@ -63,6 +63,10 @@
     <string name="ui_set_padding_sub">Space around each key</string>
     <string name="ui_set_radius">Corner roundness</string>
     <string name="ui_set_radius_sub">0 = square keys</string>
+    <string name="ui_set_popup_bubble">Popup bubble size</string>
+    <string name="ui_set_popup_bubble_sub" formatted="false">Extra characters shown when you hold or swipe a key, % of the key</string>
+    <string name="ui_set_popup_main">Middle bubble size</string>
+    <string name="ui_set_popup_main_sub" formatted="false">The key\'s own character in the popup, % of the key</string>
     <string name="ui_sec_touch">Touch and timing</string>
     <string name="ui_set_long_press">Long press delay</string>
     <string name="ui_set_long_press_sub">How long to hold a key for its long-press action</string>

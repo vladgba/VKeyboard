@@ -54,6 +54,10 @@
     <string name="ui_set_padding_sub">Празно място около всеки клавиш</string>
     <string name="ui_set_radius">Заобляне на ъглите</string>
     <string name="ui_set_radius_sub">0 = квадратни клавиши</string>
+    <string name="ui_set_popup_bubble">Размер на балончетата</string>
+    <string name="ui_set_popup_bubble_sub" formatted="false">Допълнителни символи при задържане или плъзгане на клавиш, % от клавиша</string>
+    <string name="ui_set_popup_main">Размер на средното балонче</string>
+    <string name="ui_set_popup_main_sub" formatted="false">Собственият символ на клавиша в изскачащия прозорец, % от клавиша</string>
     <string name="ui_sec_touch">Докосване и време</string>
     <string name="ui_set_long_press">Забавяне на дълго натискане</string>
     <string name="ui_set_long_press_sub">Колко дълго да задържите клавиш за действието при дълго натискане</string>

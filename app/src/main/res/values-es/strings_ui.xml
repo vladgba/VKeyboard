@@ -54,6 +54,10 @@
     <string name="ui_set_padding_sub">Espacio alrededor de cada tecla</string>
     <string name="ui_set_radius">Redondeo de esquinas</string>
     <string name="ui_set_radius_sub">0 = teclas cuadradas</string>
+    <string name="ui_set_popup_bubble">Tamaño de las burbujas</string>
+    <string name="ui_set_popup_bubble_sub" formatted="false">Caracteres extra al mantener o deslizar una tecla, % de la tecla</string>
+    <string name="ui_set_popup_main">Tamaño de la burbuja central</string>
+    <string name="ui_set_popup_main_sub" formatted="false">El carácter de la propia tecla en el popup, % de la tecla</string>
     <string name="ui_sec_touch">Toque y tiempos</string>
     <string name="ui_set_long_press">Retardo de pulsación larga</string>
     <string name="ui_set_long_press_sub">Cuánto mantener una tecla para su acción de pulsación larga</string>

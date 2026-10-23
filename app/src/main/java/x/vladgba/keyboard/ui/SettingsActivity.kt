@@ -170,6 +170,8 @@ class SettingsActivity : LocalizedActivity() {
         textSize(KEY_TEXT_SIZE_SECONDARY, R.string.ui_set_hint_size, R.string.ui_set_hint_size_sub, 5f)
         int(KEY_PADDING, R.string.ui_set_padding, R.string.ui_set_padding_sub, 0, 40, 1, 10) { "$it px" }
         int(KEY_BORDER_RADIUS, R.string.ui_set_radius, R.string.ui_set_radius_sub, 0, 60, 1, 10) { "$it px" }
+        int(KEY_POPUP_BUBBLE_SIZE, R.string.ui_set_popup_bubble, R.string.ui_set_popup_bubble_sub, 30, 120, 5, 60) { "$it%" }
+        int(KEY_POPUP_MAIN_BUBBLE_SIZE, R.string.ui_set_popup_main, R.string.ui_set_popup_main_sub, 30, 120, 5, 60) { "$it%" }
 
         page.header(getString(R.string.ui_sec_touch))
         int(SENSE_HOLD_PRESS, R.string.ui_set_long_press, R.string.ui_set_long_press_sub, 100, 1000, 25, 300) { "$it ms" }

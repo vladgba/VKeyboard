@@ -54,6 +54,10 @@
     <string name="ui_set_padding_sub">Marge autour de chaque touche</string>
     <string name="ui_set_radius">Arrondi des coins</string>
     <string name="ui_set_radius_sub">0 = touches carrées</string>
+    <string name="ui_set_popup_bubble">Taille des bulles</string>
+    <string name="ui_set_popup_bubble_sub" formatted="false">Caractères supplémentaires en maintenant ou glissant une touche, % de la touche</string>
+    <string name="ui_set_popup_main">Taille de la bulle centrale</string>
+    <string name="ui_set_popup_main_sub" formatted="false">Le caractère de la touche elle-même dans le popup, % de la touche</string>
     <string name="ui_sec_touch">Toucher et délais</string>
     <string name="ui_set_long_press">Délai de l\'appui long</string>
     <string name="ui_set_long_press_sub">Durée de maintien d\'une touche pour son action d\'appui long</string>

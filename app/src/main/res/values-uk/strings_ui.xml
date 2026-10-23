@@ -54,6 +54,10 @@
     <string name="ui_set_padding_sub">Відступ навколо кожної клавіші</string>
     <string name="ui_set_radius">Заокруглення кутів</string>
     <string name="ui_set_radius_sub">0 = квадратні клавіші</string>
+    <string name="ui_set_popup_bubble">Розмір бульбашок</string>
+    <string name="ui_set_popup_bubble_sub" formatted="false">Додаткові символи під час утримання або свайпу клавіші, % від клавіші</string>
+    <string name="ui_set_popup_main">Розмір центральної бульбашки</string>
+    <string name="ui_set_popup_main_sub" formatted="false">Власний символ клавіші у спливаючому вікні, % від клавіші</string>
     <string name="ui_sec_touch">Дотики й час</string>
     <string name="ui_set_long_press">Затримка довгого натискання</string>
     <string name="ui_set_long_press_sub">Скільки тримати клавішу для дії довгого натискання</string>

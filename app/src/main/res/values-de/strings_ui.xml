@@ -54,6 +54,10 @@
     <string name="ui_set_padding_sub">Freiraum um jede Taste</string>
     <string name="ui_set_radius">Eckenrundung</string>
     <string name="ui_set_radius_sub">0 = eckige Tasten</string>
+    <string name="ui_set_popup_bubble">Blasengröße</string>
+    <string name="ui_set_popup_bubble_sub" formatted="false">Zusatzzeichen beim Halten oder Wischen einer Taste, % der Taste</string>
+    <string name="ui_set_popup_main">Größe der mittleren Blase</string>
+    <string name="ui_set_popup_main_sub" formatted="false">Das Zeichen der Taste selbst im Popup, % der Taste</string>
     <string name="ui_sec_touch">Berührung und Timing</string>
     <string name="ui_set_long_press">Verzögerung für langes Drücken</string>
     <string name="ui_set_long_press_sub">Wie lange eine Taste für ihre Langdruck-Aktion gehalten wird</string>

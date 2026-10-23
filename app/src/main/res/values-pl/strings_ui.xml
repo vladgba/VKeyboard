@@ -54,6 +54,10 @@
     <string name="ui_set_padding_sub">Margines wokół każdego klawisza</string>
     <string name="ui_set_radius">Zaokrąglenie rogów</string>
     <string name="ui_set_radius_sub">0 = kwadratowe klawisze</string>
+    <string name="ui_set_popup_bubble">Rozmiar bąbelków</string>
+    <string name="ui_set_popup_bubble_sub" formatted="false">Dodatkowe znaki po przytrzymaniu lub przesunięciu klawisza, % klawisza</string>
+    <string name="ui_set_popup_main">Rozmiar środkowego bąbelka</string>
+    <string name="ui_set_popup_main_sub" formatted="false">Własny znak klawisza w okienku, % klawisza</string>
     <string name="ui_sec_touch">Dotyk i czas</string>
     <string name="ui_set_long_press">Czas długiego naciśnięcia</string>
     <string name="ui_set_long_press_sub">Jak długo trzymać klawisz, by wykonać akcję długiego naciśnięcia</string>

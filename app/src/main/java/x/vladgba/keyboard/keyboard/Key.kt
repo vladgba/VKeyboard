@@ -15,6 +15,7 @@ import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -27,6 +28,27 @@ import kotlin.math.min
  *  5 6 7
  * ```
  */
+/** Popup bubble directions, in swipe order: up-left, up, up-right, left, right, down-left, down, down-right. */
+private const val POPUP_DIAG = 0.7071f
+private val POPUP_DIR_X = floatArrayOf(-POPUP_DIAG, 0f, POPUP_DIAG, -1f, 1f, -POPUP_DIAG, 0f, POPUP_DIAG)
+private val POPUP_DIR_Y = floatArrayOf(-POPUP_DIAG, -1f, -POPUP_DIAG, 0f, 0f, POPUP_DIAG, 1f, POPUP_DIAG)
+
+/** Selected bubbles grow by this factor. */
+internal const val POPUP_SELECTED_SCALE = 1.14f
+
+/**
+ * Distance from the key centre to the popup bubbles for bubble radius [r] and middle bubble
+ * radius [rMain]: far enough that neighbouring bubbles (45 degrees apart) and the middle bubble
+ * never overlap, even with one of them enlarged as selected.
+ */
+internal fun popupRing(r: Float, rMain: Float, unit: Float): Float {
+    val gap = unit * 0.04f
+    val s = POPUP_SELECTED_SCALE
+    val betweenNeighbours = (r * s + r + gap) / 0.7654f   // chord of 45 degrees = 2 sin(22.5) ring
+    val fromMiddle = max(rMain * s + r, rMain + r * s) + gap
+    return max(betweenNeighbours, fromMiddle)
+}
+
 class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: FlexNode) : FlexNode(opts, row) {
 
     enum class InputMode { LABEL, CODE, TEXT }
@@ -512,50 +534,102 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
     }
 
     /** Draws the 3x3 preview popup for the pressed key (on top of the whole keyboard). */
+    /**
+     * The long-press popup: the key's extra characters as small round bubbles around the key,
+     * one per swipe direction, with the key's own character in the middle bubble.
+     *
+     * The popup never moves: the middle bubble is always right over the key. A bubble that would
+     * stick out past the keyboard's sides or bottom (or above the [above] head-room the input
+     * method keeps over the keyboard, drawn over the app) is left out, so keys at the screen edge
+     * only show the characters pointing away from it.
+     */
     fun drawPopup(canvas: Canvas, viewW: Int, viewH: Int, above: Int = 0) {
         val isClipboard = bool(KEY_CLIPBOARD)
         if (childCount() == 0 && !isClipboard) return
         canvas.save()
         val p = c.popupPaint
         p.textAlign = Paint.Align.CENTER
-        p.textSize = height / float(KEY_TEXT_SIZE_PRIMARY, 2.5f)
+        p.style = Paint.Style.FILL
 
         // dim the keyboard
         p.color = c.color(COLOR_KEY_SHADOW, this)
         canvas.drawRect(0f, 0f, viewW.toFloat(), viewH.toFloat(), p)
 
-        // Keep the popup on screen: sideways inside the keyboard, upwards it may use the [above]
-        // head-room the input method keeps over the keyboard (drawn over the app).
-        val dx = (-(x - width)).coerceAtLeast(0) - ((x + width * 2) - viewW).coerceAtLeast(0)
-        val dy = (-(y - height) - above).coerceAtLeast(0) - ((y + height * 2) - viewH).coerceAtLeast(0)
-        canvas.translate(dx.toFloat(), dy.toFloat())
+        val unit = min(width, height).toFloat()
+        val r = unit * popupBubblePct(KEY_POPUP_BUBBLE_SIZE) / 200f          // bubble radius
+        val rMain = unit * popupBubblePct(KEY_POPUP_MAIN_BUBBLE_SIZE) / 200f // middle bubble radius
+        val ring = popupRing(r, rMain, unit)   // distance from the key centre to a bubble centre
+        val cx = x + width / 2f
+        val cy = y + height / 2f
 
-        val x1 = -width / 2f
-        val x2 = width / 2f
-        val x3 = width * 1.5f
-        val y1 = -height / 2f
-        val y2 = height / 2f
-        val y3 = height * 1.5f
+        // Where each extra character sits (same order as the swipe directions).
+        val used = BooleanArray(8) { isClipboard || str(it).isNotBlank() }
+        val bx = FloatArray(8) { cx + POPUP_DIR_X[it] * ring }
+        val by = FloatArray(8) { cy + POPUP_DIR_Y[it] * ring }
 
-        val showSlotText = isClipboard && charPos > 0 && str(charPos - 1).isNotEmpty()
-        if (!showSlotText) canvas.clipRect(x - width, y - height, x + width * 2, y + height * 2)
+        // Only the bubbles that hold a character and fit entirely on screen.
+        val shown = BooleanArray(8) {
+            used[it] && bx[it] - r >= 0f && bx[it] + r <= viewW &&
+                by[it] - r >= -above && by[it] + r <= viewH
+        }
 
-        val padding = float(KEY_PADDING, height / 16f)
-        val radius = float(KEY_BORDER_RADIUS, height / 16f)
-        p.color = c.color(COLOR_KEY_BORDER, this)
-        canvas.drawRoundRect(RectF(x + x1 * 2, y + y1 * 2, x - x1 + x3, y - y1 + y3), radius, radius, p)
-        p.color = c.color(COLOR_KEY_POPUP_BACKGROUND, this)
-        canvas.drawRoundRect(
-            RectF(x + x1 * 2 + padding / 3, y + y1 * 2, x - x1 + x3 - padding / 3, y - y1 + y3 - padding),
-            radius, radius, p
-        )
-        if (showSlotText) {
+        // Text size per px of bubble radius: the default look at the default 60% bubble, and it
+        // scales with the bubble.
+        val textSize = height / float(KEY_TEXT_SIZE_PRIMARY, 2.5f) * 0.68f / (0.3f * unit)
+        val sh = c.letterShift()
+        val selected = c.color(COLOR_KEY_POPUP_SELECTED, this)
+        for (i in 0..7) {
+            if (!shown[i]) continue
+            val label = popupLabel(i, sh)
+            drawBubble(canvas, p, bx[i], by[i], r, label, textSize * r, charPos == i + 1, selected)
+        }
+        drawBubble(canvas, p, cx, cy, rMain, shiftedLabel(), textSize * rMain, charPos == 0, selected)
+        canvas.restore()
+
+        // Clipboard slot: show what the selected slot holds, centred above the keyboard.
+        if (isClipboard && charPos > 0 && str(charPos - 1).isNotEmpty()) {
             p.color = c.color(COLOR_TEXT_PRIMARY, this)
             p.textSize = height / float(KEY_TEXT_SIZE_SECONDARY, 5f)
-            canvas.drawText(str(charPos - 1), viewW / 2f - dx, height / 5 + (p.textSize - p.descent()) / 2, p)
+            canvas.drawText(str(charPos - 1), viewW / 2f, height / 5 + (p.textSize - p.descent()) / 2, p)
         }
-        drawExtChars(canvas, p, x, y, x1, x2, x3, y1, y2, y3, true)
-        canvas.restore()
+    }
+
+    private fun popupBubblePct(key: String) = num(key, 60).coerceIn(20, 150).toFloat()
+
+    private fun popupLabel(pos: Int, sh: Boolean): String {
+        val raw = str(pos)
+        if (raw.isBlank()) return ""
+        val s = when {
+            raw == VOICE_ACTION -> "🎤"
+            raw.startsWith(TR_VOICE_PREFIX) || raw.startsWith(TR_VOICE_ALT_PREFIX) -> "🎤🌐"
+            raw == COMPOSE_ACTION -> "⎄"
+            else -> raw
+        }
+        return if (s.length == 1) c.getShifted(s[0].code, sh).toChar().toString() else s
+    }
+
+    /** One popup bubble; the selected one is a little larger and tinted. */
+    private fun drawBubble(
+        cv: Canvas, p: Paint, bx: Float, by: Float, r: Float,
+        label: String, textSize: Float, isSelected: Boolean, selectedColor: Int
+    ) {
+        val rr = if (isSelected) r * POPUP_SELECTED_SCALE else r
+        p.style = Paint.Style.FILL
+        p.color = c.color(COLOR_KEY_BORDER, this)
+        cv.drawCircle(bx, by, rr + r * 0.06f, p)
+        p.color = c.color(COLOR_KEY_POPUP_BACKGROUND, this)
+        cv.drawCircle(bx, by, rr, p)
+        if (isSelected) {
+            p.color = selectedColor
+            cv.drawCircle(bx, by, rr, p)
+        }
+        if (label.isEmpty()) return
+        p.color = c.color(COLOR_TEXT_PREVIEW, this)
+        p.textSize = textSize * (if (isSelected) POPUP_SELECTED_SCALE else 1f)
+        // Longer labels (words, emoji pairs) shrink to fit inside the bubble.
+        val w = p.measureText(label)
+        if (w > rr * 1.6f) p.textSize *= rr * 1.6f / w
+        cv.drawText(label, bx, by + (p.textSize - p.descent()) / 2, p)
     }
 
     private fun drawExtChars(

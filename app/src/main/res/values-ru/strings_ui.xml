@@ -54,6 +54,10 @@
     <string name="ui_set_padding_sub">Отступ вокруг каждой клавиши</string>
     <string name="ui_set_radius">Скругление углов</string>
     <string name="ui_set_radius_sub">0 = квадратные клавиши</string>
+    <string name="ui_set_popup_bubble">Размер пузырьков</string>
+    <string name="ui_set_popup_bubble_sub" formatted="false">Дополнительные символы при удержании или свайпе клавиши, % от клавиши</string>
+    <string name="ui_set_popup_main">Размер центрального пузырька</string>
+    <string name="ui_set_popup_main_sub" formatted="false">Собственный символ клавиши во всплывающем окне, % от клавиши</string>
     <string name="ui_sec_touch">Касания и время</string>
     <string name="ui_set_long_press">Задержка долгого нажатия</string>
     <string name="ui_set_long_press_sub">Сколько держать клавишу для действия долгого нажатия</string>

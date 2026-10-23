@@ -54,6 +54,10 @@
     <string name="ui_set_padding_sub">Spațiul din jurul fiecărei taste</string>
     <string name="ui_set_radius">Rotunjirea colțurilor</string>
     <string name="ui_set_radius_sub">0 = taste pătrate</string>
+    <string name="ui_set_popup_bubble">Mărimea bulelor</string>
+    <string name="ui_set_popup_bubble_sub" formatted="false">Caractere suplimentare la ținerea sau glisarea unei taste, % din tastă</string>
+    <string name="ui_set_popup_main">Mărimea bulei din mijloc</string>
+    <string name="ui_set_popup_main_sub" formatted="false">Caracterul propriu al tastei în popup, % din tastă</string>
     <string name="ui_sec_touch">Atingere și durate</string>
     <string name="ui_set_long_press">Durata apăsării lungi</string>
     <string name="ui_set_long_press_sub">Cât timp ții o tastă pentru acțiunea de apăsare lungă</string>
