@@ -97,6 +97,12 @@
     <string name="ui_set_number_row_sub">Ajoute une rangée de chiffres au-dessus des dispositions qui n\'en ont pas</string>
     <string name="ui_nr_digits">Chiffres</string>
     <string name="ui_nr_symbols">Chiffres + symboles</string>
+    <string name="ui_set_split">Clavier scindé</string>
+    <string name="ui_set_split_sub">Deux moitiés avec un centre vide, plus faciles à atteindre avec les pouces</string>
+    <string name="ui_split_wide">Écrans larges</string>
+    <string name="ui_split_always">Toujours</string>
+    <string name="ui_set_split_gap">Écart central</string>
+    <string name="ui_set_split_gap_sub" formatted="false">Largeur du centre vide, % du clavier</string>
     <string name="ui_clip_never">Sans expiration</string>
     <string name="ui_btn_del_word">⌫⌫ Effacer le mot</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Effacer le mot suivant</string>

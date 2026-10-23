@@ -97,6 +97,12 @@
     <string name="ui_set_number_row_sub">Добавя ред с цифри над подредбите, които нямат такъв</string>
     <string name="ui_nr_digits">Цифри</string>
     <string name="ui_nr_symbols">Цифри + символи</string>
+    <string name="ui_set_split">Разделена клавиатура</string>
+    <string name="ui_set_split_sub">Две половини с празна среда, по-удобно за палците</string>
+    <string name="ui_split_wide">Широки екрани</string>
+    <string name="ui_split_always">Винаги</string>
+    <string name="ui_set_split_gap">Разстояние при разделяне</string>
+    <string name="ui_set_split_gap_sub" formatted="false">Ширина на празната среда, % от клавиатурата</string>
     <string name="ui_clip_never">Без изтичане</string>
     <string name="ui_btn_del_word">⌫⌫ Изтрий дума</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Изтрий следваща дума</string>

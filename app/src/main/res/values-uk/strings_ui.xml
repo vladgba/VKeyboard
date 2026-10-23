@@ -97,6 +97,12 @@
     <string name="ui_set_number_row_sub">Додає ряд цифр над розкладками, де його немає</string>
     <string name="ui_nr_digits">Цифри</string>
     <string name="ui_nr_symbols">Цифри + символи</string>
+    <string name="ui_set_split">Розділена клавіатура</string>
+    <string name="ui_set_split_sub">Дві половини з порожньою серединою, зручніше набирати двома великими пальцями</string>
+    <string name="ui_split_wide">Широкі екрани</string>
+    <string name="ui_split_always">Завжди</string>
+    <string name="ui_set_split_gap">Проміжок розділення</string>
+    <string name="ui_set_split_gap_sub" formatted="false">Ширина порожньої середини, % від клавіатури</string>
     <string name="ui_clip_never">Безстроково</string>
     <string name="ui_btn_del_word">⌫⌫ Видалити слово</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Видалити наступне слово</string>

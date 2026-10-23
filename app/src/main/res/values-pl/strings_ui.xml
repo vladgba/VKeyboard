@@ -97,6 +97,12 @@
     <string name="ui_set_number_row_sub">Dodaje rząd cyfr nad układami, które go nie mają</string>
     <string name="ui_nr_digits">Cyfry</string>
     <string name="ui_nr_symbols">Cyfry + symbole</string>
+    <string name="ui_set_split">Dzielona klawiatura</string>
+    <string name="ui_set_split_sub">Dwie połówki z pustym środkiem, łatwiej sięgnąć kciukami</string>
+    <string name="ui_split_wide">Szerokie ekrany</string>
+    <string name="ui_split_always">Zawsze</string>
+    <string name="ui_set_split_gap">Przerwa podziału</string>
+    <string name="ui_set_split_gap_sub" formatted="false">Szerokość pustego środka, % klawiatury</string>
     <string name="ui_clip_never">Bez wygasania</string>
     <string name="ui_btn_del_word">⌫⌫ Usuń słowo</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Usuń następne słowo</string>

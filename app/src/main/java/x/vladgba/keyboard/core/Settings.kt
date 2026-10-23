@@ -53,6 +53,8 @@ private val DEFAULTS = FlexParser.parse(
     "$SETTING_CLIP_HISTORY": "1",
     "$SETTING_CLIP_EXPIRY": 15,
     "$SETTING_NUMBER_ROW": 0,
+    "$SETTING_SPLIT": 1,
+    "$SETTING_SPLIT_GAP": 25,
     "$SENSE_HOLD_PRESS": 300,
     "$SENSE_HOLD_PRESS_REPEAT": 50,
     "$KEY_VISIBLE": 1,

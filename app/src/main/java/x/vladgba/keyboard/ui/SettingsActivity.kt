@@ -70,6 +70,24 @@ class SettingsActivity : LocalizedActivity() {
         row.setOnLongClickListener { reset(key); true }
     }
 
+    /** "Split keyboard": off / wide screens / always, stored as 0 / 1 / 2. */
+    private fun splitChoice() {
+        val names = listOf(getString(R.string.ui_off), getString(R.string.ui_split_wide), getString(R.string.ui_split_always))
+        val cur = Settings.num(SETTING_SPLIT, 1).coerceIn(0, 2)
+        val row = page.row(getString(R.string.ui_set_split), getString(R.string.ui_set_split_sub)) {
+            Ask.choice(this, getString(R.string.ui_set_split), names, cur) {
+                set(SETTING_SPLIT, it.toString())
+                render()
+            }
+        }
+        row.end.addView(android.widget.TextView(this).apply {
+            text = names[cur]
+            setTextColor(COLOR_ACCENT)
+            textSize = 15f
+        })
+        row.setOnLongClickListener { reset(SETTING_SPLIT); true }
+    }
+
     /** "Number row": off / digits / digits + symbols, stored as 0 / 1 / 2. */
     private fun numberRowChoice() {
         val names = listOf(getString(R.string.ui_off), getString(R.string.ui_nr_digits), getString(R.string.ui_nr_symbols))
@@ -204,6 +222,8 @@ class SettingsActivity : LocalizedActivity() {
             if (it == 0) getString(R.string.ui_off) else "$it dp"
         }
         numberRowChoice()
+        splitChoice()
+        int(SETTING_SPLIT_GAP, R.string.ui_set_split_gap, R.string.ui_set_split_gap_sub, 5, 60, 5, 25) { "$it%" }
         textSize(KEY_TEXT_SIZE_PRIMARY, R.string.ui_set_label_size, R.string.ui_set_label_size_sub, 2.5f)
         textSize(KEY_TEXT_SIZE_SECONDARY, R.string.ui_set_hint_size, R.string.ui_set_hint_size_sub, 5f)
         int(KEY_PADDING, R.string.ui_set_padding, R.string.ui_set_padding_sub, 0, 40, 1, 10) { "$it px" }

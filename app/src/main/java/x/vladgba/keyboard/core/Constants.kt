@@ -214,6 +214,10 @@ internal const val SETTING_CLIP_HISTORY = "clipHistory"
 internal const val SETTING_CLIP_EXPIRY = "clipExpiry"
 /** Row of digits added on top of typing layouts: 0 off, 1 digits, 2 digits + symbols (also a per-layout override). */
 internal const val SETTING_NUMBER_ROW = "numberRow"
+/** Split keyboard: 0 off, 1 on wide screens (keyboard at least 600dp wide), 2 always. */
+internal const val SETTING_SPLIT = "split"
+/** Width of the empty middle of a split keyboard, in % of the keyboard width. */
+internal const val SETTING_SPLIT_GAP = "splitGap"
 /** Key option: action for a clockwise circle drawn on the key. Default: capital letter on letter keys,
  *  delete the previous word on Backspace, Caps Lock on Shift. */
 internal const val KEY_CIRCLE = "circle"

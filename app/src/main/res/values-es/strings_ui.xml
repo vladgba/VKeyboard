@@ -97,6 +97,12 @@
     <string name="ui_set_number_row_sub">Añade una fila de dígitos encima de las distribuciones que no la tienen</string>
     <string name="ui_nr_digits">Dígitos</string>
     <string name="ui_nr_symbols">Dígitos + símbolos</string>
+    <string name="ui_set_split">Teclado dividido</string>
+    <string name="ui_set_split_sub">Dos mitades con el centro vacío, más fácil de alcanzar con ambos pulgares</string>
+    <string name="ui_split_wide">Pantallas anchas</string>
+    <string name="ui_split_always">Siempre</string>
+    <string name="ui_set_split_gap">Separación</string>
+    <string name="ui_set_split_gap_sub" formatted="false">Ancho del centro vacío, % del teclado</string>
     <string name="ui_clip_never">Sin caducidad</string>
     <string name="ui_btn_del_word">⌫⌫ Borrar palabra</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Borrar palabra siguiente</string>

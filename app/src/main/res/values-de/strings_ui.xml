@@ -97,6 +97,12 @@
     <string name="ui_set_number_row_sub">Fügt Layouts ohne Ziffernreihe oben eine hinzu</string>
     <string name="ui_nr_digits">Ziffern</string>
     <string name="ui_nr_symbols">Ziffern + Symbole</string>
+    <string name="ui_set_split">Geteilte Tastatur</string>
+    <string name="ui_set_split_sub">Zwei Hälften mit leerer Mitte, mit beiden Daumen besser erreichbar</string>
+    <string name="ui_split_wide">Breite Bildschirme</string>
+    <string name="ui_split_always">Immer</string>
+    <string name="ui_set_split_gap">Abstand der Hälften</string>
+    <string name="ui_set_split_gap_sub" formatted="false">Breite der leeren Mitte, % der Tastatur</string>
     <string name="ui_clip_never">Unbegrenzt</string>
     <string name="ui_btn_del_word">⌫⌫ Wort löschen</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Nächstes Wort löschen</string>

@@ -97,6 +97,12 @@
     <string name="ui_set_number_row_sub">Добавляет ряд цифр над раскладками, где его нет</string>
     <string name="ui_nr_digits">Цифры</string>
     <string name="ui_nr_symbols">Цифры + символы</string>
+    <string name="ui_set_split">Разделённая клавиатура</string>
+    <string name="ui_set_split_sub">Две половины с пустой серединой, удобнее набирать двумя большими пальцами</string>
+    <string name="ui_split_wide">Широкие экраны</string>
+    <string name="ui_split_always">Всегда</string>
+    <string name="ui_set_split_gap">Промежуток разделения</string>
+    <string name="ui_set_split_gap_sub" formatted="false">Ширина пустой середины, % от клавиатуры</string>
     <string name="ui_clip_never">Бессрочно</string>
     <string name="ui_btn_del_word">⌫⌫ Удалить слово</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Удалить следующее слово</string>

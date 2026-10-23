@@ -97,6 +97,12 @@
     <string name="ui_set_number_row_sub">Adaugă un rând de cifre deasupra aranjamentelor care nu au unul</string>
     <string name="ui_nr_digits">Cifre</string>
     <string name="ui_nr_symbols">Cifre + simboluri</string>
+    <string name="ui_set_split">Tastatură divizată</string>
+    <string name="ui_set_split_sub">Două jumătăți cu mijlocul gol, mai ușor de atins cu ambele degete mari</string>
+    <string name="ui_split_wide">Ecrane late</string>
+    <string name="ui_split_always">Întotdeauna</string>
+    <string name="ui_set_split_gap">Spațiu de divizare</string>
+    <string name="ui_set_split_gap_sub" formatted="false">Lățimea mijlocului gol, % din tastatură</string>
     <string name="ui_clip_never">Fără expirare</string>
     <string name="ui_btn_del_word">⌫⌫ Șterge cuvântul</string>
     <string name="ui_btn_del_word_fwd">⌦⌦ Șterge cuvântul următor</string>

@@ -33,6 +33,8 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 | `clipHistory` | `1` | Remember copied text (clipboard history, opened with `@CLIPBOARD`). `0` turns it off. |
 | `clipExpiry` | `15` | Minutes unpinned clips are kept; `0` = never expire. Pinned clips stay until removed. |
 | `numberRow` | `0` | Adds a row of digits on top of typing layouts that don't have one: `0` off, `1` digits, `2` digits with `! @ # $ % ^ & * ( )` on swipe-up. A layout can set its own `"numberRow"` (e.g. `"0"`) to override it. The layout files are not changed. |
+| `split` | `1` | Split keyboard: `0` off, `1` on wide screens (keyboard at least 600dp wide: unfolded foldables, tablets, phones in landscape), `2` always. Each row splits at the key boundary nearest the middle; a wide key across the middle (the space bar) is stretched over the gap. |
+| `splitGap` | `25` | Width of the empty middle of a split keyboard, in % of its width. |
 | `smartPunctuation` | `1` | Cleans space before punctuation: typing punctuation (. , ! ? : ;) after a space removes the space. |
 | `appLayouts` | `()` | Default layout per app package, e.g. `("com.termux": "code")`. |
 | `errorToasts` | `1` | Shows errors as toasts. With `0`, errors are only logged. |

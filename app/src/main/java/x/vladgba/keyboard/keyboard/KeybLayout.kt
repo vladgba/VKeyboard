@@ -30,6 +30,7 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
     private var measuredPortrait = true
     private var measuredRefSize = -1f
     private var measuredBottomPad = -1
+    private var measuredGap = -1
 
     init {
         try {
@@ -60,22 +61,38 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
     fun measure(viewWidth: Int, portrait: Boolean, force: Boolean = false) {
         val refSize = refSize(portrait)
         val bottomPad = Settings.num(SETTING_BOTTOM_PADDING, 0)
-        if (!force && viewWidth == measuredWidth && portrait == measuredPortrait && refSize == measuredRefSize && bottomPad == measuredBottomPad) return
+        val gap = splitGap(viewWidth)
+        if (!force && viewWidth == measuredWidth && portrait == measuredPortrait && refSize == measuredRefSize &&
+            bottomPad == measuredBottomPad && gap == measuredGap) return
         measuredWidth = viewWidth
         measuredPortrait = portrait
         measuredRefSize = refSize
         measuredBottomPad = bottomPad
+        measuredGap = gap
         width = viewWidth
 
         var y = 0
         for (row in rows) {
             row.y = y
             row.height = (refSize * row.ownHeight()).toInt()
-            row.layoutKeys(viewWidth)
+            row.layoutKeys(viewWidth, gap)
             y += row.height
         }
         val bottomPadPx = if (bottomPad > 0) (bottomPad * c.ctx.resources.displayMetrics.density).roundToInt() else 0
         height = (y + bottomPadPx).coerceAtLeast(1)
+    }
+
+    /**
+     * Width of the empty middle when the keyboard is split, 0 when it isn't: never in the layout
+     * editor; on wide screens (keyboard at least 600dp wide, e.g. unfolded foldables, tablets,
+     * phones in landscape) or always, depending on the `split` setting.
+     */
+    private fun splitGap(viewWidth: Int): Int {
+        if (c.isEditor) return 0
+        val mode = Settings.num(SETTING_SPLIT, 1)
+        val wide = viewWidth / c.ctx.resources.displayMetrics.density >= 600f
+        if (mode == 0 || (mode == 1 && !wide)) return 0
+        return (viewWidth * Settings.num(SETTING_SPLIT_GAP, 25).coerceIn(5, 60) / 100f).roundToInt()
     }
 
     /** Recomputes geometry after an edit (rows/keys added, removed, resized). */
@@ -85,7 +102,8 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
         if (y < 0 || x < 0) return null
         for (row in rows) {
             if (y < row.y + row.height) {
-                for (key in row.keys) if (key.width > 0 && x < key.x + key.width) return key
+                // Keys left of the split gap end before it, so a touch in the gap hits nothing.
+                for (key in row.keys) if (key.width > 0 && x < key.x + key.width) return if (x >= key.x) key else null
                 return null
             }
         }
@@ -139,7 +157,13 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
         /** The row's own height multiplier (not inherited: the layout-level value is already in refSize). */
         fun ownHeight(): Float = (params[ROW_HEIGHT] as? String)?.toFloatOrNull() ?: 1f
 
-        fun layoutKeys(viewWidth: Int) {
+        /**
+         * Places the keys across [viewWidth]. With a [gap] (split keyboard) the row is laid out in
+         * `viewWidth - gap` and the keys right of the key boundary nearest the middle move right by
+         * [gap]; a wide key lying across the middle (the space bar) is stretched over the gap instead.
+         */
+        fun layoutKeys(viewWidth: Int, gap: Int = 0) {
+            val w = viewWidth - gap
             var total = 0f
             for (key in keys) if (!key.bool(KEY_DO_NOT_SHOW)) total += key.float(KEY_WIDTH, 1f)
             // Accumulate in float so rounding errors don't leave a gap at the right edge.
@@ -152,11 +176,29 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
                     key.width = 0
                     continue
                 }
-                acc += viewWidth * key.float(KEY_WIDTH, 1f) / total
+                acc += w * key.float(KEY_WIDTH, 1f) / total
                 val right = acc.roundToInt()
                 key.width = right - x
                 x = right
             }
+            if (gap <= 0) return
+
+            val mid = w / 2f
+            val visible = keys.filter { it.width > 0 }
+            val across = visible.firstOrNull { k ->
+                val l = k.x.toFloat()
+                val r = (k.x + k.width).toFloat()
+                k.float(KEY_WIDTH, 1f) >= 2f && l < mid && r > mid && minOf(mid - l, r - mid) >= k.width * 0.25f
+            }
+            if (across != null) {
+                val start = across.x
+                across.width += gap
+                for (k in keys) if (k !== across && k.x > start) k.x += gap
+                return
+            }
+            // Split at the key boundary closest to the middle.
+            val boundary = visible.map { it.x + it.width }.minByOrNull { kotlin.math.abs(it - mid) } ?: return
+            for (k in keys) if (k.x >= boundary) k.x += gap
         }
 
         fun add(key: Key, index: Int = keys.size) {
