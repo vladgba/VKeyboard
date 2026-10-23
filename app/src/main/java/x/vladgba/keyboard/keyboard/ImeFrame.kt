@@ -3,8 +3,11 @@ package x.vladgba.keyboard.keyboard
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
+import x.vladgba.keyboard.core.COLOR_KEYBOARD_BACKGROUND
 
 /**
  * What the input method shows: the keyboard at the bottom plus transparent head-room above it,
@@ -13,6 +16,9 @@ import android.view.ViewGroup
  *
  * The head-room never takes touches and never resizes the app: [KeybWrapper.onComputeInsets]
  * reports only the keyboard itself as content and touchable area.
+ *
+ * Below the keyboard sits a strip as tall as the navigation bar: since Android 15 the input
+ * method window is drawn edge-to-edge, so without it the bottom row hides under the nav buttons.
  */
 @SuppressLint("ViewConstructor")
 class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
@@ -22,6 +28,9 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
     /** Space reserved above the keyboard, in px. */
     var headroom = 0
         private set
+
+    /** Space reserved below the keyboard for the navigation bar, in px. */
+    private var navInset = 0
 
     init {
         (keyboardView.parent as? ViewGroup)?.removeView(keyboardView)
@@ -38,7 +47,29 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
         val h = keyboardView.measuredHeight
         headroom = kb.popupHeadroom()
         overlay.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h + headroom, MeasureSpec.EXACTLY))
-        setMeasuredDimension(w, h + headroom)
+        setMeasuredDimension(w, h + headroom + navInset)
+    }
+
+    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        val bottom = if (Build.VERSION.SDK_INT >= 30) insets.getInsets(WindowInsets.Type.navigationBars()).bottom else 0
+        if (bottom != navInset) {
+            navInset = bottom
+            requestLayout()
+        }
+        return super.onApplyWindowInsets(insets)
+    }
+
+    override fun dispatchDraw(canvas: Canvas) {
+        if (navInset > 0) {
+            val p = kb.paint
+            p.color = kb.color(COLOR_KEYBOARD_BACKGROUND, kb.currentLayout)
+            val top = (headroom + keyboardView.height).toFloat()
+            val old = p.style
+            p.style = android.graphics.Paint.Style.FILL
+            canvas.drawRect(0f, top, width.toFloat(), top + navInset, p)
+            p.style = old
+        }
+        super.dispatchDraw(canvas)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
