@@ -506,12 +506,37 @@ class EditInterface(private val c: Keyboard, private val onChange: () -> Unit) {
         val r = dialog.findViewById<RadioButton>(rb)
         if (r.isChecked) dialog.findViewById<LinearLayout>(show).visibility = View.VISIBLE
         r.setOnClickListener {
+            if (!r.isChecked) return@setOnClickListener
+            val previous = key().str(KEY_MODE)
             hideAll(dialog)
-            if (r.isChecked) {
-                key()[KEY_MODE] = mode
-                dialog.findViewById<LinearLayout>(show).visibility = View.VISIBLE
-            }
+            key()[KEY_MODE] = mode
+            dialog.findViewById<LinearLayout>(show).visibility = View.VISIBLE
+            if (mode == KEY_MODE_JOY && previous != KEY_MODE_JOY && key().circleCapitalizes())
+                warnJoyOnLetter(dialog, previous)
         }
+    }
+
+    /**
+     * Joystick mode on a letter that a circle capitalizes: drags and circles compete for the same
+     * finger movement. Lets the user keep it or go back to the previous mode.
+     */
+    private fun warnJoyOnLetter(dialog: Dialog, previous: String) {
+        AlertDialog.Builder(ctx)
+            .setTitle(R.string.ui_joy_letter_title)
+            .setMessage(R.string.ui_joy_letter_msg)
+            .setPositiveButton(R.string.ui_joy_letter_keep, null)
+            .setNegativeButton(android.R.string.cancel) { _, _ ->
+                if (previous.isEmpty()) key().params.remove(KEY_MODE) else key()[KEY_MODE] = previous
+                val (radio, panel) = when (previous) {
+                    KEY_MODE_META -> R.id.radio_meta to R.id.edit_meta
+                    KEY_MODE_RANDOM -> R.id.radio_random to R.id.edit_random
+                    else -> R.id.radio_popup to R.id.edit_popup
+                }
+                hideAll(dialog)
+                dialog.findViewById<RadioButton>(radio).isChecked = true
+                dialog.findViewById<LinearLayout>(panel).visibility = View.VISIBLE
+            }
+            .show()
     }
 
     private fun hideAll(dialog: Dialog) {

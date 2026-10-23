@@ -126,7 +126,7 @@ class KeybWrapper : InputMethodService() {
 
     override fun onUpdateSelection(oldSelStart: Int, oldSelEnd: Int, newSelStart: Int, newSelEnd: Int, candidatesStart: Int, candidatesEnd: Int) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
-        keyboard.onSelectionChanged()
+        keyboard.onSelectionChanged(newSelStart, newSelEnd)
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {

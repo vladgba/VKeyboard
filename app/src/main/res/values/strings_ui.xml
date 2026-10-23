@@ -78,6 +78,17 @@
     <string name="ui_set_joy_h_sub">Sliding distance for one step left/right on joystick keys</string>
     <string name="ui_set_joy_v">Joystick step (vertical)</string>
     <string name="ui_set_joy_v_sub">Sliding distance for one step up/down on joystick keys</string>
+    <string name="ui_set_joy_accel">Cursor acceleration</string>
+    <string name="ui_set_joy_accel_sub">Fast drags on the space bar move the cursor further</string>
+    <string name="ui_set_sel_slider">Selection slider</string>
+    <string name="ui_set_sel_slider_sub">With Shift on or text selected, dragging the space bar grows or shrinks the selection</string>
+    <string name="ui_set_circle">Circle gestures</string>
+    <string name="ui_set_circle_sub">Draw a circle on a key: capital letter, delete a word on Backspace, Caps Lock on Shift</string>
+    <string name="ui_set_edge_guard">Keep edge swipes on the keyboard</string>
+    <string name="ui_set_edge_guard_sub">With gesture navigation, swipes that start at the screen edge over the keyboard don\'t go Back</string>
+    <string name="ui_joy_letter_title">Joystick on a letter key</string>
+    <string name="ui_joy_letter_msg">A clockwise circle on this key types its capital. In joystick mode the same finger movements also fire the swipe actions, so a circle that isn\'t round enough may move or delete instead of capitalizing. Keep joystick mode?</string>
+    <string name="ui_joy_letter_keep">Use joystick</string>
     <string name="ui_set_hard">Heavy press force</string>
     <string name="ui_set_hard_sub">Pressure needed for the heavy-press action. Only on screens that report pressure.</string>
     <string name="ui_sec_feedback">Vibration</string>
@@ -529,6 +540,10 @@
     <string name="ui_btn_tr_voice">🎤🌐 Translate</string>
     <string name="ui_btn_compose">⎄ Compose</string>
     <string name="ui_action_compose">Compose key (⎄ character combination)</string>
+    <string name="ui_btn_del_word">⌫⌫ Delete word</string>
+    <string name="ui_btn_del_word_fwd">⌦⌦ Delete next word</string>
+    <string name="ui_action_del_word">Delete the word before the cursor</string>
+    <string name="ui_action_del_word_fwd">Delete the word after the cursor</string>
     <string name="ui_tap_opt_voice">Start voice typing</string>
     <string name="ui_tap_voice">Tap: voice typing</string>
 

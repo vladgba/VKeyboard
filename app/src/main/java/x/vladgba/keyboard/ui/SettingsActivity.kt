@@ -179,6 +179,13 @@ class SettingsActivity : LocalizedActivity() {
         int(SENSE_ADDITIONAL_CHARS, R.string.ui_set_swipe, R.string.ui_set_swipe_sub, 20, 250, 5, 70) { "$it px" }
         int(SENSE_HORIZONTAL_TICK, R.string.ui_set_joy_h, R.string.ui_set_joy_h_sub, 20, 250, 5, 70) { "$it px" }
         int(SENSE_VERTICAL_TICK, R.string.ui_set_joy_v, R.string.ui_set_joy_v_sub, 20, 250, 5, 60) { "$it px" }
+        int(SENSE_JOY_ACCELERATION, R.string.ui_set_joy_accel, R.string.ui_set_joy_accel_sub, 0, 300, 10, 100) {
+            if (it == 0) getString(R.string.ui_off) else "$it%"
+        }
+        bool(SETTING_SELECTION_SLIDER, R.string.ui_set_sel_slider, R.string.ui_set_sel_slider_sub, true)
+        bool(SETTING_CIRCLE_GESTURES, R.string.ui_set_circle, R.string.ui_set_circle_sub, true)
+        if (android.os.Build.VERSION.SDK_INT >= 29)
+            bool(SETTING_EDGE_GESTURE_GUARD, R.string.ui_set_edge_guard, R.string.ui_set_edge_guard_sub, true)
         int(SENSE_HARD_PRESS, R.string.ui_set_hard, R.string.ui_set_hard_sub, 0, 1000, 25, 400) {
             if (it == 0) getString(R.string.ui_off) else "$it"
         }

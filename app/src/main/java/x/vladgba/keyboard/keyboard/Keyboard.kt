@@ -20,6 +20,7 @@ import android.view.KeyEvent
 import android.view.KeyEvent.*
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Toast
 import x.vladgba.keyboard.KeybWrapper
@@ -141,6 +142,8 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     val lastTypingLayout get() = lastTextLayout
 
     fun onStartInput(info: EditorInfo) {
+        selStart = info.initialSelStart
+        selEnd = info.initialSelEnd
         voice.cancel()
         compose.cancel()
         currentAppPackage = info.packageName ?: ""
@@ -699,9 +702,116 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     }
 
     /** The cursor moved (tap in the text, arrows...): capitals may be needed now or no longer. */
-    fun onSelectionChanged() {
+    /** Last selection reported by the editor (start == end: just a cursor; -1: unknown). */
+    private var selStart = -1
+    private var selEnd = -1
+
+    fun onSelectionChanged(start: Int = selStart, end: Int = selEnd) {
+        selStart = start
+        selEnd = end
         textExpander.clearUndo()
         scheduleAutoShift()
+    }
+
+    // ======================= selection slider =======================
+
+    /** Cursor-key steps extend the selection: Shift is on (not just auto-capitals) or text is selected. */
+    fun selectionMode() = !isEditor && Settings.bool(SETTING_SELECTION_SLIDER, true) &&
+        (shiftPressed() || (selStart >= 0 && selStart != selEnd))
+
+    /**
+     * One step of the selection slider: moves the selection's moving end by one character
+     * ([dir] -1 / +1) and keeps the other end where it is, so dragging back shrinks it again.
+     * Goes through the editor's text directly; where that isn't available (e.g. terminals) or
+     * for word steps (Ctrl), sends Shift + the arrow key instead.
+     */
+    fun extendSelection(dir: Int) {
+        val ic = inputConnection ?: return
+        val ctrl = metaState and META_CTRL_MASK != 0
+        val et = if (ctrl) null else ic.getExtractedText(ExtractedTextRequest(), 0)
+        if (et?.text == null || et.selectionStart < 0) {
+            clickModified(if (dir < 0) KEYCODE_DPAD_LEFT else KEYCODE_DPAD_RIGHT, metaState or META_SHIFT_ON)
+            return
+        }
+        val anchor = et.startOffset + et.selectionStart
+        val focus = et.startOffset + et.selectionEnd
+        val next = (focus + dir).coerceIn(et.startOffset, et.startOffset + et.text.length)
+        if (next == focus) return
+        ic.setSelection(anchor, next)
+        selStart = anchor
+        selEnd = next
+    }
+
+    /**
+     * Deletes the word before the cursor: trailing spaces, then a run of letters/digits (or of
+     * other symbols). A selection is simply deleted. Without access to the text, sends Ctrl+Backspace.
+     */
+    fun deleteWordBefore() {
+        val ic = inputConnection ?: return
+        textExpander.clearUndo()
+        if (selStart >= 0 && selStart != selEnd) {
+            ic.commitText("", 1)
+            return
+        }
+        val before = ic.getTextBeforeCursor(256, 0)?.toString()
+        if (before == null) {
+            clickModified(KEYCODE_DEL, metaState or META_CTRL_ON)
+            return
+        }
+        val n = before.length - wordStart(before)
+        if (n > 0) ic.deleteSurroundingText(n, 0)
+        scheduleAutoShift()
+    }
+
+    /**
+     * Deletes the word after the cursor: leading spaces, then a run of letters/digits (or of
+     * other symbols). A selection is simply deleted. Without access to the text, sends
+     * Ctrl+Forward Delete.
+     */
+    fun deleteWordAfter() {
+        val ic = inputConnection ?: return
+        textExpander.clearUndo()
+        if (selStart >= 0 && selStart != selEnd) {
+            ic.commitText("", 1)
+            return
+        }
+        val after = ic.getTextAfterCursor(256, 0)?.toString()
+        if (after == null) {
+            clickModified(KEYCODE_FORWARD_DEL, metaState or META_CTRL_ON)
+            return
+        }
+        val n = wordEnd(after)
+        if (n > 0) ic.deleteSurroundingText(0, n)
+        scheduleAutoShift()
+    }
+
+    private fun isWordChar(ch: Char) = ch.isLetterOrDigit() || ch == '_'
+
+    /** Index in [s] where the last word (plus the spaces after it) begins. */
+    private fun wordStart(s: CharSequence): Int {
+        var i = s.length
+        while (i > 0 && s[i - 1].isWhitespace()) i--
+        if (i > 0) {
+            val word = isWordChar(s[i - 1])
+            while (i > 0 && !s[i - 1].isWhitespace() && isWordChar(s[i - 1]) == word) i--
+        }
+        return i
+    }
+
+    /** Length of the first word in [s], including the spaces before it. */
+    private fun wordEnd(s: CharSequence): Int {
+        var i = 0
+        while (i < s.length && s[i].isWhitespace()) i++
+        if (i < s.length) {
+            val word = isWordChar(s[i])
+            while (i < s.length && !s[i].isWhitespace() && isWordChar(s[i]) == word) i++
+        }
+        return i
+    }
+
+    /** Up/down while selecting: Shift + the arrow key, which editors extend line by line. */
+    fun extendSelectionVertically(keyCode: Int) {
+        clickModified(keyCode, metaState or META_SHIFT_ON)
     }
 
     fun updateAutoShift() {
@@ -769,6 +879,16 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             oneShot && metaLatches[key] == Latch.ONE_SHOT -> metaLatches[key] = Latch.LOCKED
             else -> metaOff(key)
         }
+        invalidate()
+    }
+
+    /** Turns modifier [key] on and keeps it on (like tapping it twice), e.g. Caps Lock from a circle on Shift. */
+    fun lockMeta(key: Key) {
+        if (!isMetaActive(key)) {
+            metaState = metaState or key.num(KEY_MOD_META)
+            keyModified(ACTION_DOWN, key.num(KEY_CODE))
+        }
+        metaLatches[key] = Latch.LOCKED
         invalidate()
     }
 
@@ -840,6 +960,14 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         if (trimmed == COMPOSE_ACTION) {
             compose.toggle()
             invalidate()
+            return true
+        }
+        if (trimmed == DELETE_WORD_ACTION) {
+            deleteWordBefore()
+            return true
+        }
+        if (trimmed == DELETE_WORD_FORWARD_ACTION) {
+            deleteWordAfter()
             return true
         }
         if (trimmed.startsWith(TR_VOICE_PREFIX) || trimmed.startsWith(TR_VOICE_ALT_PREFIX)) {

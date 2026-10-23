@@ -26,12 +26,19 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 | `autoNumLayout` | `1` | Switches to the `123` layout in number, phone and date fields. |
 | `landscapeHeight` | `1` | Keyboard height multiplier in landscape, e.g. `0.75`. |
 | `bottomPadding` | `0` | Bottom margin in dp elevating the keyboard from the gesture navigation bar. |
+| `joyAcceleration` | `100` | Joystick keys (`"mode": "joy"`, e.g. the space bar cursor slider): fast drags need less distance per step, in %; `0` turns it off. Sideways drags never jump lines, and with Ctrl held steps need twice the distance. |
+| `selectionSlider` | `1` | With Shift on or text selected, dragging the space bar grows or shrinks the selection (see below). `0` turns it off. |
+| `circleGestures` | `1` | Circle and roundtrip gestures on keys (see below). `0` turns them off. |
+| `edgeGestureGuard` | `1` | Android 10+ gesture navigation: swipes that start at the screen edge over the keyboard go to the keyboard instead of Back (the system honours up to 200dp of keyboard height). `0` turns it off. |
 | `smartPunctuation` | `1` | Cleans space before punctuation: typing punctuation (. , ! ? : ;) after a space removes the space. |
 | `appLayouts` | `()` | Default layout per app package, e.g. `("com.termux": "code")`. |
 | `errorToasts` | `1` | Shows errors as toasts. With `0`, errors are only logged. |
 
 New features & options:
 - **Undo text expansion on Backspace**: Tapping Backspace immediately after an abbreviation expands reverts the text back to the abbreviation.
+- **Selection slider**: with Shift on, or while text is selected, dragging the space bar (any joystick key whose left/right are the cursor arrows) grows or shrinks the selection one character per step instead of moving the cursor; up/down extend it by lines.
+- **Circle gestures**: draw a circle on a key. Clockwise on a letter types it as a capital, on Backspace deletes the previous word, on Shift locks it (Caps Lock). Key options `"circle"` (clockwise), `"anticircle"` (counter-clockwise) and `"roundtrip"` (swipe out from the centre and back before lifting) set any action instead, with the same values as `"hold"` (key code, `ctrl+…` combination, `macro:name` or text).
+- **Word deletion**: actions `@DELETE_WORD` (word before the cursor, drawn as ⌫⌫) and `@DELETE_WORD_FORWARD` (word after it, ⌦⌦) work anywhere an action goes: popup positions, swipes, hold, heavy press, circles, or as a key label. In the bundled layouts, swiping Backspace up deletes the previous word and swiping it down the next one.
 - **Compose key (`@COMPOSE` / `"compose": "1"`)**: Sequential character composition, e.g. tap `⎄` then `'` + `e` → `é`, `c` + `o` → `©`, `s` + `s` → `ß`, `1` + `2` → `½`, `a` + `e` → `æ`.
 - **Modifier indicators**: Distinct pip indicator for one-shot active modifiers and auto-shift; solid bar for locked modifiers (Caps Lock).
 - Key option `"holdRepeat": "1"` repeats the key while it is held. All bundled layouts now use it on Backspace.
@@ -49,4 +56,4 @@ New features & options:
 )
 ```
 
-`code`: a negative value is an Android `KeyEvent` keycode. `mode`: `popup` / `joy` / `meta` / `random`. `layout`: `@NEXT`, `@PREV`, `@NUM`, `@TEXT`, `@EMOJI` or a layout name. Other options: `hold`, `hard`, `text`, `textCurOffset`, `clipboard`, `record`, `action`, `@VOICE`, `@COMPOSE`, `@tr_voice/<src>-<dst>` (e.g. `@tr_voice/ru-en` for voice translation), `sound*`, `vib*`, and the style keys listed in `core/Constants.kt`.
+`code`: a negative value is an Android `KeyEvent` keycode. `mode`: `popup` / `joy` / `meta` / `random`. `layout`: `@NEXT`, `@PREV`, `@NUM`, `@TEXT`, `@EMOJI` or a layout name. Other options: `hold`, `hard`, `text`, `textCurOffset`, `clipboard`, `record`, `action`, `@VOICE`, `@COMPOSE`, `@DELETE_WORD`, `@DELETE_WORD_FORWARD`, `@tr_voice/<src>-<dst>` (e.g. `@tr_voice/ru-en` for voice translation), `sound*`, `vib*`, and the style keys listed in `core/Constants.kt`.

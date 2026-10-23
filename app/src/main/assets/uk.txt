@@ -192,9 +192,9 @@
             "key": "\u2190",
             "code": "-67",
             "holdRepeat": "1",
-            "repeat": "1",
-            "top": "0",
-            "bottom": "0",
+            "mode": "joy",
+            "top": "@DELETE_WORD",
+            "bottom": "@DELETE_WORD_FORWARD",
             "right": "-112"
         )
     ),
@@ -226,8 +226,8 @@
             "mode": "joy",
             "left": "-21",
             "right": "-22",
-            "top": "0",
-            "bottom": "0"
+            "top": "-19",
+            "bottom": "-20"
         ),
         (
             "key": "\u044c",

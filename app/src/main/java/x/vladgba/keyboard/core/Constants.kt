@@ -78,6 +78,10 @@ internal const val SETTING_SMART_PUNCTUATION = "smartPunctuation"
 internal const val SETTING_APP_LAYOUTS = "appLayouts"
 /** Action value (tap, hold, swipe) that starts compose sequence, drawn as ⎄. */
 internal const val COMPOSE_ACTION = "@COMPOSE"
+/** Action: delete the word before the cursor (drawn as ⌫⌫). */
+internal const val DELETE_WORD_ACTION = "@DELETE_WORD"
+/** Action: delete the word after the cursor (drawn as ⌦⌦). */
+internal const val DELETE_WORD_FORWARD_ACTION = "@DELETE_WORD_FORWARD"
 /** Key param: tap toggles compose mode. */
 internal const val KEY_COMPOSE = "compose"
 
@@ -191,6 +195,21 @@ internal const val SENSE_HOLD_PRESS_REPEAT = "longPressRepeatTime"
 internal const val SENSE_ADDITIONAL_CHARS = "extSense"
 internal const val SENSE_HORIZONTAL_TICK = "horTick"
 internal const val SENSE_VERTICAL_TICK = "verTick"
+/** Joystick keys (e.g. the space bar cursor slider): how much faster drags move further, in %; 0 = off. */
+internal const val SENSE_JOY_ACCELERATION = "joyAcceleration"
+/** With Shift on or text selected, cursor steps of joystick keys grow/shrink the selection. */
+internal const val SETTING_SELECTION_SLIDER = "selectionSlider"
+/** Circle and roundtrip gestures on keys (see [KEY_CIRCLE]). */
+internal const val SETTING_CIRCLE_GESTURES = "circleGestures"
+/** Android 10+ gesture navigation: swipes starting at the screen edge over the keyboard stay on the keyboard (no Back). */
+internal const val SETTING_EDGE_GESTURE_GUARD = "edgeGestureGuard"
+/** Key option: action for a clockwise circle drawn on the key. Default: capital letter on letter keys,
+ *  delete the previous word on Backspace, Caps Lock on Shift. */
+internal const val KEY_CIRCLE = "circle"
+/** Key option: action for a counter-clockwise circle drawn on the key. */
+internal const val KEY_ANTICIRCLE = "anticircle"
+/** Key option: action for a swipe out of the key centre and back before lifting the finger. */
+internal const val KEY_ROUNDTRIP = "roundtrip"
 
 // Layout Switch
 internal const val LAYOUT_PREV = "@PREV"
