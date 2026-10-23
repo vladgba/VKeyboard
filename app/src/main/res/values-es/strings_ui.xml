@@ -106,6 +106,10 @@
     <string name="words_intro">El teclado aprende palabras mientras escribes (nunca en campos de contraseña ni cuando la app lo pide). No hay nada preinstalado; también puedes importar listas de palabras.</string>
     <string name="ui_set_learn">Aprender palabras nuevas</string>
     <string name="ui_set_learn_sub">Recordar las palabras que escribes para sugerencias</string>
+    <string name="ui_set_suggestions">Sugerencias de palabras</string>
+    <string name="ui_set_suggestions_sub">Barra sobre las teclas que completa la palabra con palabras aprendidas</string>
+    <string name="ui_btn_complete">✓ Sugerencia</string>
+    <string name="ui_action_complete">Aceptar sugerencia %1$d (1 = mejor)</string>
     <string name="words_transfer">Importar y exportar</string>
     <string name="words_import">Importar un archivo</string>
     <string name="words_import_sub">Lista de palabras (.txt), diccionario de Gboard (.zip / dictionary.txt) o lista AOSP .combined</string>

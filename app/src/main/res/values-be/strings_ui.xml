@@ -106,6 +106,10 @@
     <string name="words_intro">Клавіятура запамінае словы падчас набору (ніколі ў палях пароляў або калі праграма просіць не вучыцца). Нічога не ўсталявана загадзя; можна імпартаваць спісы слоў.</string>
     <string name="ui_set_learn">Вывучаць новыя словы</string>
     <string name="ui_set_learn_sub">Запамінаць набраныя словы для падказак</string>
+    <string name="ui_set_suggestions">Падказкі слоў</string>
+    <string name="ui_set_suggestions_sub">Панэль над клавішамі, што дапаўняе слова з вывучаных слоў</string>
+    <string name="ui_btn_complete">✓ Падказка</string>
+    <string name="ui_action_complete">Прыняць падказку %1$d (1 = лепшая)</string>
     <string name="words_transfer">Імпарт і экспарт</string>
     <string name="words_import">Імпартаваць файл</string>
     <string name="words_import_sub">Спіс слоў (.txt), слоўнік Gboard (.zip / dictionary.txt) або спіс AOSP .combined</string>

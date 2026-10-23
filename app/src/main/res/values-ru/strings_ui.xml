@@ -106,6 +106,10 @@
     <string name="words_intro">Клавиатура запоминает слова при наборе (никогда в полях паролей или когда приложение просит не учиться). Ничего не установлено заранее; можно импортировать списки слов.</string>
     <string name="ui_set_learn">Учить новые слова</string>
     <string name="ui_set_learn_sub">Запоминать набранные слова для подсказок</string>
+    <string name="ui_set_suggestions">Подсказки слов</string>
+    <string name="ui_set_suggestions_sub">Панель над клавишами, дополняющая слово из выученных слов</string>
+    <string name="ui_btn_complete">✓ Подсказка</string>
+    <string name="ui_action_complete">Принять подсказку %1$d (1 = лучшая)</string>
     <string name="words_transfer">Импорт и экспорт</string>
     <string name="words_import">Импортировать файл</string>
     <string name="words_import_sub">Список слов (.txt), словарь Gboard (.zip / dictionary.txt) или список AOSP .combined</string>

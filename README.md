@@ -36,6 +36,7 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 | `split` | `1` | Split keyboard: `0` off, `1` on wide screens (keyboard at least 600dp wide: unfolded foldables, tablets, phones in landscape), `2` always. Each row splits at the key boundary nearest the middle; a wide key across the middle (the space bar) is stretched over the gap. |
 | `splitGap` | `25` | Width of the empty middle of a split keyboard, in % of its width. |
 | `learnWords` | `1` | Learn words as they are typed, for suggestions (never in password fields or where the app asks not to). Learned words are in `learned.words` (`word<TAB>count`), part of backups. |
+| `suggestions` | `1` | Word suggestion bar above the keys in text fields (not in password, number or "no suggestions" fields): completes the word being typed from learned words, best in the middle; tap one (or use `@COMPLETE_1`/`_2`/`_3`, 1 = best) to replace the word and add a space. |
 | `smartPunctuation` | `1` | Cleans space before punctuation: typing punctuation (. , ! ? : ;) after a space removes the space. |
 | `appLayouts` | `()` | Default layout per app package, e.g. `("com.termux": "code")`. |
 | `errorToasts` | `1` | Shows errors as toasts. With `0`, errors are only logged. |
@@ -65,4 +66,4 @@ New features & options:
 )
 ```
 
-`code`: a negative value is an Android `KeyEvent` keycode. `mode`: `popup` / `joy` / `meta` / `random`. `layout`: `@NEXT`, `@PREV`, `@NUM`, `@TEXT`, `@EMOJI` or a layout name. Other options: `hold`, `hard`, `text`, `textCurOffset`, `clipboard`, `record`, `action`, `@VOICE`, `@COMPOSE`, `@DELETE_WORD`, `@DELETE_WORD_FORWARD`, `@CLIPBOARD`, `@DEAD:<name>`, `@tr_voice/<src>-<dst>` (e.g. `@tr_voice/ru-en` for voice translation), `sound*`, `vib*`, and the style keys listed in `core/Constants.kt`.
+`code`: a negative value is an Android `KeyEvent` keycode. `mode`: `popup` / `joy` / `meta` / `random`. `layout`: `@NEXT`, `@PREV`, `@NUM`, `@TEXT`, `@EMOJI` or a layout name. Other options: `hold`, `hard`, `text`, `textCurOffset`, `clipboard`, `record`, `action`, `@VOICE`, `@COMPOSE`, `@DELETE_WORD`, `@DELETE_WORD_FORWARD`, `@CLIPBOARD`, `@DEAD:<name>`, `@COMPLETE_1`/`_2`/`_3`, `@tr_voice/<src>-<dst>` (e.g. `@tr_voice/ru-en` for voice translation), `sound*`, `vib*`, and the style keys listed in `core/Constants.kt`.

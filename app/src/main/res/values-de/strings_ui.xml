@@ -106,6 +106,10 @@
     <string name="words_intro">Die Tastatur lernt Wörter beim Tippen (nie in Passwortfeldern oder wenn die App es nicht möchte). Nichts ist vorinstalliert; du kannst auch Wortlisten importieren.</string>
     <string name="ui_set_learn">Neue Wörter lernen</string>
     <string name="ui_set_learn_sub">Getippte Wörter für Vorschläge merken</string>
+    <string name="ui_set_suggestions">Wortvorschläge</string>
+    <string name="ui_set_suggestions_sub">Leiste über den Tasten, die das Wort aus gelernten Wörtern ergänzt</string>
+    <string name="ui_btn_complete">✓ Vorschlag</string>
+    <string name="ui_action_complete">Vorschlag %1$d übernehmen (1 = bester)</string>
     <string name="words_transfer">Import und Export</string>
     <string name="words_import">Datei importieren</string>
     <string name="words_import_sub">Wortliste (.txt), Gboard-Wörterbuch (.zip / dictionary.txt) oder AOSP-.combined-Liste</string>

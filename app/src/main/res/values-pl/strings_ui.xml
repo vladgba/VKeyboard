@@ -106,6 +106,10 @@
     <string name="words_intro">Klawiatura uczy się słów podczas pisania (nigdy w polach haseł ani gdy aplikacja tego nie chce). Nic nie jest preinstalowane; możesz też importować listy słów.</string>
     <string name="ui_set_learn">Ucz się nowych słów</string>
     <string name="ui_set_learn_sub">Zapamiętuj wpisywane słowa do podpowiedzi</string>
+    <string name="ui_set_suggestions">Podpowiedzi słów</string>
+    <string name="ui_set_suggestions_sub">Pasek nad klawiszami uzupełniający słowo z nauczonych słów</string>
+    <string name="ui_btn_complete">✓ Podpowiedź</string>
+    <string name="ui_action_complete">Przyjmij podpowiedź %1$d (1 = najlepsza)</string>
     <string name="words_transfer">Import i eksport</string>
     <string name="words_import">Importuj plik</string>
     <string name="words_import_sub">Lista słów (.txt), słownik Gboard (.zip / dictionary.txt) lub lista AOSP .combined</string>

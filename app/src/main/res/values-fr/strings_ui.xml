@@ -106,6 +106,10 @@
     <string name="words_intro">Le clavier apprend les mots que vous tapez (jamais dans les champs de mot de passe ni quand l\'app le demande). Rien n\'est préinstallé ; vous pouvez aussi importer des listes de mots.</string>
     <string name="ui_set_learn">Apprendre de nouveaux mots</string>
     <string name="ui_set_learn_sub">Retenir les mots tapés pour les suggestions</string>
+    <string name="ui_set_suggestions">Suggestions de mots</string>
+    <string name="ui_set_suggestions_sub">Barre au-dessus des touches qui complète le mot avec les mots appris</string>
+    <string name="ui_btn_complete">✓ Suggestion</string>
+    <string name="ui_action_complete">Accepter la suggestion %1$d (1 = meilleure)</string>
     <string name="words_transfer">Importer et exporter</string>
     <string name="words_import">Importer un fichier</string>
     <string name="words_import_sub">Liste de mots (.txt), dictionnaire Gboard (.zip / dictionary.txt) ou liste AOSP .combined</string>

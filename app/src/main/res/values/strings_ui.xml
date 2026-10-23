@@ -115,6 +115,10 @@
     <string name="words_intro">The keyboard learns words as you type them (never in password fields or where the app asks not to). Nothing is preinstalled; you can also import word lists.</string>
     <string name="ui_set_learn">Learn new words</string>
     <string name="ui_set_learn_sub">Remember words you type, for suggestions</string>
+    <string name="ui_set_suggestions">Word suggestions</string>
+    <string name="ui_set_suggestions_sub">Bar above the keys completing the word you type from learned words</string>
+    <string name="ui_btn_complete">✓ Suggestion</string>
+    <string name="ui_action_complete">Accept suggestion %1$d (1 = best)</string>
     <string name="words_transfer">Import and export</string>
     <string name="words_import">Import a file</string>
     <string name="words_import_sub">Word list (.txt), Gboard dictionary (.zip / dictionary.txt) or AOSP .combined list</string>

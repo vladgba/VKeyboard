@@ -806,6 +806,7 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
             raw == CLIPBOARD_ACTION -> "📋"
             DeadKeys.isDeadKey(raw) -> DeadKeys.symbol(DeadKeys.nameOf(raw))
+            raw.startsWith(COMPLETE_ACTION_PREFIX) -> "✓" + raw.removePrefix(COMPLETE_ACTION_PREFIX)
             else -> raw
         }
         return if (s.length == 1) c.getShifted(s[0].code, sh).toChar().toString() else s
@@ -874,6 +875,7 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
             raw == CLIPBOARD_ACTION -> "📋"
             DeadKeys.isDeadKey(raw) -> DeadKeys.symbol(DeadKeys.nameOf(raw))
+            raw.startsWith(COMPLETE_ACTION_PREFIX) -> "✓" + raw.removePrefix(COMPLETE_ACTION_PREFIX)
             else -> raw
         }
         // Bug fix: shifted popup chars were computed but never drawn.

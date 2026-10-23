@@ -106,6 +106,10 @@
     <string name="words_intro">Tastatura învață cuvintele pe măsură ce scrii (niciodată în câmpuri de parolă sau când aplicația cere asta). Nimic nu este preinstalat; poți importa liste de cuvinte.</string>
     <string name="ui_set_learn">Învață cuvinte noi</string>
     <string name="ui_set_learn_sub">Reține cuvintele scrise pentru sugestii</string>
+    <string name="ui_set_suggestions">Sugestii de cuvinte</string>
+    <string name="ui_set_suggestions_sub">Bară deasupra tastelor care completează cuvântul din cuvintele învățate</string>
+    <string name="ui_btn_complete">✓ Sugestie</string>
+    <string name="ui_action_complete">Acceptă sugestia %1$d (1 = cea mai bună)</string>
     <string name="words_transfer">Import și export</string>
     <string name="words_import">Importă un fișier</string>
     <string name="words_import_sub">Listă de cuvinte (.txt), dicționar Gboard (.zip / dictionary.txt) sau listă AOSP .combined</string>

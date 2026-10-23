@@ -162,6 +162,8 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD,
             InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD,
         ) || info.imeOptions and EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING != 0
+        updateSuggestionsShown(info)
+        scheduleSuggestions()
     }
 
     /** Called when the keyboard becomes visible. */
@@ -728,6 +730,84 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     }
 
     /** The cursor moved (tap in the text, arrows...): capitals may be needed now or no longer. */
+    // ======================= word suggestions =======================
+
+    /** Current suggestions, best first (at most 3). */
+    var suggestions: List<String> = emptyList()
+        private set
+
+    /** The suggestion bar is shown for this field. */
+    var suggestionsShown = false
+        private set
+
+    /** Called when [suggestions] or [suggestionsShown] change (the IME frame redraws / resizes). */
+    var onSuggestionsChanged: (() -> Unit)? = null
+
+    /** The part of the word before the cursor the suggestions complete. */
+    private var suggestionPrefix = ""
+
+    private val suggestRunnable = Runnable { refreshSuggestions() }
+
+    private fun scheduleSuggestions() {
+        if (!suggestionsShown) return
+        handler.removeCallbacks(suggestRunnable)
+        handler.post(suggestRunnable)
+    }
+
+    /** Whether this field gets the bar: text fields only, not passwords or "no suggestions" fields. */
+    private fun updateSuggestionsShown(info: EditorInfo) {
+        val cls = info.inputType and InputType.TYPE_MASK_CLASS
+        val noSuggest = info.inputType and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS != 0
+        val shown = !isEditor && Settings.bool(SETTING_SUGGESTIONS, true) && cls == InputType.TYPE_CLASS_TEXT &&
+            !privateField && !noSuggest
+        if (shown != suggestionsShown) {
+            suggestionsShown = shown
+            onSuggestionsChanged?.invoke()
+        }
+        if (!shown) setSuggestions(emptyList())
+    }
+
+    private fun setSuggestions(list: List<String>) {
+        if (list == suggestions) return
+        suggestions = list
+        onSuggestionsChanged?.invoke()
+    }
+
+    /** Learned words that complete the word before the cursor, in the case being typed. */
+    private fun refreshSuggestions() {
+        if (!suggestionsShown || (selStart >= 0 && selStart != selEnd)) return setSuggestions(emptyList())
+        val before = inputConnection?.getTextBeforeCursor(48, 0)?.toString() ?: return setSuggestions(emptyList())
+        var i = before.length
+        while (i > 0 && (before[i - 1].isLetter() || before[i - 1] == '\'' || before[i - 1] == '’')) i--
+        val prefix = before.substring(i)
+        suggestionPrefix = prefix
+        if (prefix.isEmpty() || (i > 0 && before[i - 1].isDigit())) return setSuggestions(emptyList())
+        val upper = prefix.length > 1 && prefix.all { !it.isLetter() || it.isUpperCase() }
+        val capital = prefix[0].isUpperCase()
+        val words = UserWords.complete(ctx, prefix, 3).map { w ->
+            when {
+                upper -> w.form.uppercase()
+                capital -> w.form.replaceFirstChar { it.uppercaseChar() }
+                else -> w.form
+            }
+        }
+        setSuggestions(words)
+    }
+
+    /** Replaces the word being typed with suggestion [rank] (0 = best) and adds a space. */
+    fun acceptSuggestion(rank: Int) {
+        val word = suggestions.getOrNull(rank) ?: return
+        val ic = inputConnection ?: return
+        ic.beginBatchEdit()
+        if (suggestionPrefix.isNotEmpty()) ic.deleteSurroundingText(suggestionPrefix.length, 0)
+        ic.commitText("$word ", 1)
+        ic.endBatchEdit()
+        if (!privateField && Settings.bool(SETTING_LEARN_WORDS, true)) UserWords.learn(ctx, word)
+        textExpander.clearUndo()
+        setSuggestions(emptyList())
+        scheduleAutoShift()
+    }
+
     /** Last selection reported by the editor (start == end: just a cursor; -1: unknown). */
     private var selStart = -1
     private var selEnd = -1
@@ -737,6 +817,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         selEnd = end
         textExpander.clearUndo()
         scheduleAutoShift()
+        scheduleSuggestions()
     }
 
     // ======================= selection slider =======================
@@ -998,6 +1079,10 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
                 compose.arm(name)
             }
             invalidate()
+            return true
+        }
+        if (trimmed.startsWith(COMPLETE_ACTION_PREFIX)) {
+            trimmed.removePrefix(COMPLETE_ACTION_PREFIX).toIntOrNull()?.let { acceptSuggestion(it - 1) }
             return true
         }
         if (trimmed == CLIPBOARD_ACTION) {
