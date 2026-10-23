@@ -186,6 +186,15 @@ class SettingsActivity : LocalizedActivity() {
         bool(SETTING_CIRCLE_GESTURES, R.string.ui_set_circle, R.string.ui_set_circle_sub, true)
         if (android.os.Build.VERSION.SDK_INT >= 29)
             bool(SETTING_EDGE_GESTURE_GUARD, R.string.ui_set_edge_guard, R.string.ui_set_edge_guard_sub, true)
+        bool(SETTING_CLIP_HISTORY, R.string.ui_set_clip_history, R.string.ui_set_clip_history_sub, true)
+        int(SETTING_CLIP_EXPIRY, R.string.ui_set_clip_expiry, R.string.ui_set_clip_expiry_sub, 0, 1440, 5, 15) {
+            when {
+                it == 0 -> getString(R.string.ui_clip_never)
+                it < 60 -> "$it min"
+                it % 60 == 0 -> "${it / 60} h"
+                else -> "${it / 60} h ${it % 60} min"
+            }
+        }
         int(SENSE_HARD_PRESS, R.string.ui_set_hard, R.string.ui_set_hard_sub, 0, 1000, 25, 400) {
             if (it == 0) getString(R.string.ui_off) else "$it"
         }

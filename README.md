@@ -30,6 +30,8 @@ Style inheritance chain: **Key → Row → Layout → Theme → settings.txt →
 | `selectionSlider` | `1` | With Shift on or text selected, dragging the space bar grows or shrinks the selection (see below). `0` turns it off. |
 | `circleGestures` | `1` | Circle and roundtrip gestures on keys (see below). `0` turns them off. |
 | `edgeGestureGuard` | `1` | Android 10+ gesture navigation: swipes that start at the screen edge over the keyboard go to the keyboard instead of Back (the system honours up to 200dp of keyboard height). `0` turns it off. |
+| `clipHistory` | `1` | Remember copied text (clipboard history, opened with `@CLIPBOARD`). `0` turns it off. |
+| `clipExpiry` | `15` | Minutes unpinned clips are kept; `0` = never expire. Pinned clips stay until removed. |
 | `smartPunctuation` | `1` | Cleans space before punctuation: typing punctuation (. , ! ? : ;) after a space removes the space. |
 | `appLayouts` | `()` | Default layout per app package, e.g. `("com.termux": "code")`. |
 | `errorToasts` | `1` | Shows errors as toasts. With `0`, errors are only logged. |
@@ -39,6 +41,7 @@ New features & options:
 - **Selection slider**: with Shift on, or while text is selected, dragging the space bar (any joystick key whose left/right are the cursor arrows) grows or shrinks the selection one character per step instead of moving the cursor; up/down extend it by lines.
 - **Circle gestures**: draw a circle on a key. Clockwise on a letter types it as a capital, on Backspace deletes the previous word, on Shift locks it (Caps Lock). Key options `"circle"` (clockwise), `"anticircle"` (counter-clockwise) and `"roundtrip"` (swipe out from the centre and back before lifting) set any action instead, with the same values as `"hold"` (key code, `ctrl+…` combination, `macro:name` or text).
 - **Word deletion**: actions `@DELETE_WORD` (word before the cursor, drawn as ⌫⌫) and `@DELETE_WORD_FORWARD` (word after it, ⌦⌦) work anywhere an action goes: popup positions, swipes, hold, heavy press, circles, or as a key label. In the bundled layouts, swiping Backspace up deletes the previous word and swiping it down the next one.
+- **Clipboard history**: copied text is remembered (in memory only, never apps' sensitive clips such as passwords) and listed by the `@CLIPBOARD` action, drawn as 📋 and on swipe-up of 123 in the bundled layouts. Tap a clip to paste it, ☆ pins it (pinned clips are saved in `clipboard.pins` and included in backups), ✕ deletes it, Clear removes all unpinned clips. Unpinned clips are forgotten after `clipExpiry` minutes.
 - **Compose key (`@COMPOSE` / `"compose": "1"`)**: Sequential character composition, e.g. tap `⎄` then `'` + `e` → `é`, `c` + `o` → `©`, `s` + `s` → `ß`, `1` + `2` → `½`, `a` + `e` → `æ`.
 - **Modifier indicators**: Distinct pip indicator for one-shot active modifiers and auto-shift; solid bar for locked modifiers (Caps Lock).
 - Key option `"holdRepeat": "1"` repeats the key while it is held. All bundled layouts now use it on Backspace.
@@ -56,4 +59,4 @@ New features & options:
 )
 ```
 
-`code`: a negative value is an Android `KeyEvent` keycode. `mode`: `popup` / `joy` / `meta` / `random`. `layout`: `@NEXT`, `@PREV`, `@NUM`, `@TEXT`, `@EMOJI` or a layout name. Other options: `hold`, `hard`, `text`, `textCurOffset`, `clipboard`, `record`, `action`, `@VOICE`, `@COMPOSE`, `@DELETE_WORD`, `@DELETE_WORD_FORWARD`, `@tr_voice/<src>-<dst>` (e.g. `@tr_voice/ru-en` for voice translation), `sound*`, `vib*`, and the style keys listed in `core/Constants.kt`.
+`code`: a negative value is an Android `KeyEvent` keycode. `mode`: `popup` / `joy` / `meta` / `random`. `layout`: `@NEXT`, `@PREV`, `@NUM`, `@TEXT`, `@EMOJI` or a layout name. Other options: `hold`, `hard`, `text`, `textCurOffset`, `clipboard`, `record`, `action`, `@VOICE`, `@COMPOSE`, `@DELETE_WORD`, `@DELETE_WORD_FORWARD`, `@CLIPBOARD`, `@tr_voice/<src>-<dst>` (e.g. `@tr_voice/ru-en` for voice translation), `sound*`, `vib*`, and the style keys listed in `core/Constants.kt`.

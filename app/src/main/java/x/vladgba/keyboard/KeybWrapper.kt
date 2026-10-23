@@ -1,6 +1,7 @@
 package x.vladgba.keyboard
 
 import android.content.BroadcastReceiver
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -15,6 +16,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import x.vladgba.keyboard.core.AppLocale
+import x.vladgba.keyboard.core.ClipHistory
+import x.vladgba.keyboard.core.SETTING_CLIP_HISTORY
 import x.vladgba.keyboard.core.DirectBoot
 import x.vladgba.keyboard.core.Settings
 import x.vladgba.keyboard.core.Theme
@@ -55,6 +58,37 @@ class KeybWrapper : InputMethodService() {
         AppLocale.applyTo(this)
         localeVersion = AppLocale.version
         keyboard = Keyboard(DirectBoot.storage(this), this)
+        clipboard()?.addPrimaryClipChangedListener(clipListener)
+    }
+
+    // ======================= clipboard history =======================
+
+    private val clipListener = ClipboardManager.OnPrimaryClipChangedListener { captureClip(fresh = true) }
+
+    private fun clipboard() = getSystemService(CLIPBOARD_SERVICE) as? ClipboardManager
+
+    /**
+     * Takes the system clipboard's text into the history. Skips clips that apps mark as
+     * sensitive (passwords, one-time codes) and does nothing with the history turned off.
+     */
+    private fun captureClip(fresh: Boolean) {
+        if (!Settings.bool(SETTING_CLIP_HISTORY, true)) return
+        try {
+            val clip = clipboard()?.primaryClip ?: return
+            if (clip.itemCount == 0) return
+            if (Build.VERSION.SDK_INT >= 24 &&
+                clip.description?.extras?.getBoolean("android.content.extra.IS_SENSITIVE") == true) return
+            val text = clip.getItemAt(0).coerceToText(this)?.toString() ?: return
+            ClipHistory.add(keyboard.ctx, text, fresh)
+        } catch (_: Exception) {
+            // Android 10+ only lets the active keyboard read the clipboard; ignore when it can't.
+        }
+    }
+
+    /** Clipboard history in place of the keys. */
+    fun showClipboard() {
+        captureClip(fresh = false)
+        frame?.showClipboard()
     }
 
     /** First unlock after a direct-boot start: reload everything from the user's own storage. */
@@ -68,6 +102,7 @@ class KeybWrapper : InputMethodService() {
         Theme.invalidate()
         Macros.invalidate()
         TouchStats.reload(this)
+        ClipHistory.reload()
 
         keyboard.onDestroy()
         keyboard = Keyboard(this, this)
@@ -122,6 +157,7 @@ class KeybWrapper : InputMethodService() {
         }
         keyboard.onStartInput(info)
         keyboard.onShow()
+        captureClip(fresh = false)
     }
 
     override fun onUpdateSelection(oldSelStart: Int, oldSelEnd: Int, newSelStart: Int, newSelEnd: Int, candidatesStart: Int, candidatesEnd: Int) {
@@ -130,6 +166,7 @@ class KeybWrapper : InputMethodService() {
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
+        frame?.hideDrawer()
         keyboard.onHide()
         super.onFinishInputView(finishingInput)
     }
@@ -153,6 +190,7 @@ class KeybWrapper : InputMethodService() {
     }
 
     override fun onDestroy() {
+        clipboard()?.removePrimaryClipChangedListener(clipListener)
         if (startedLocked) try { unregisterReceiver(unlockReceiver) } catch (_: Exception) {}
         keyboard.onDestroy()
         super.onDestroy()

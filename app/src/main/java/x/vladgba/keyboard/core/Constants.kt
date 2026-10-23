@@ -18,6 +18,9 @@ internal const val MACROS_FILENAME = "macros"
 internal const val MACROS_EXT = "macro"
 internal const val STATS_FILENAME = "touchstats"
 internal const val STATS_EXT = "stats"
+/** Pinned clipboard clips (`clipboard.pins`). */
+internal const val CLIP_PINS_FILENAME = "clipboard"
+internal const val CLIP_PINS_EXT = "pins"
 /** Record touch positions for the touch heatmap (aggregates only, never in password fields). */
 internal const val SETTING_TOUCH_STATS = "touchStats"
 /** Move each key's touch area toward where the user really touches it (learned from touch stats). */
@@ -82,6 +85,8 @@ internal const val COMPOSE_ACTION = "@COMPOSE"
 internal const val DELETE_WORD_ACTION = "@DELETE_WORD"
 /** Action: delete the word after the cursor (drawn as ⌦⌦). */
 internal const val DELETE_WORD_FORWARD_ACTION = "@DELETE_WORD_FORWARD"
+/** Action: open the clipboard history in place of the keys (drawn as 📋). */
+internal const val CLIPBOARD_ACTION = "@CLIPBOARD"
 /** Key param: tap toggles compose mode. */
 internal const val KEY_COMPOSE = "compose"
 
@@ -203,6 +208,10 @@ internal const val SETTING_SELECTION_SLIDER = "selectionSlider"
 internal const val SETTING_CIRCLE_GESTURES = "circleGestures"
 /** Android 10+ gesture navigation: swipes starting at the screen edge over the keyboard stay on the keyboard (no Back). */
 internal const val SETTING_EDGE_GESTURE_GUARD = "edgeGestureGuard"
+/** Remember copied text (clipboard history). */
+internal const val SETTING_CLIP_HISTORY = "clipHistory"
+/** Minutes unpinned clips are kept; 0 = never expire. */
+internal const val SETTING_CLIP_EXPIRY = "clipExpiry"
 /** Key option: action for a clockwise circle drawn on the key. Default: capital letter on letter keys,
  *  delete the previous word on Backspace, Caps Lock on Shift. */
 internal const val KEY_CIRCLE = "circle"

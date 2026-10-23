@@ -962,6 +962,10 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             invalidate()
             return true
         }
+        if (trimmed == CLIPBOARD_ACTION) {
+            ime?.showClipboard()
+            return true
+        }
         if (trimmed == DELETE_WORD_ACTION) {
             deleteWordBefore()
             return true

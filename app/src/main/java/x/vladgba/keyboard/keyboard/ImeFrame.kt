@@ -32,6 +32,29 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
     var headroom = 0
         private set
 
+    /** Clipboard history shown in place of the keys, or null. */
+    private var drawer: ClipDrawer? = null
+
+    /** Shows the clipboard history in place of the keys (same size). */
+    fun showClipboard() {
+        if (drawer != null) {
+            drawer?.refresh()
+            return
+        }
+        drawer = ClipDrawer(context, kb) { hideDrawer() }.also { addView(it) }
+        keyboardView.visibility = INVISIBLE
+        requestLayout()
+    }
+
+    /** Back to the keys. */
+    fun hideDrawer() {
+        val d = drawer ?: return
+        removeView(d)
+        drawer = null
+        keyboardView.visibility = VISIBLE
+        requestLayout()
+    }
+
     /** Space reserved below the keyboard for the navigation bar, in px. */
     private var navInset = 0
 
@@ -50,6 +73,7 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
         val h = keyboardView.measuredHeight
         headroom = kb.popupHeadroom()
         overlay.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h + headroom, MeasureSpec.EXACTLY))
+        drawer?.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY))
         setMeasuredDimension(w, h + headroom + navInset)
     }
 
@@ -79,6 +103,7 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
         val w = r - l
         keyboardView.layout(0, headroom, w, headroom + keyboardView.measuredHeight)
         overlay.layout(0, 0, w, b - t)
+        drawer?.layout(0, headroom, w, headroom + keyboardView.measuredHeight)
         updateGestureExclusion(w)
     }
 

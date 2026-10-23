@@ -186,6 +186,7 @@ internal object ActionPrompt {
         if (v == COMPOSE_ACTION) return ctx.getString(R.string.ui_action_compose) to true
         if (v == DELETE_WORD_ACTION) return ctx.getString(R.string.ui_action_del_word) to true
         if (v == DELETE_WORD_FORWARD_ACTION) return ctx.getString(R.string.ui_action_del_word_fwd) to true
+        if (v == CLIPBOARD_ACTION) return ctx.getString(R.string.ui_action_clipboard) to true
         if (v.startsWith(TR_VOICE_PREFIX) || v.startsWith(TR_VOICE_ALT_PREFIX)) {
             val spec = VoiceInput.parseTrVoiceSpec(v)
             val desc = if (spec != null) {
@@ -248,6 +249,7 @@ internal object ActionPrompt {
             addView(small(R.string.ui_btn_compose) { input.setText(COMPOSE_ACTION) })
             addView(small(R.string.ui_btn_del_word) { input.setText(DELETE_WORD_ACTION) })
             addView(small(R.string.ui_btn_del_word_fwd) { input.setText(DELETE_WORD_FORWARD_ACTION) })
+            addView(small(R.string.ui_btn_clipboard) { input.setText(CLIPBOARD_ACTION) })
             addView(small(R.string.ui_btn_clear) { input.setText("") })
         }
         val box = LinearLayout(ctx).apply {
