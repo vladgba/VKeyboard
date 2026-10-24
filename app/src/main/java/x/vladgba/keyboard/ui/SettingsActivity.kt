@@ -152,6 +152,17 @@ class SettingsActivity : LocalizedActivity() {
     }
 
     private fun voiceRows() {
+        bool(SETTING_VOICE_PROVIDER_ENABLED, R.string.vo_custom_provider, R.string.vo_custom_provider_sub, false)
+        val providers = x.vladgba.keyboard.keyboard.SpeechProviders.available(this)
+        val selectedProvider = Settings.str(SETTING_VOICE_PROVIDER)
+        val selectedIndex = providers.indexOfFirst { it.component.flattenToString() == selectedProvider } + 1
+        val providerNames = listOf(getString(R.string.vo_system_provider)) + providers.map { it.label }
+        page.row(getString(R.string.vo_provider), providerNames.getOrElse(selectedIndex) { providerNames[0] }) {
+            Ask.choice(this, getString(R.string.vo_provider), providerNames, selectedIndex) { index ->
+                set(SETTING_VOICE_PROVIDER, if (index == 0) "" else providers[index - 1].component.flattenToString())
+                render()
+            }
+        }
         val tags = listOf(VOICE_LANG_AUTO) + x.vladgba.keyboard.keyboard.VoiceInput.LAYOUT_LANGS.values.distinct().sorted()
         fun name(tag: String) = if (tag == VOICE_LANG_AUTO) getString(R.string.vo_lang_auto)
             else Locale.forLanguageTag(tag).let { it.getDisplayName(it).replaceFirstChar { c -> c.titlecase(it) } }

@@ -122,6 +122,13 @@ class VoiceInput(private val kb: Keyboard) {
     }
 
     private fun createRecognizer(): SpeechRecognizer? {
+        if (Settings.bool(SETTING_VOICE_PROVIDER_ENABLED, false)) {
+            val selected = SpeechProviders.resolve(true, Settings.str(SETTING_VOICE_PROVIDER), SpeechProviders.available(ctx))
+            if (selected != null) {
+                try { return SpeechRecognizer.createSpeechRecognizer(ctx, selected) }
+                catch (e: Exception) { android.util.Log.w("VKeyboard", "Selected speech provider unavailable", e) }
+            }
+        }
         val offline = Settings.bool(SETTING_VOICE_OFFLINE)
         if (offline && Build.VERSION.SDK_INT >= 33 && SpeechRecognizer.isOnDeviceRecognitionAvailable(ctx)) {
             return try { SpeechRecognizer.createOnDeviceSpeechRecognizer(ctx) } catch (_: Exception) { null }

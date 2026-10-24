@@ -2,6 +2,10 @@
 <!-- Strings of the newcomer-friendly screens: home, settings, macros, key tester, pickers. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Common -->
+    <string name="vo_custom_provider">Use a selected voice provider</string>
+    <string name="vo_custom_provider_sub">Use the provider chosen below. Turn off to use normal system and on-device selection.</string>
+    <string name="vo_provider">Voice recognition provider</string>
+    <string name="vo_system_provider">System default</string>
     <string name="ui_hide_physical">Hide with a physical keyboard</string>
     <string name="ui_hide_physical_sub">Hide the on-screen keyboard when a real alphabetic keyboard connects; restore it when that keyboard disconnects.</string>
     <string name="bi_ar">Arabic</string>

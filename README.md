@@ -64,6 +64,8 @@ New features & options:
 
 ## Layout format (Flexaml)
 
+Settings → Voice includes a recognition-provider picker. `customVoiceProvider=1` uses the chosen installed service (`voiceProvider` stores its component); disabled by default. System default, a removed service or a service that cannot be created falls back to the existing system/on-device recognition path. Choosing a provider never grants microphone permission or starts listening by itself.
+
 `hideWithPhysicalKeyboard=1` hides the software keyboard when a non-virtual alphabetic keyboard connects and restores a keyboard hidden for that reason on disconnect. Off by default, in Settings → Hardware. DPAD remotes, touchscreens and virtual devices do not trigger it.
 
 Enable **Expanded language layouts** in Settings to make the additional Arabic, Hebrew, Greek, Turkish, Italian, Portuguese, Czech, Hungarian, Swedish, Finnish, Norwegian and Danish layouts available in Built-in layouts. Add only the ones you want; existing files are preserved. The feature is off by default and disabling it removes these layouts from normal cycling/selection. See [layout sources](docs/layout-sources.md) for provenance and mobile adaptations.

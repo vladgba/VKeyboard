@@ -53,6 +53,8 @@ internal const val SETTING_VOICE_LANG = "voiceLang"
 internal const val VOICE_LANG_AUTO = "auto"
 /** Prefer on-device (offline) speech recognition where available. */
 internal const val SETTING_VOICE_OFFLINE = "voiceOffline"
+internal const val SETTING_VOICE_PROVIDER_ENABLED = "customVoiceProvider"
+internal const val SETTING_VOICE_PROVIDER = "voiceProvider"
 internal const val DEFAULT_LAYOUT_ASSET = "en"
 
 internal const val LAYOUT_EXT = "txt"

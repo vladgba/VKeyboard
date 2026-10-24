@@ -262,6 +262,19 @@ private fun runChecks(ctx: Context, check: String) {
                 val connected = policy.connected()
                 println("PASS hardware: physical alphabetic filtering and Android device enumeration (connected=$connected)")
             }
+            "voice-provider" -> {
+                val providers = x.vladgba.keyboard.keyboard.SpeechProviders
+                val component = android.content.ComponentName("example.provider", "example.provider.Recognizer")
+                val choices = listOf(x.vladgba.keyboard.keyboard.SpeechProviders.Provider(component, "Example"))
+                check(providers.resolve(true, component.flattenToString(), choices) == component)
+                check(providers.resolve(false, component.flattenToString(), choices) == null)
+                check(providers.resolve(true, "invalid", choices) == null)
+                check(providers.resolve(true, "", choices) == null)
+                check(providers.resolve(true, component.flattenToString(), emptyList()) == null)
+                val actual = providers.available(ctx)
+                check(actual.map { it.component }.distinct().size == actual.size)
+                println("PASS voice-provider: selection, disabled/missing fallback, Android discovery (${actual.size} services)")
+            }
             else -> error("Unknown device check")
         }
     } finally {
