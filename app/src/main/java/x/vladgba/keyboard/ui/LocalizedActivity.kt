@@ -41,6 +41,7 @@ abstract class LocalizedActivity : Activity() {
      * resized by the on-screen keyboard. Pads the content back inside the free area.
      */
     private fun fitSystemBars() {
+        if (Build.VERSION.SDK_INT < 35) return
         val content = findViewById<View>(android.R.id.content) ?: return
         // The app always uses a light theme: dark status bar icons stay readable over it.
         window.insetsController?.setSystemBarsAppearance(

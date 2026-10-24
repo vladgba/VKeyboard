@@ -32,7 +32,7 @@ object EmojiKeywords {
 
     /** Merges keyword → emoji pairs from [bytes]; returns how many pairs were read. */
     @Synchronized fun import(ctx: Context, bytes: ByteArray): Int {
-        val text = String(bytes, Charsets.UTF_8).removePrefix("﻿")
+        val text = String(bytes, Charsets.UTF_8).removePrefix("\uFEFF")
         val pairs = when {
             text.contains("<annotation") -> parseXml(text)
             text.trimStart().startsWith("{") -> parseJson(text)

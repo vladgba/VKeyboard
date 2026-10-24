@@ -285,7 +285,7 @@ class VoiceInput(private val kb: Keyboard) {
 
     /** Fallback: hand over to a voice input method (e.g. a system voice keyboard). */
     private fun switchToVoiceKeyboard(): Boolean {
-        val imm = ctx.getSystemService(InputMethodManager::class.java) ?: return false
+        val imm = ctx.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? InputMethodManager ?: return false
         for (imi in imm.enabledInputMethodList) {
             if (imi.packageName == ctx.packageName) continue
             for (i in 0 until imi.subtypeCount) {

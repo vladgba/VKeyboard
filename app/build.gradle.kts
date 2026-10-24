@@ -109,3 +109,16 @@ tasks.register<JavaExec>("validateLayouts") {
     mainClass.set("x.vladgba.keyboard.core.LayoutValidationKt")
     args(rootProject.file(providers.gradleProperty("layoutDir").getOrElse("app/src/main/assets")).absolutePath)
 }
+
+tasks.register<JavaExec>("verifyKeyboardLogic") {
+    group = "verification"
+    description = "Checks keyboard business logic, Unicode and layout serialization without Android or test libraries"
+    dependsOn("compileDebugUnitTestKotlin")
+    classpath = files(layout.buildDirectory.dir("tmp/kotlin-classes/debugUnitTest"),
+        layout.buildDirectory.dir("tmp/kotlin-classes/debug")) + configurations.getByName("debugUnitTestRuntimeClasspath")
+    mainClass.set("x.vladgba.keyboard.core.KeyboardLogicTestKt")
+}
+
+tasks.named("check") {
+    dependsOn("verifyKeyboardLogic", "verifyDictionaryImport", "verifyWordIndex", "validateLayouts")
+}

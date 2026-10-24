@@ -21,9 +21,12 @@ class KeyboardDeviceTests : Instrumentation() {
     }
     override fun onStart() {
         var failure: Throwable? = null
-        runOnMainSync {
+        if (check != "async") runOnMainSync {
             try { runChecks(ContextThemeWrapper(targetContext, android.R.style.Theme_Material_Light), check) }
             catch (e: Throwable) { failure = e }
+        }
+        if (failure == null && check in listOf("all", "async")) {
+            try { runLifecycleChecks() } catch (e: Throwable) { failure = e }
         }
         finish(if (failure == null) Activity.RESULT_OK else Activity.RESULT_CANCELED, Bundle().apply {
             putString("result", failure?.stackTraceToString() ?: "PASS $check")
@@ -33,7 +36,7 @@ class KeyboardDeviceTests : Instrumentation() {
 
 private fun runChecks(ctx: Context, check: String) {
     if (check == "all") {
-        for (name in listOf("orientation", "numpad", "extra-row", "rtl", "marks", "modmap", "languages", "hardware", "voice-provider", "visuals", "emoji")) runChecks(ctx, name)
+        for (name in listOf("orientation", "numpad", "extra-row", "rtl", "marks", "modmap", "languages", "hardware", "voice-provider", "visuals", "emoji", "learning")) runChecks(ctx, name)
         return
     }
     val original = PFile(ctx, "settings").read()
@@ -355,11 +358,83 @@ private fun runChecks(ctx: Context, check: String) {
                 val bitmap = android.graphics.Bitmap.createBitmap(frame.width, frame.height, android.graphics.Bitmap.Config.ARGB_8888)
                 frame.draw(android.graphics.Canvas(bitmap))
                 bitmap.recycle()
+                val pageFile = PFile(ctx, EMOJI_FILENAME)
+                val originalPage = pageFile.readBytes()
+                try {
+                    pageFile.write("()")
+                    frame.showEmoji(EMOJI_FILENAME)
+                    val emptyGrid = frame.findViewWithTag<android.widget.GridView>("emoji-grid")
+                    check(emptyGrid.adapter.count == 0)
+                    check(frame.findViewWithTag<android.view.View>("emoji-close") != null)
+                    pageFile.writeBytes(ByteArray(512 * 1024 + 1) { 32 })
+                    frame.showEmoji(EMOJI_FILENAME)
+                    check(frame.findViewWithTag<android.widget.GridView>("emoji-grid").adapter.count == 0)
+                } finally { pageFile.writeBytes(originalPage) }
                 Settings[SETTING_TABBED_EMOJI] = "0"
                 kb.emojiLayout()
                 check(kb.currentLayoutName == EMOJI_FILENAME && frame.findViewWithTag<android.view.View>("emoji-drawer") == null)
                 kb.onDestroy()
                 println("PASS emoji: category tabs, complete sequences, insertion, layout preservation, close, clipboard, width and disabled fallback")
+            }
+            "learning" -> {
+                Settings[SETTING_LEARN_WORDS] = "1"
+                Settings[SETTING_SUGGESTIONS] = "1"
+                Settings.save(ctx)
+                UserWords.clear(ctx)
+                val connection = BaseInputConnection(EditText(ctx), true)
+                val kb = Keyboard(ctx, KeybWrapper(), connection)
+                val text = android.text.InputType.TYPE_CLASS_TEXT
+                val privateFields = listOf(
+                    text or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD,
+                    text or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
+                    text or android.text.InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD,
+                    android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD)
+                for (type in privateFields + text) {
+                    connection.editable?.clear()
+                    kb.onStartInput(android.view.inputmethod.EditorInfo().apply {
+                        inputType = type
+                        if (type == text) imeOptions = android.view.inputmethod.EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
+                    })
+                    kb.onText("privatetestword"); kb.onText(" ")
+                    UserWords.submit { }.get(10, java.util.concurrent.TimeUnit.SECONDS)
+                    check(!kb.suggestionsShown && UserWords.size(ctx) == 0)
+                }
+                Settings[SETTING_LEARN_WORDS] = "0"
+                kb.onStartInput(android.view.inputmethod.EditorInfo().apply { inputType = text })
+                connection.editable?.clear()
+                kb.onText("disabledtestword"); kb.onText(" ")
+                UserWords.submit { }.get(10, java.util.concurrent.TimeUnit.SECONDS)
+                check(UserWords.size(ctx) == 0)
+                kb.onStartInput(android.view.inputmethod.EditorInfo().apply { inputType = text or android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS })
+                check(!kb.suggestionsShown)
+                Settings[SETTING_LEARN_WORDS] = "1"
+                kb.onStartInput(android.view.inputmethod.EditorInfo().apply { inputType = text })
+                connection.editable?.clear()
+                kb.onText("learnedtestword"); kb.onText(" ")
+                UserWords.submit { UserWords.flush(ctx) }.get(10, java.util.concurrent.TimeUnit.SECONDS)
+                UserWords.reload()
+                check(UserWords.contains(ctx, "learnedtestword"))
+                UserWords.remove(ctx, "learnedtestword")
+                check(!UserWords.contains(ctx, "learnedtestword") && UserWords.complete(ctx, "learn", 3).isEmpty())
+                check(UserWords.merge(ctx, listOf("Hello" to 3, "hello" to 1, "a\u0000" to 5, "a\ud800" to 5)) == 1)
+                UserWords.learn(ctx, "hello")
+                val snapshot = UserWords.all(ctx).single()
+                check(snapshot.form == "hello" && snapshot.count == 4)
+                snapshot.form = "changed"; snapshot.count = 999
+                check(UserWords.all(ctx).single().count == 4 && UserWords.all(ctx).single().form == "hello")
+                val tasks = (1..50).map { UserWords.submit { UserWords.learn(ctx, "queuedword") } }
+                for (task in tasks) task.get(10, java.util.concurrent.TimeUnit.SECONDS)
+                UserWords.flush(ctx); UserWords.reload()
+                check(UserWords.all(ctx).first { it.form == "queuedword" }.count == 50)
+                val combo = x.vladgba.keyboard.keyboard.Combos.parse("control+shift+a")!!
+                check(combo.mods.size == 2 && combo.keyCode == android.view.KeyEvent.KEYCODE_A)
+                check(x.vladgba.keyboard.keyboard.Combos.parse(combo.spec())?.mask == combo.mask)
+                check(x.vladgba.keyboard.keyboard.Combos.parse("ctrl++a") == null)
+                check(x.vladgba.keyboard.keyboard.Combos.parse("ctrl+unknownkey") == null)
+                check(x.vladgba.keyboard.keyboard.Combos.parse("a") == null)
+                check(x.vladgba.keyboard.keyboard.Combos.parse("a", false)?.keyCode == android.view.KeyEvent.KEYCODE_A)
+                kb.onDestroy()
+                println("PASS learning: privacy fields, switches, persistence, deletion, snapshots, queue ordering and Android key combos")
             }
             else -> error("Unknown device check")
         }

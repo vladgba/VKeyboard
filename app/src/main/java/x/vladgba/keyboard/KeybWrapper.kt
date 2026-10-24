@@ -169,6 +169,7 @@ class KeybWrapper : InputMethodService() {
     }
 
     override fun onEvaluateInputViewShown(): Boolean {
+        super.onEvaluateInputViewShown()
         Settings.loadVars(DirectBoot.storage(this))
         val hide = Settings.bool(SETTING_HIDE_PHYSICAL, false) && PhysicalKeyboardPolicy.connected()
         if (hide && inputActive) hiddenForHardware = true

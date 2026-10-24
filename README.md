@@ -13,6 +13,8 @@ Run `./gradlew :app:validateLayouts` (Windows: `tools/validate-layouts.ps1`) to 
 
 With an authorized Android device connected, `tools/device-checks.ps1 all` runs the existing framework-only integration cases. It installs debug app/test APKs and restores settings/learned words after each case. Hardware hotplug and live microphone capture require separate manual testing; automated checks cover hardware policy and provider discovery/routing.
 
+`./gradlew :app:verifyKeyboardLogic` runs independent JVM checks for compose/dead-key state, generated rows, modifier maps, Unicode validation, emoji extraction and randomized layout serialization round-trips. The standard `:app:check` task includes these checks, dictionary/index checks and layout validation. Device cases `learning` and `async` cover privacy/persistence and deterministic cancellation of stale suggestion work; `all` includes both. Android installs the temporary `x.vladgba.keyboard.debug.test` instrumentation package, which normally has no Home-screen icon and can trigger a vendor installer notice. It is removed after the testing session.
+
 ## Versioning
 
 The version lives in `version.properties` (`major`, `minor`, `patch`, semantic versioning):

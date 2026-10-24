@@ -34,10 +34,21 @@ object DeadKeys {
     )
 
     private fun table(from: String, to: String): Map<Int, String> {
-        val a = from.codePoints().toArray()
-        val b = to.codePoints().toArray()
+        val a = codePoints(from)
+        val b = codePoints(to)
         require(a.size == b.size)
         return a.indices.associate { a[it] to String(Character.toChars(b[it])) }
+    }
+
+    private fun codePoints(text: String): List<Int> {
+        val points = ArrayList<Int>()
+        var offset = 0
+        while (offset < text.length) {
+            val point = text.codePointAt(offset)
+            points.add(point)
+            offset += Character.charCount(point)
+        }
+        return points
     }
 
     private val TABLES: Map<String, Map<Int, String>> = linkedMapOf(

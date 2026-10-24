@@ -132,7 +132,7 @@ internal class WordIndex {
         if (n == 0) return emptyList()
         // A queue item represents either a subtree or one terminal value.
         data class Candidate(val node: Int, val terminal: Boolean, val rank: Entry)
-        val queue = PriorityQueue<Candidate> { a, b -> compare(a.rank, b.rank) }
+        val queue = PriorityQueue<Candidate>(11) { a, b -> compare(a.rank, b.rank) }
         fun offer(node: Int, terminal: Boolean = false) {
             val rank = if (terminal) values[node] else best[node]
             if (rank != null) queue.add(Candidate(node, terminal, rank))

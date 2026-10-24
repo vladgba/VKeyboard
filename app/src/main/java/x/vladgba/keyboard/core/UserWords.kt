@@ -149,9 +149,20 @@ object UserWords {
 
     /** A typed word worth learning: 2+ letters, no digits, at most [MAX_LEN] characters. */
     fun isLearnable(w: String) =
-        w.length in 2..MAX_LEN && w.any { it.isLetter() } && w.none { it.isDigit() || it.isWhitespace() }
+        w.length >= 2 && isValid(w) && w.any { it.isLetter() } && w.none { it.isDigit() }
 
-    private fun isValid(w: String) = w.length in 1..MAX_LEN && w.none { it.isWhitespace() || it.isISOControl() }
+    private fun isValid(w: String): Boolean {
+        if (w.length !in 1..MAX_LEN) return false
+        var i = 0
+        while (i < w.length) {
+            val char = w[i++]
+            if (char.isWhitespace() || char.isISOControl()) return false
+            if (Character.isHighSurrogate(char)) {
+                if (i >= w.length || !Character.isLowSurrogate(w[i++])) return false
+            } else if (Character.isLowSurrogate(char)) return false
+        }
+        return true
+    }
 
     private fun load(ctx: Context): TreeMap<String, Word> {
         val m = TreeMap<String, Word>()
