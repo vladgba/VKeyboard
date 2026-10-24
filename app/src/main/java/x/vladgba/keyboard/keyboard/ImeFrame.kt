@@ -11,6 +11,8 @@ import android.view.WindowInsets
 import x.vladgba.keyboard.core.COLOR_KEYBOARD_BACKGROUND
 import x.vladgba.keyboard.core.SETTING_EDGE_GESTURE_GUARD
 import x.vladgba.keyboard.core.Settings
+import x.vladgba.keyboard.core.EMOJI_FILENAME
+import x.vladgba.keyboard.core.SETTING_TABBED_EMOJI
 
 /**
  * What the input method shows: the keyboard at the bottom plus transparent head-room above it,
@@ -46,15 +48,34 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
         private set
 
     /** Clipboard history shown in place of the keys, or null. */
-    private var drawer: ClipDrawer? = null
+    private var drawer: View? = null
+    private var lastEmojiPage = EMOJI_FILENAME
 
     /** Shows the clipboard history in place of the keys (same size). */
     fun showClipboard() {
-        if (drawer != null) {
-            drawer?.refresh()
+        val current = drawer
+        if (current is ClipDrawer) {
+            current.refresh()
             return
         }
+        hideDrawer()
         drawer = ClipDrawer(context, kb) { hideDrawer() }.also { addView(it) }
+        kb.onDrawerChanged(true)
+        keyboardView.visibility = INVISIBLE
+        requestLayout()
+    }
+
+    fun showEmoji(requestedPage: String = "") {
+        if (!Settings.bool(SETTING_TABBED_EMOJI, false)) {
+            hideDrawer()
+            kb.switchLayout(requestedPage.takeIf { it in EmojiCatalog.files } ?: EMOJI_FILENAME)
+            return
+        }
+        val page = requestedPage.ifBlank { lastEmojiPage }
+        (drawer as? EmojiDrawer)?.let { it.selectCategory(page); return }
+        hideDrawer()
+        drawer = EmojiDrawer(context, kb, page, { lastEmojiPage = it }) { hideDrawer() }.also { addView(it) }
+        kb.onDrawerChanged(true)
         keyboardView.visibility = INVISIBLE
         requestLayout()
     }
@@ -65,6 +86,7 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
         removeView(d)
         drawer = null
         keyboardView.visibility = VISIBLE
+        kb.onDrawerChanged(false)
         requestLayout()
     }
 
@@ -82,6 +104,8 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
             bar.invalidate()
         }
         keyboardView.overlay = overlay
+        kb.onEmojiRequested = { showEmoji(it) }
+        kb.onLayoutRequested = { hideDrawer() }
         setWillNotDraw(true)
         clipChildren = false
     }

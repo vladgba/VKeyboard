@@ -8,6 +8,7 @@ internal const val SETTINGS_FILENAME = "settings"
 internal const val NUM_FILENAME = "123"
 internal const val NUM2_FILENAME = "$123e"
 internal const val EMOJI_FILENAME = "emoji"
+internal const val SETTING_TABBED_EMOJI = "tabbedEmoji"
 /** Emoji category pages besides [EMOJI_FILENAME]; installed and listed together with it. */
 internal val EMOJI_PAGES = listOf("\$emojiPeople", "\$emojiNature", "\$emojiFood", "\$emojiTravel",
     "\$emojiActivity", "\$emojiObjects", "\$emojiSymbols", "\$emojiFlags")

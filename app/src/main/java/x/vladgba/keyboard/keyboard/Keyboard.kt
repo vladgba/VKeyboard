@@ -247,6 +247,9 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
 
     fun onDestroy() {
         cancelSuggestions()
+        onEmojiRequested = null
+        onLayoutRequested = null
+        onSuggestionsChanged = null
         voice.release()
         handler.removeCallbacksAndMessages(null)
         sounds.release()
@@ -779,6 +782,19 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
 
     /** Called when [suggestions] or [suggestionsShown] change (the IME frame redraws / resizes). */
     var onSuggestionsChanged: (() -> Unit)? = null
+    internal var onEmojiRequested: ((String) -> Unit)? = null
+    internal var onLayoutRequested: (() -> Unit)? = null
+    private var drawerOpen = false
+
+    internal fun onDrawerChanged(open: Boolean) {
+        drawerOpen = open
+        if (open) {
+            voice.cancel()
+            compose.cancel()
+            cancelSuggestions()
+            resetTouches()
+        } else scheduleSuggestions()
+    }
 
     /** The part of the word before the cursor the suggestions complete. */
     private var suggestionPrefix = ""
@@ -799,7 +815,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
     }
 
     private fun scheduleSuggestions() {
-        if (!suggestionsShown) return
+        if (!suggestionsShown || drawerOpen) return
         suggestionRequest++
         suggestionTask?.cancel(false)
         handler.removeCallbacks(suggestRunnable)
@@ -827,7 +843,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
 
     /** Learned words that complete the word before the cursor, in the case being typed. */
     private fun refreshSuggestions() {
-        if (!suggestionsShown || (selStart >= 0 && selStart != selEnd)) return cancelSuggestions()
+        if (!suggestionsShown || drawerOpen || (selStart >= 0 && selStart != selEnd)) return cancelSuggestions()
         val before = inputConnection?.getTextBeforeCursor(48, 0)?.toString() ?: return cancelSuggestions()
         var i = before.length
         while (i > 0 && (isLetterOrMark(before[i - 1]) || before[i - 1] == '\'' || before[i - 1] == '’')) i--
@@ -1360,6 +1376,12 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
     }
 
     fun switchLayout(name: String) {
+        if (!isEditor && Settings.bool(SETTING_TABBED_EMOJI, false) && onEmojiRequested != null &&
+            (name == EMOJI_FILENAME || isEmojiPage(name))) {
+            onEmojiRequested?.invoke(name)
+            return
+        }
+        onLayoutRequested?.invoke()
         currentLayoutName = name
         autoNumSwitched = false
         reloadLayout()
@@ -1383,7 +1405,10 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
     fun nextLayout() = cycleLayout(1)
     fun numLayout() = switchLayout(NUM_FILENAME)
     fun textLayout() = switchLayout(lastTextLayout.ifBlank { Settings.str(SETTING_DEF_LAYOUT) })
-    fun emojiLayout() = switchLayout(EMOJI_FILENAME)
+    fun emojiLayout() {
+        if (!isEditor && Settings.bool(SETTING_TABBED_EMOJI, false) && onEmojiRequested != null) onEmojiRequested?.invoke("")
+        else switchLayout(EMOJI_FILENAME)
+    }
 
     private fun setKeybType(inputType: Int) {
         val cls = inputType and InputType.TYPE_MASK_CLASS

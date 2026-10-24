@@ -33,7 +33,7 @@ class KeyboardDeviceTests : Instrumentation() {
 
 private fun runChecks(ctx: Context, check: String) {
     if (check == "all") {
-        for (name in listOf("orientation", "numpad", "extra-row", "rtl", "marks", "modmap", "languages", "hardware", "voice-provider", "visuals")) runChecks(ctx, name)
+        for (name in listOf("orientation", "numpad", "extra-row", "rtl", "marks", "modmap", "languages", "hardware", "voice-provider", "visuals", "emoji")) runChecks(ctx, name)
         return
     }
     val original = PFile(ctx, "settings").read()
@@ -306,6 +306,60 @@ private fun runChecks(ctx: Context, check: String) {
                 check(controls.keyboardAlpha == 255 && controls.keyAlpha(200) == 200)
                 kb.onDestroy()
                 println("PASS visuals: slider values, drawing and disabled theme restoration")
+            }
+            "emoji" -> {
+                Settings[SETTING_TABBED_EMOJI] = "1"
+                Settings.save(ctx)
+                val connection = BaseInputConnection(EditText(ctx), true)
+                val kb = Keyboard(ctx, KeybWrapper(), connection)
+                val frame = x.vladgba.keyboard.keyboard.ImeFrame(ctx, kb)
+                kb.switchLayout("en")
+                fun measure(width: Int) {
+                    frame.measure(android.view.View.MeasureSpec.makeMeasureSpec(width, android.view.View.MeasureSpec.EXACTLY),
+                        android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED))
+                    frame.layout(0, 0, frame.measuredWidth, frame.measuredHeight)
+                }
+                kb.emojiLayout()
+                measure(1080)
+                var drawer = frame.findViewWithTag<x.vladgba.keyboard.keyboard.EmojiDrawer>("emoji-drawer")
+                check(drawer != null && drawer.category == EMOJI_FILENAME)
+                check(kb.currentLayoutName == "en" && frame.keyboardView.visibility == android.view.View.INVISIBLE)
+                for (page in x.vladgba.keyboard.keyboard.EmojiCatalog.files) {
+                    drawer.findViewWithTag<android.view.View>("emoji-tab:$page").performClick()
+                    check(drawer.category == page)
+                    val grid = drawer.findViewWithTag<android.widget.GridView>("emoji-grid")
+                    check(grid.adapter.count > 0) { "Empty emoji category $page" }
+                    val emoji = grid.adapter.getItem(0) as String
+                    val before = connection.editable.toString()
+                    grid.performItemClick(grid.adapter.getView(0, null, grid), 0, 0)
+                    check(connection.editable.toString() == before + emoji)
+                    check(kb.currentLayoutName == "en")
+                }
+                drawer.findViewWithTag<android.view.View>("emoji-tab:\$emojiPeople").performClick()
+                val grid = drawer.findViewWithTag<android.widget.GridView>("emoji-grid")
+                val sequenceIndex = (0 until grid.adapter.count).first { (grid.adapter.getItem(it) as String).contains('\u200d') }
+                val sequence = grid.adapter.getItem(sequenceIndex) as String
+                grid.performItemClick(grid.adapter.getView(sequenceIndex, null, grid), sequenceIndex, sequenceIndex.toLong())
+                check(connection.editable.toString().endsWith(sequence))
+                drawer.findViewWithTag<android.view.View>("emoji-close").performClick()
+                check(frame.findViewWithTag<android.view.View>("emoji-drawer") == null)
+                check(frame.keyboardView.visibility == android.view.View.VISIBLE)
+                kb.emojiLayout()
+                drawer = frame.findViewWithTag("emoji-drawer")
+                check(drawer.category == "\$emojiPeople")
+                frame.showClipboard()
+                check(frame.findViewWithTag<android.view.View>("emoji-drawer") == null)
+                kb.switchLayout("\$emojiFlags")
+                check(frame.findViewWithTag<x.vladgba.keyboard.keyboard.EmojiDrawer>("emoji-drawer").category == "\$emojiFlags")
+                measure(1920)
+                val bitmap = android.graphics.Bitmap.createBitmap(frame.width, frame.height, android.graphics.Bitmap.Config.ARGB_8888)
+                frame.draw(android.graphics.Canvas(bitmap))
+                bitmap.recycle()
+                Settings[SETTING_TABBED_EMOJI] = "0"
+                kb.emojiLayout()
+                check(kb.currentLayoutName == EMOJI_FILENAME && frame.findViewWithTag<android.view.View>("emoji-drawer") == null)
+                kb.onDestroy()
+                println("PASS emoji: category tabs, complete sequences, insertion, layout preservation, close, clipboard, width and disabled fallback")
             }
             else -> error("Unknown device check")
         }

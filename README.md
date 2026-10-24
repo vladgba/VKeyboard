@@ -68,6 +68,8 @@ New features & options:
 
 ## Layout format (Flexaml)
 
+`tabbedEmoji=1` opens a recycled, scrollable grid with tabs for the nine existing emoji categories. It includes related variants from the emoji pages and keeps multi-code-point sequences intact. The current typing layout stays selected; use the back arrow to return, or Backspace to delete. The last category is remembered only while the keyboard lives. Off by default in Settings; disabling it restores the existing emoji layouts. No emoji history is stored, and existing custom emoji pages are read without being rewritten.
+
 `visualControls=1` enables Settings sliders for `borderWidth` (0–6 dp), `keyboardOpacity` (35–100%) and `keyOpacity` (0–100%). The master switch is off by default and restores theme-defined borders/opacity when disabled; key-fill transparency does not fade labels. Whole-keyboard opacity includes suggestions and popups.
 
 Settings → Voice includes a recognition-provider picker. `customVoiceProvider=1` uses the chosen installed service (`voiceProvider` stores its component); disabled by default. System default, a removed service or a service that cannot be created falls back to the existing system/on-device recognition path. Choosing a provider never grants microphone permission or starts listening by itself.

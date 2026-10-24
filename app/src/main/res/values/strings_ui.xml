@@ -2,6 +2,22 @@
 <!-- Strings of the newcomer-friendly screens: home, settings, macros, key tester, pickers. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Common -->
+    <string name="ui_tabbed_emoji">Tabbed emoji drawer</string>
+    <string name="ui_tabbed_emoji_sub">Open a scrollable emoji grid with category tabs instead of switching typing layouts.</string>
+    <string name="emoji_faces">Faces</string>
+    <string name="emoji_people">People</string>
+    <string name="emoji_nature">Nature</string>
+    <string name="emoji_food">Food</string>
+    <string name="emoji_travel">Travel</string>
+    <string name="emoji_activities">Activities</string>
+    <string name="emoji_objects">Objects</string>
+    <string name="emoji_symbols">Symbols</string>
+    <string name="emoji_flags">Flags</string>
+    <string name="emoji_insert">Insert %1$s</string>
+    <string name="emoji_back">Return to typing</string>
+    <string name="emoji_backspace">Delete previous character</string>
+    <string name="emoji_empty">No emoji in this category.</string>
+    <string name="emoji_too_large">This emoji page is too large to display. Edit it to be smaller than 512 KiB.</string>
     <string name="ui_visual_controls">Custom border and opacity</string>
     <string name="ui_visual_controls_sub">Enable the sliders below. Turn off to restore the normal theme appearance.</string>
     <string name="ui_border_width">Key border width</string>

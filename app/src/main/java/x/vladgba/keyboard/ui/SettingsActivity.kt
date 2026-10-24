@@ -281,6 +281,7 @@ class SettingsActivity : LocalizedActivity() {
         bool(SETTING_SUGGESTIONS, R.string.ui_set_suggestions, R.string.ui_set_suggestions_sub, true)
         bool(SETTING_SPACE_ACCEPT, R.string.ui_set_space_accept, R.string.ui_set_space_accept_sub, false)
         bool(SETTING_EMOJI_SUGGEST, R.string.ui_set_emoji_suggest, R.string.ui_set_emoji_suggest_sub, true)
+        bool(SETTING_TABBED_EMOJI, R.string.ui_tabbed_emoji, R.string.ui_tabbed_emoji_sub, false)
         bool(SETTING_CLIP_HISTORY, R.string.ui_set_clip_history, R.string.ui_set_clip_history_sub, true)
         clipExpiryRow()
         int(SENSE_HARD_PRESS, R.string.ui_set_hard, R.string.ui_set_hard_sub, 0, 1000, 25, 400) {
