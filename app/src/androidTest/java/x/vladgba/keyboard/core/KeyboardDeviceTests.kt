@@ -7,6 +7,8 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.os.Bundle
 import android.view.ContextThemeWrapper
+import android.view.inputmethod.BaseInputConnection
+import android.widget.EditText
 import x.vladgba.keyboard.KeybWrapper
 import x.vladgba.keyboard.keyboard.Keyboard
 
@@ -113,6 +115,34 @@ private fun runChecks(ctx: Context, check: String) {
                 check(kb.currentLayout.rows.none { row -> row.keys.any { it.str(KEY_TEXT) == "hello" } })
                 kb.onDestroy()
                 println("PASS extra-row: codes, modifiers, custom text, off and numeric exclusions")
+            }
+            "rtl" -> {
+                val file = PFile(ctx, "roadmap-test-rtl")
+                check(!file.exists())
+                try {
+                    file.write("(\"rtl\":\"1\", ((\"key\":\"א\"), (\"key\":\"(\")))")
+                    Settings[SETTING_RTL_MARKS] = "1"
+                    Settings[SETTING_MIRROR_BRACKETS] = "1"
+                    Settings.save(ctx)
+                    val connection = BaseInputConnection(EditText(ctx), true)
+                    val kb = Keyboard(ctx, KeybWrapper(), connection)
+                    kb.switchLayout("roadmap-test-rtl")
+                    check(kb.currentLayout.rtl)
+                    check(kb.currentLayout.rows[0].keys[0].str(KEY_KEY) == "@RTL:LRM")
+                    kb.onText("(")
+                    check(connection.editable.toString() == ")")
+                    kb.runSpecial("@RTL:RLM")
+                    check(connection.editable.toString() == ")\u200f")
+                    Settings[SETTING_RTL_MARKS] = "0"
+                    Settings[SETTING_MIRROR_BRACKETS] = "0"
+                    kb.runSpecial("@RTL:LRM")
+                    kb.onText("(")
+                    check(connection.editable.toString() == ")\u200f(")
+                    kb.reloadLayout()
+                    check(kb.currentLayout.rows.size == 1)
+                    kb.onDestroy()
+                } finally { file.delete() }
+                println("PASS rtl: detection, mirrored output, Unicode marks, controls and off")
             }
             else -> error("Unknown device check")
         }

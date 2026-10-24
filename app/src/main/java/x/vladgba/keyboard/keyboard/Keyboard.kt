@@ -40,10 +40,10 @@ import kotlin.math.min
  * With [ime] == null the keyboard runs inside the layout editor: touches go to [editInterface]
  * and nothing is sent to any app.
  */
-class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
+class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOverride: InputConnection? = null) {
     val view = KeyboardView(ctx, this)
     val isEditor get() = ime == null
-    val inputConnection: InputConnection? get() = ime?.currentInputConnection
+    val inputConnection: InputConnection? get() = connectionOverride ?: ime?.currentInputConnection
     val voice = VoiceInput(this)
     val compose = ComposeHelper()
     private var currentAppPackage = ""
@@ -655,7 +655,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             feedCompose(chars.toString())
             return
         }
-        val s = chars.toString()
+        val s = if (Settings.bool(SETTING_MIRROR_BRACKETS, false) && currentLayout.rtl) RtlTools.mirror(chars.toString()) else chars.toString()
         autoAccepted = null
         if (!TextExpander.isSeparator(chars)) textExpander.clearUndo()
         lastSpaceTime = 0L
@@ -1179,6 +1179,10 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     /** `"macro:name"` runs a macro, `"ctrl+c"` sends a combination. Returns false for anything else. */
     fun runSpecial(value: String): Boolean {
         val trimmed = value.trim()
+        if (trimmed.startsWith(RtlTools.PREFIX)) {
+            if (Settings.bool(SETTING_RTL_MARKS, false)) RtlTools.marks[trimmed.removePrefix(RtlTools.PREFIX)]?.let { setText(it) }
+            return true
+        }
         if (trimmed == VOICE_ACTION) {
             voice.toggle()
             return true
@@ -1294,7 +1298,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     private fun pickLayout(name: String): Boolean {
         if (name.isBlank()) return false
         val options = listOf(SETTING_NUMBER_ROW, SETTING_SIDE_NUMPAD, SETTING_INVERT_NUMPAD,
-            SETTING_EXTRA_ROW, SETTING_EXTRA_ROW_KEYS).joinToString { Settings.str(it) }
+            SETTING_EXTRA_ROW, SETTING_EXTRA_ROW_KEYS, SETTING_RTL_MARKS).joinToString { Settings.str(it) }
         if (options != loadedLayoutOptions) {
             loaded.clear()
             loadedLayoutOptions = options
@@ -1322,6 +1326,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             val row = ExtraRow.build(Settings.str(SETTING_EXTRA_ROW_KEYS, ExtraRow.DEFAULT_KEYS))
             if (row.childCount() > 0) node.childs.add(0, row)
         }
+        if (!isEditor && Bootstrap.isTextLayout(name) && Settings.bool(SETTING_RTL_MARKS, false)) node.childs.add(0, RtlTools.row())
         if (!isEditor && name == "\$numpad" && Settings.bool(SETTING_INVERT_NUMPAD, false)) Numpad.invert(node)
         val layout = KeybLayout(this, node, !isEditor && Bootstrap.isTextLayout(name) && Settings.num(SETTING_SIDE_NUMPAD, 0) != 0)
         layout.lastModified = file.lastModified()

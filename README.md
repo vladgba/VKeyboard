@@ -70,6 +70,8 @@ New features & options:
 
 `extraKeysRow=1` adds a toolbar to typing layouts. Configure up to 16 pipe-separated `extraRowKeys` in Settings: navigation names, Ctrl/Alt/Shift/Meta, F1–F12, or literal text. Default: `Esc|Tab|Ctrl|Alt|←|↓|↑|→`. Off by default.
 
+`rtlMarks=1` adds Unicode direction controls (LRM/RLM/ALM and LRI/RLI/FSI/PDI), also available as `@RTL:<name>` actions. `mirrorBrackets=1` swaps single typed bracket/angle-quote pairs on layouts marked `rtl=1` or containing RTL letters. Both options are off by default and configurable in Settings.
+
 ```
 (                                   # layout
     (                               # row

@@ -25,6 +25,8 @@ class KeybLayout(val c: Keyboard, glob: FlexNode, private val hasNumpad: Boolean
         private set
     var loaded = false
         private set
+    var rtl = false
+        private set
     var lastModified = 0L
 
     private var measuredWidth = -1
@@ -43,6 +45,10 @@ class KeybLayout(val c: Keyboard, glob: FlexNode, private val hasNumpad: Boolean
                 for (k in 0 until rowNode.childCount()) row.keys.add(Key(c, row, 0, 0, rowNode[k]))
             }
             loaded = rows.isNotEmpty()
+            rtl = bool("rtl") || rows.any { row -> row.keys.any { key ->
+                key.str(KEY_KEY).any { ch -> Character.getDirectionality(ch) in listOf(
+                    Character.DIRECTIONALITY_RIGHT_TO_LEFT, Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC) }
+            } }
             if (hasNumpad) for (node in Numpad.rows(Settings.bool(SETTING_INVERT_NUMPAD, false))) {
                 val row = Row(this, node)
                 for (key in node.childs.filterIsInstance<FlexNode>()) row.keys.add(Key(c, row, 0, 0, key))

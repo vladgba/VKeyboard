@@ -198,6 +198,8 @@ class SettingsActivity : LocalizedActivity() {
         bool(SETTING_DOUBLE_SPACE, R.string.ui_set_double_space, R.string.ui_set_double_space_sub, true)
         bool(SETTING_AUTO_NUM_LAYOUT, R.string.ui_set_auto_num, R.string.ui_set_auto_num_sub, true)
         bool(SETTING_SMART_PUNCTUATION, R.string.ui_set_smart_punctuation, R.string.ui_set_smart_punctuation_sub, true)
+        bool(SETTING_RTL_MARKS, R.string.ui_rtl_marks, R.string.ui_rtl_marks_sub, false)
+        bool(SETTING_MIRROR_BRACKETS, R.string.ui_mirror_brackets, R.string.ui_mirror_brackets_sub, false)
 
         page.header(getString(R.string.vo_sec))
         page.note(getString(R.string.vo_intro))

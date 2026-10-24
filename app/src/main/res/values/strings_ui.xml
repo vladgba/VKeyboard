@@ -2,6 +2,10 @@
 <!-- Strings of the newcomer-friendly screens: home, settings, macros, key tester, pickers. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Common -->
+    <string name="ui_rtl_marks">Direction marks row</string>
+    <string name="ui_rtl_marks_sub">Show LRM, RLM, ALM and directional isolate controls for mixed-direction text.</string>
+    <string name="ui_mirror_brackets">Mirror brackets on RTL layouts</string>
+    <string name="ui_mirror_brackets_sub">Swap paired brackets and angle quotes when using a right-to-left layout.</string>
     <string name="ui_extra_row">Extra keys row</string>
     <string name="ui_extra_row_sub">Add a configurable row of navigation keys, modifiers and text.</string>
     <string name="ui_extra_row_keys">Extra row keys</string>
