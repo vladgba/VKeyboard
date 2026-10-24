@@ -21,6 +21,7 @@ import java.util.zip.ZipOutputStream
  *    also inside its exported zip;
  *  - an AOSP-style `.combined` word list (` word=…,f=…` lines), or static v2 binary `.dict`.
  *  - XML word/frequency backups or wordlist XML, also inside a zip archive.
+ *  - compiled .cdict v1 files (all dictionaries, canonical words only).
  * Export writes the plain list or a Gboard zip.
  */
 object UserWords {
@@ -215,6 +216,7 @@ object UserWords {
     private fun parseFile(bytes: ByteArray, allowZip: Boolean): List<Pair<String, Int>> {
         require(bytes.size <= MAX_IMPORT_BYTES) { "Dictionary import exceeds 32 MiB" }
         if (AospDictionary.matches(bytes)) return AospDictionary.parse(bytes)
+        if (CompactDictionary.matches(bytes)) return CompactDictionary.parse(bytes)
         if (bytes.size >= 2 && bytes[0] == 'P'.code.toByte() && bytes[1] == 'K'.code.toByte()) {
             require(allowZip) { "Nested dictionary archives are not supported" }
             return parseZip(bytes)
@@ -248,6 +250,7 @@ object UserWords {
                 val words = when {
                     name.endsWith(".xml") -> XmlWordBackup.parse(decodeText(data))
                     name == "dictionary.txt" || name.endsWith(".combined") ||
+                        CompactDictionary.matches(data) ||
                         (name.endsWith(".dict") && AospDictionary.matches(data)) -> parseFile(data, allowZip = false)
                     name.endsWith(".txt") && !name.startsWith("readme") && !name.startsWith("license") -> {
                         fallback = data

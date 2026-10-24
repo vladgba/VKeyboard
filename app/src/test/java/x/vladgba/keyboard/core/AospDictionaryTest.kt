@@ -61,6 +61,7 @@ fun main() {
     check(!AospDictionary.matches("hello\t120".toByteArray()))
     check(!AospDictionary.matches(byteArrayOf(0x50, 0x4b)))
     checkXmlBackups()
+    checkCompactDictionaries()
     println("AOSP dictionary checks passed (valid tries, Unicode, metadata, malformed files and all truncations)")
 }
 
