@@ -347,6 +347,8 @@ class VoiceInput(private val kb: Keyboard) {
             "en" to "en-US", "enExt" to "en-US", "dvorak" to "en-US", "colemak" to "en-US", "code" to "en-US",
             "uk" to "uk-UA", "ru" to "ru-RU", "ruExt" to "ru-RU", "be" to "be-BY", "bg" to "bg-BG",
             "de" to "de-DE", "fr" to "fr-FR", "es" to "es-ES", "pl" to "pl-PL", "ro" to "ro-RO",
+            "ar" to "ar-SA", "he" to "he-IL", "el" to "el-GR", "tr" to "tr-TR", "it" to "it-IT", "pt" to "pt-PT",
+            "cs" to "cs-CZ", "hu" to "hu-HU", "sv" to "sv-SE", "fi" to "fi-FI", "nb" to "nb-NO", "da" to "da-DK",
         )
     }
 }

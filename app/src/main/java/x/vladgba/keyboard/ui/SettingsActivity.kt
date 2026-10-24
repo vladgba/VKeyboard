@@ -208,6 +208,7 @@ class SettingsActivity : LocalizedActivity() {
         voiceRows()
 
         page.header(getString(R.string.ui_sec_look))
+        bool(SETTING_EXPANDED_LAYOUTS, R.string.ui_expanded_layouts, R.string.ui_expanded_layouts_sub, false)
         choice(SETTING_DEF_LAYOUT, R.string.ui_set_def_layout, R.string.ui_set_def_layout_sub, Bootstrap.textLayouts(this))
         bool(SETTING_ORIENTATION_LAYOUTS, R.string.ui_orientation_layouts, R.string.ui_orientation_layouts_sub, false)
         val themes = PFile.list(this, THEME_EXT)

@@ -2,6 +2,21 @@
 <!-- Strings of the newcomer-friendly screens: home, settings, macros, key tester, pickers. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Common -->
+    <string name="bi_ar">Arabic</string>
+    <string name="bi_he">Hebrew</string>
+    <string name="bi_el">Greek</string>
+    <string name="bi_tr">Turkish Q</string>
+    <string name="bi_it">Italian</string>
+    <string name="bi_pt">Portuguese</string>
+    <string name="bi_cs">Czech QWERTZ</string>
+    <string name="bi_hu">Hungarian</string>
+    <string name="bi_sv">Swedish</string>
+    <string name="bi_fi">Finnish</string>
+    <string name="bi_nb">Norwegian</string>
+    <string name="bi_da">Danish</string>
+    <string name="bi_language_mobile">Conventional letter arrangement adapted for touch, with navigation gestures and language-specific characters.</string>
+    <string name="ui_expanded_layouts">Expanded language layouts</string>
+    <string name="ui_expanded_layouts_sub">Make Arabic, Hebrew, Greek, Turkish, Italian, Portuguese, Czech, Hungarian and Nordic layouts available in Built-in layouts.</string>
     <string name="ui_modifier_maps">Layout modifier mappings</string>
     <string name="ui_modifier_maps_sub">Use alternate key actions defined by the layout for Shift, Ctrl, Alt, AltGr and Meta combinations.</string>
     <string name="ui_combining_marks">Arabic and Hebrew marks</string>

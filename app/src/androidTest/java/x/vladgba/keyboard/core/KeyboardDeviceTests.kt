@@ -208,6 +208,51 @@ private fun runChecks(ctx: Context, check: String) {
                 } finally { file.delete() }
                 println("PASS modmap: layout/key precedence, modifier combinations, actual key taps and off")
             }
+            "languages" -> {
+                Settings[SETTING_EXPANDED_LAYOUTS] = "1"
+                Settings[SETTING_COMBINING_MARKS] = "0"
+                Settings[SETTING_RTL_MARKS] = "0"
+                Settings[SETTING_EXTRA_ROW] = "0"
+                Settings[SETTING_SIDE_NUMPAD] = "0"
+                Settings.save(ctx)
+                val connection = BaseInputConnection(EditText(ctx), true)
+                val kb = Keyboard(ctx, KeybWrapper(), connection)
+                for (name in ExpandedLayouts.names) {
+                    val text = PFile.asset(ctx, name) ?: error("Missing asset $name")
+                    val parser = x.vladgba.keyboard.flex.FlexParser(text)
+                    val parsed = parser.parse()
+                    check(parser.warnings.isEmpty()) { "$name: ${parser.warnings}" }
+                    check(parsed.childCount() == 4)
+                    val file = PFile(ctx, "roadmap-test-$name")
+                    check(!file.exists())
+                    try {
+                        file.write(text)
+                        kb.switchLayout("roadmap-test-$name")
+                        val layout = kb.currentLayout
+                        layout.measure(1080, true)
+                        check(layout.loaded && layout.keys.any { it.num(KEY_CODE) == -62 })
+                        check(layout.keys.any { it.num(KEY_CODE) == -67 } && layout.keys.any { it.num(KEY_CODE) == -66 })
+                        for (key in layout.keys) {
+                            check(key.width > 0 && key.x >= 0 && key.x + key.width <= 1080)
+                            check(layout.getKey(key.x + key.width / 2, key.y + key.height / 2) === key)
+                        }
+                        check(layout.rtl == (name in listOf("ar", "he")))
+                        if (name == "tr") {
+                            check(kb.getShifted('i'.code, true) == 'İ'.code && kb.getShifted('ı'.code, true) == 'I'.code)
+                            kb.metaState = android.view.KeyEvent.META_SHIFT_ON
+                            kb.onKey('i'.code)
+                            check(connection.editable.toString().endsWith("İ"))
+                            kb.metaState = 0
+                        }
+                    } finally { file.delete() }
+                }
+                Settings[SETTING_EXPANDED_LAYOUTS] = "0"
+                kb.switchLayout("tr")
+                check(kb.currentLayoutName !in ExpandedLayouts.names)
+                check(ExpandedLayouts.names.none { ExpandedLayouts.enabled(it) })
+                kb.onDestroy()
+                println("PASS languages: 12 assets, parser validity, geometry/hit tests, RTL, Turkish casing and off")
+            }
             else -> error("Unknown device check")
         }
     } finally {

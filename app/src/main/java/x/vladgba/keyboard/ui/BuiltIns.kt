@@ -21,6 +21,18 @@ internal object BuiltIns {
         Item("es", R.string.bi_es, R.string.bi_es_d),
         Item("pl", R.string.bi_pl, R.string.bi_pl_d),
         Item("ro", R.string.bi_ro, R.string.bi_ro_d),
+        Item("ar", R.string.bi_ar, R.string.bi_language_mobile),
+        Item("he", R.string.bi_he, R.string.bi_language_mobile),
+        Item("el", R.string.bi_el, R.string.bi_language_mobile),
+        Item("tr", R.string.bi_tr, R.string.bi_language_mobile),
+        Item("it", R.string.bi_it, R.string.bi_language_mobile),
+        Item("pt", R.string.bi_pt, R.string.bi_language_mobile),
+        Item("cs", R.string.bi_cs, R.string.bi_language_mobile),
+        Item("hu", R.string.bi_hu, R.string.bi_language_mobile),
+        Item("sv", R.string.bi_sv, R.string.bi_language_mobile),
+        Item("fi", R.string.bi_fi, R.string.bi_language_mobile),
+        Item("nb", R.string.bi_nb, R.string.bi_language_mobile),
+        Item("da", R.string.bi_da, R.string.bi_language_mobile),
         Item("dvorak", R.string.bi_dvorak, R.string.bi_dvorak_d),
         Item("colemak", R.string.bi_colemak, R.string.bi_colemak_d),
         Item("code", R.string.bi_code, R.string.bi_code_d),
@@ -57,6 +69,7 @@ internal object BuiltIns {
     fun assetNames(ctx: Context, ext: String, blank: String): List<String> {
         val files = ctx.assets.list("").orEmpty().filter { it.endsWith(".$ext") }.map { it.removeSuffix(".$ext") }
             .filter { it != blank && !isEmojiPage(it) }
+            .filter { ext != LAYOUT_EXT || ExpandedLayouts.enabled(it) }
         val known = (if (ext == THEME_EXT) THEMES else LAYOUTS).map { it.file }
         return known.filter { it in files } + files.filter { it !in known }.sorted()
     }

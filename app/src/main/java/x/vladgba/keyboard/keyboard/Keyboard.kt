@@ -151,7 +151,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
 
     private fun orientationLayout(): String {
         val saved = Settings.str(if (isPortrait) SETTING_LAYOUT_PORTRAIT else SETTING_LAYOUT_LANDSCAPE)
-        return saved.takeIf { Bootstrap.isTextLayout(it) && it.isNotBlank() && PFile(ctx, it).exists() }
+        return saved.takeIf { Bootstrap.isTextLayout(it) && ExpandedLayouts.enabled(it) && it.isNotBlank() && PFile(ctx, it).exists() }
             ?: Settings.str(SETTING_DEF_LAYOUT)
     }
 
@@ -194,7 +194,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
             val appNode = Settings[SETTING_APP_LAYOUTS]
             val target = (if (appNode.has(currentAppPackage)) appNode.str(currentAppPackage)
                           else Settings.str("appLayout.$currentAppPackage")).trim()
-            if (target.isNotEmpty() && PFile(ctx, target, LAYOUT_EXT).exists()) {
+            if (target.isNotEmpty() && ExpandedLayouts.enabled(target) && PFile(ctx, target, LAYOUT_EXT).exists()) {
                 if (currentLayoutName != target) {
                     appSwitchedLayout = true
                     currentLayoutName = target
@@ -612,6 +612,11 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
         when {
             i in LATIN_KEYS -> {
                 textExpander.clearUndo()
+                if (currentLayout.str("language").startsWith("tr") && i == 'i'.code && letterShift() &&
+                    !ctrlPressed() && !altPressed() && !metaPressed()) {
+                    onText("İ")
+                    return
+                }
                 if (compose.active) {
                     val code = getShifted(i, letterShift())
                     feedCompose(Character.toChars(code).concatToString())
@@ -1083,8 +1088,11 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
     fun shiftPressed() = metaState and META_SHIFT_MASK != 0
     fun metaPressed() = metaState and META_META_MASK != 0
 
-    fun getShifted(code: Int, sh: Boolean) =
-        if (sh && Character.isLetter(code)) Character.toUpperCase(code) else code
+    fun getShifted(code: Int, sh: Boolean): Int {
+        if (!sh || !Character.isLetter(code)) return code
+        if (currentLayout.str("language").startsWith("tr") && code == 'i'.code) return 'İ'.code
+        return Character.toUpperCase(code)
+    }
 
     fun isMetaActive(key: Key) = key.num(KEY_MOD_META).let { it != 0 && metaState and it == it }
     fun isMetaLocked(key: Key) = metaLatches[key] == Latch.LOCKED
@@ -1286,7 +1294,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
                 pickLayout(DEFAULT_LAYOUT_ASSET)
                 currentLayoutName = DEFAULT_LAYOUT_ASSET
             }
-            if (broken.isNotBlank() && PFile(ctx, broken).exists() && !isEditor) {
+            if (broken.isNotBlank() && ExpandedLayouts.enabled(broken) && PFile(ctx, broken).exists() && !isEditor) {
                 log("Layout '$broken' could not be loaded")
                 ctx.startActivity(Intent(ctx, RawEditor::class.java).putExtra("name", broken).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             }
@@ -1301,6 +1309,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
     /** Makes [name] current. Returns false if it can't be loaded. */
     private fun pickLayout(name: String): Boolean {
         if (name.isBlank()) return false
+        if (!isEditor && !ExpandedLayouts.enabled(name)) return false
         val options = listOf(SETTING_NUMBER_ROW, SETTING_SIDE_NUMPAD, SETTING_INVERT_NUMPAD,
             SETTING_EXTRA_ROW, SETTING_EXTRA_ROW_KEYS, SETTING_RTL_MARKS, SETTING_COMBINING_MARKS).joinToString { Settings.str(it) }
         if (options != loadedLayoutOptions) {

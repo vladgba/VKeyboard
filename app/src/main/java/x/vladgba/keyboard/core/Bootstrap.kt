@@ -31,7 +31,7 @@ object Bootstrap {
     }
 
     /** User layouts that take part in @NEXT/@PREV cycling. */
-    fun textLayouts(ctx: Context): List<String> = PFile.list(ctx, LAYOUT_EXT).filter { isTextLayout(it) }
+    fun textLayouts(ctx: Context): List<String> = PFile.list(ctx, LAYOUT_EXT).filter { isTextLayout(it) && ExpandedLayouts.enabled(it) }
 
     fun isTextLayout(name: String) =
         name !in setOf(SETTINGS_FILENAME, NUM_FILENAME, EMOJI_FILENAME) && !name.startsWith("$")
