@@ -59,6 +59,41 @@ private fun runChecks(ctx: Context, check: String) {
                 kb.onDestroy()
                 println("PASS orientation: rotation, remembering, temporary number page and disabled behavior")
             }
+            "numpad" -> {
+                Settings[SETTING_SIDE_NUMPAD] = "1"
+                Settings[SETTING_INVERT_NUMPAD] = "0"
+                Settings[SETTING_SPLIT] = "0"
+                Settings.save(ctx)
+                val kb = Keyboard(ctx, KeybWrapper())
+                kb.switchLayout("en")
+                kb.currentLayout.measure(1080, true)
+                check(kb.currentLayout.sideRows.size == 4)
+                val seven = kb.currentLayout.sideRows[0].keys[0]
+                check(seven.str(KEY_KEY) == "7" && seven.x >= 810)
+                check(kb.currentLayout.getKey(seven.x + seven.width / 2, seven.y + seven.height / 2) === seven)
+                check(kb.currentLayout.rows.all { row -> row.keys.all { it.x + it.width <= 810 } })
+                Settings[SETTING_SIDE_NUMPAD] = "2"
+                Settings[SETTING_INVERT_NUMPAD] = "1"
+                kb.reloadLayout()
+                kb.currentLayout.measure(1080, true)
+                check(kb.currentLayout.sideRows[0].keys[0].str(KEY_KEY) == "1")
+                check(kb.currentLayout.sideRows[0].keys[0].x == 0)
+                check(kb.currentLayout.rows.all { row -> row.keys.all { it.width == 0 || it.x >= 270 } })
+                Settings[SETTING_SIDE_NUMPAD] = "3"
+                kb.reloadLayout()
+                kb.currentLayout.measure(1080, true)
+                check(kb.currentLayout.sideRows.all { row -> row.keys.all { it.width == 0 } })
+                kb.currentLayout.measure(1920, false)
+                check(kb.currentLayout.sideRows.all { row -> row.keys.all { it.width > 0 } })
+                Settings[SETTING_SIDE_NUMPAD] = "0"
+                kb.reloadLayout()
+                check(kb.currentLayout.sideRows.isEmpty())
+                PFile.install(ctx, "\$numpad")
+                kb.switchLayout("\$numpad")
+                check(kb.currentLayout.rows[0].keys[0].str(KEY_KEY) == "1")
+                kb.onDestroy()
+                println("PASS numpad: right/left/landscape, hit testing, inversion and off")
+            }
             else -> error("Unknown device check")
         }
     } finally {

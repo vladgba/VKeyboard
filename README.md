@@ -66,6 +66,8 @@ New features & options:
 
 `orientationLayouts=1` remembers manual typing-layout choices separately in portrait and landscape (`portraitLayout`, `landscapeLayout`). Enable it in Settings; it is off by default. App-specific layouts take priority, and temporary number/emoji pages do not replace the remembered choice.
 
+`sideNumpad`: `0` off (default), `1` right, `2` left, `3` right in landscape only. `numpadWidth` sets its width (15–45%, default 25%). `invertNumpad=1` swaps 1–3 and 7–9 on the side and standalone pads. These settings never rewrite layout files.
+
 ```
 (                                   # layout
     (                               # row

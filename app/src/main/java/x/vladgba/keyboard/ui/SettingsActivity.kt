@@ -223,6 +223,14 @@ class SettingsActivity : LocalizedActivity() {
             if (it == 0) getString(R.string.ui_off) else "$it dp"
         }
         numberRowChoice()
+        val padNames = listOf(getString(R.string.ui_off), getString(R.string.ui_pad_right), getString(R.string.ui_pad_left), getString(R.string.ui_pad_landscape))
+        page.row(getString(R.string.ui_side_numpad), padNames[Settings.num(SETTING_SIDE_NUMPAD, 0).coerceIn(0, 3)]) {
+            Ask.choice(this, getString(R.string.ui_side_numpad), padNames, Settings.num(SETTING_SIDE_NUMPAD, 0)) {
+                set(SETTING_SIDE_NUMPAD, it.toString()); render()
+            }
+        }
+        bool(SETTING_INVERT_NUMPAD, R.string.ui_invert_numpad, R.string.ui_invert_numpad_sub, false)
+        int(SETTING_NUMPAD_WIDTH, R.string.ui_numpad_width, R.string.ui_numpad_width_sub, 15, 45, 5, 25) { "$it%" }
         splitChoice()
         int(SETTING_SPLIT_GAP, R.string.ui_set_split_gap, R.string.ui_set_split_gap_sub, 5, 60, 5, 25) { "$it%" }
         textSize(KEY_TEXT_SIZE_PRIMARY, R.string.ui_set_label_size, R.string.ui_set_label_size_sub, 2.5f)

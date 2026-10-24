@@ -70,7 +70,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     private var autoNumSwitched = false
     private val loaded = HashMap<String, KeybLayout>()
     /** Number row setting the cached layouts were built with. */
-    private var loadedNumberRow = -1
+    private var loadedLayoutOptions = ""
     lateinit var currentLayout: KeybLayout
         private set
 
@@ -1293,10 +1293,10 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     /** Makes [name] current. Returns false if it can't be loaded. */
     private fun pickLayout(name: String): Boolean {
         if (name.isBlank()) return false
-        val numberRow = Settings.num(SETTING_NUMBER_ROW, NumberRow.OFF)
-        if (numberRow != loadedNumberRow) {
+        val options = listOf(SETTING_NUMBER_ROW, SETTING_SIDE_NUMPAD, SETTING_INVERT_NUMPAD).joinToString { Settings.str(it) }
+        if (options != loadedLayoutOptions) {
             loaded.clear()
-            loadedNumberRow = numberRow
+            loadedLayoutOptions = options
         }
         val cached = loaded[name]
         val file = PFile(ctx, name)
@@ -1317,7 +1317,8 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         val node = FlexParser.parse(file.read())
         // The layout editor shows (and saves) the file exactly as it is.
         if (!isEditor) NumberRow.apply(node, name, Settings.num(SETTING_NUMBER_ROW, NumberRow.OFF))
-        val layout = KeybLayout(this, node)
+        if (!isEditor && name == "\$numpad" && Settings.bool(SETTING_INVERT_NUMPAD, false)) Numpad.invert(node)
+        val layout = KeybLayout(this, node, !isEditor && Bootstrap.isTextLayout(name) && Settings.num(SETTING_SIDE_NUMPAD, 0) != 0)
         layout.lastModified = file.lastModified()
         return layout.takeIf { it.loaded }
     }

@@ -72,6 +72,9 @@ internal const val SETTING_DEF_LAYOUT = "defaultLayout"
 internal const val SETTING_ORIENTATION_LAYOUTS = "orientationLayouts"
 internal const val SETTING_LAYOUT_PORTRAIT = "portraitLayout"
 internal const val SETTING_LAYOUT_LANDSCAPE = "landscapeLayout"
+internal const val SETTING_SIDE_NUMPAD = "sideNumpad"
+internal const val SETTING_NUMPAD_WIDTH = "numpadWidth"
+internal const val SETTING_INVERT_NUMPAD = "invertNumpad"
 /** 1 = tap modifier once for the next key, tap again to lock, third tap to release. 0 = plain toggle. */
 internal const val SETTING_META_ONE_SHOT = "metaOneShot"
 /** Expand abbreviations from the dictionary when a space/punctuation is typed. */

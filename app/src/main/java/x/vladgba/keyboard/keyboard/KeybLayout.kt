@@ -14,9 +14,10 @@ import kotlin.math.roundToInt
  * orientation changes (the old code computed it once at load time, so a rotated keyboard kept
  * stale key widths).
  */
-class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
+class KeybLayout(val c: Keyboard, glob: FlexNode, private val hasNumpad: Boolean = false) : FlexNode(glob, Theme) {
     val rows = ArrayList<Row>()
-    val keys: List<Key> get() = rows.flatMap { it.keys }
+    val sideRows = ArrayList<Row>()
+    val keys: List<Key> get() = (rows + sideRows).flatMap { it.keys }
 
     var width = 0
         private set
@@ -31,6 +32,7 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
     private var measuredRefSize = -1f
     private var measuredBottomPad = -1
     private var measuredGap = -1
+    private var measuredSide = -1
 
     init {
         try {
@@ -41,6 +43,11 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
                 for (k in 0 until rowNode.childCount()) row.keys.add(Key(c, row, 0, 0, rowNode[k]))
             }
             loaded = rows.isNotEmpty()
+            if (hasNumpad) for (node in Numpad.rows(Settings.bool(SETTING_INVERT_NUMPAD, false))) {
+                val row = Row(this, node)
+                for (key in node.childs.filterIsInstance<FlexNode>()) row.keys.add(Key(c, row, 0, 0, key))
+                sideRows.add(row)
+            }
         } catch (e: Exception) {
             c.prStack(e)
         }
@@ -61,22 +68,36 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
     fun measure(viewWidth: Int, portrait: Boolean, force: Boolean = false) {
         val refSize = refSize(portrait)
         val bottomPad = Settings.num(SETTING_BOTTOM_PADDING, 0)
-        val gap = splitGap(viewWidth)
+        val mode = Settings.num(SETTING_SIDE_NUMPAD, 0)
+        val visible = hasNumpad && (mode in 1..2 || (mode == 3 && !portrait))
+        val sideWidth = if (visible) viewWidth * Settings.num(SETTING_NUMPAD_WIDTH, 25).coerceIn(15, 45) / 100 else 0
+        val left = visible && mode == 2
+        val mainWidth = viewWidth - sideWidth
+        val gap = splitGap(mainWidth)
+        val sideSignature = if (left) -sideWidth else sideWidth
         if (!force && viewWidth == measuredWidth && portrait == measuredPortrait && refSize == measuredRefSize &&
-            bottomPad == measuredBottomPad && gap == measuredGap) return
+            bottomPad == measuredBottomPad && gap == measuredGap && sideSignature == measuredSide) return
         measuredWidth = viewWidth
         measuredPortrait = portrait
         measuredRefSize = refSize
         measuredBottomPad = bottomPad
         measuredGap = gap
+        measuredSide = sideSignature
         width = viewWidth
 
         var y = 0
         for (row in rows) {
             row.y = y
             row.height = (refSize * row.ownHeight()).toInt()
-            row.layoutKeys(viewWidth, gap)
+            row.layoutKeys(mainWidth, gap)
+            if (left) for (key in row.keys) key.x += sideWidth
             y += row.height
+        }
+        for ((i, row) in sideRows.withIndex()) {
+            row.y = y * i / sideRows.size
+            row.height = y * (i + 1) / sideRows.size - row.y
+            row.layoutKeys(sideWidth)
+            for (key in row.keys) key.x += if (left) 0 else mainWidth
         }
         val bottomPadPx = if (bottomPad > 0) (bottomPad * c.ctx.resources.displayMetrics.density).roundToInt() else 0
         height = (y + bottomPadPx).coerceAtLeast(1)
@@ -100,6 +121,9 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
 
     fun getKey(x: Int, y: Int): Key? {
         if (y < 0 || x < 0) return null
+        for (row in sideRows) if (y >= row.y && y < row.y + row.height) {
+            row.keys.firstOrNull { it.width > 0 && x >= it.x && x < it.x + it.width }?.let { return it }
+        }
         for (row in rows) {
             if (y < row.y + row.height) {
                 // Keys left of the split gap end before it, so a touch in the gap hits nothing.
@@ -120,6 +144,7 @@ class KeybLayout(val c: Keyboard, glob: FlexNode) : FlexNode(glob, Theme) {
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), p)
         p.style = old
         for (row in rows) row.onDraw(canvas)
+        for (row in sideRows) if (row.keys.any { it.width > 0 }) row.onDraw(canvas)
     }
 
     // ---------- editing ----------

@@ -2,6 +2,14 @@
 <!-- Strings of the newcomer-friendly screens: home, settings, macros, key tester, pickers. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Common -->
+    <string name="ui_side_numpad">Side number pad</string>
+    <string name="ui_pad_right">Right</string>
+    <string name="ui_pad_left">Left</string>
+    <string name="ui_pad_landscape">Right in landscape only</string>
+    <string name="ui_invert_numpad">Invert number pad rows</string>
+    <string name="ui_invert_numpad_sub">Put 1–3 above 7–9 on the side and standalone number pads.</string>
+    <string name="ui_numpad_width">Side number pad width</string>
+    <string name="ui_numpad_width_sub">Percentage of keyboard width reserved for the number pad.</string>
     <string name="ui_orientation_layouts">Remember layout by orientation</string>
     <string name="ui_orientation_layouts_sub">Remember your last typing layout separately in portrait and landscape. App-specific layouts still take priority.</string>
     <string name="ui_none">none</string>
