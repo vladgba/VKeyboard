@@ -701,7 +701,7 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
 
         // border / shadow
         p.color = c.color(COLOR_KEY_BORDER, this)
-        canvas.drawRoundRect(
+        if (!VisualControls.enabled) canvas.drawRoundRect(
             RectF(x + lpad + padding - shadow / 3, y + tpad + padding, x + rpad + width - padding + shadow / 3, y + bpad + height - padding + shadow),
             radius, radius, p
         )
@@ -715,7 +715,15 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             else -> c.color(COLOR_KEY_BACKGROUND, this)
         }
         val body = RectF(x + lpad + padding, y + tpad + padding, x + rpad + width - padding, y + bpad + height - padding)
+        p.alpha = VisualControls.keyAlpha(android.graphics.Color.alpha(p.color))
         canvas.drawRoundRect(body, radius, radius, p)
+        if (VisualControls.enabled && VisualControls.borderWidth(c.ctx.resources.displayMetrics.density) > 0f) {
+            p.color = c.color(COLOR_KEY_BORDER, this)
+            p.style = Paint.Style.STROKE
+            p.strokeWidth = VisualControls.borderWidth(c.ctx.resources.displayMetrics.density)
+            canvas.drawRoundRect(body, radius, radius, p)
+            p.style = Paint.Style.FILL
+        }
 
         // popup chars hint
         p.textSize = height / float(KEY_TEXT_SIZE_SECONDARY, 5f)

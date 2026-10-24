@@ -64,6 +64,8 @@ New features & options:
 
 ## Layout format (Flexaml)
 
+`visualControls=1` enables Settings sliders for `borderWidth` (0–6 dp), `keyboardOpacity` (35–100%) and `keyOpacity` (0–100%). The master switch is off by default and restores theme-defined borders/opacity when disabled; key-fill transparency does not fade labels. Whole-keyboard opacity includes suggestions and popups.
+
 Settings → Voice includes a recognition-provider picker. `customVoiceProvider=1` uses the chosen installed service (`voiceProvider` stores its component); disabled by default. System default, a removed service or a service that cannot be created falls back to the existing system/on-device recognition path. Choosing a provider never grants microphone permission or starts listening by itself.
 
 `hideWithPhysicalKeyboard=1` hides the software keyboard when a non-virtual alphabetic keyboard connects and restores a keyboard hidden for that reason on disconnect. Off by default, in Settings → Hardware. DPAD remotes, touchscreens and virtual devices do not trigger it.

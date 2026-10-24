@@ -2,6 +2,14 @@
 <!-- Strings of the newcomer-friendly screens: home, settings, macros, key tester, pickers. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Common -->
+    <string name="ui_visual_controls">Custom border and opacity</string>
+    <string name="ui_visual_controls_sub">Enable the sliders below. Turn off to restore the normal theme appearance.</string>
+    <string name="ui_border_width">Key border width</string>
+    <string name="ui_border_width_sub">Outline width in dp; zero removes outlines and shadows.</string>
+    <string name="ui_keyboard_opacity">Keyboard opacity</string>
+    <string name="ui_keyboard_opacity_sub">Opacity of the whole keyboard, suggestion bar and popups.</string>
+    <string name="ui_key_opacity">Key fill opacity</string>
+    <string name="ui_key_opacity_sub">Opacity of key fills; labels remain readable.</string>
     <string name="vo_custom_provider">Use a selected voice provider</string>
     <string name="vo_custom_provider_sub">Use the provider chosen below. Turn off to use normal system and on-device selection.</string>
     <string name="vo_provider">Voice recognition provider</string>

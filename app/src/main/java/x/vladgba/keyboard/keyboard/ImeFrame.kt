@@ -109,6 +109,7 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
     }
 
     override fun dispatchDraw(canvas: Canvas) {
+        val layer = if (VisualControls.keyboardAlpha < 255) canvas.saveLayerAlpha(0f, 0f, width.toFloat(), height.toFloat(), VisualControls.keyboardAlpha) else -1
         if (navInset > 0) {
             val p = kb.paint
             p.color = kb.color(COLOR_KEYBOARD_BACKGROUND, kb.currentLayout)
@@ -119,6 +120,7 @@ class ImeFrame(ctx: Context, private val kb: Keyboard) : ViewGroup(ctx) {
             p.style = old
         }
         super.dispatchDraw(canvas)
+        if (layer >= 0) canvas.restoreToCount(layer)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {

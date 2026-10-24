@@ -275,6 +275,34 @@ private fun runChecks(ctx: Context, check: String) {
                 check(actual.map { it.component }.distinct().size == actual.size)
                 println("PASS voice-provider: selection, disabled/missing fallback, Android discovery (${actual.size} services)")
             }
+            "visuals" -> {
+                val controls = x.vladgba.keyboard.keyboard.VisualControls
+                Settings[SETTING_VISUAL_CONTROLS] = "1"
+                Settings[SETTING_KEYBOARD_OPACITY] = "50"
+                Settings[SETTING_KEY_OPACITY] = "25"
+                Settings[SETTING_BORDER_WIDTH] = "3"
+                check(controls.keyboardAlpha == 127 && controls.keyAlpha(200) == 50)
+                check(controls.borderWidth(2f) == 6f)
+                Settings.save(ctx)
+                val kb = Keyboard(ctx, KeybWrapper())
+                kb.currentLayout.measure(1080, true)
+                val bitmap = android.graphics.Bitmap.createBitmap(1080, kb.currentLayout.height, android.graphics.Bitmap.Config.ARGB_8888)
+                kb.draw(android.graphics.Canvas(bitmap), bitmap.width, bitmap.height, false)
+                check(bitmap.getPixel(20, 20) != 0)
+                bitmap.recycle()
+                val frame = x.vladgba.keyboard.keyboard.ImeFrame(ctx, kb)
+                frame.measure(android.view.View.MeasureSpec.makeMeasureSpec(1080, android.view.View.MeasureSpec.EXACTLY),
+                    android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED))
+                frame.layout(0, 0, frame.measuredWidth, frame.measuredHeight)
+                val composed = android.graphics.Bitmap.createBitmap(frame.width, frame.height, android.graphics.Bitmap.Config.ARGB_8888)
+                frame.draw(android.graphics.Canvas(composed))
+                check(android.graphics.Color.alpha(composed.getPixel(2, composed.height - 2)) in 120..130)
+                composed.recycle()
+                Settings[SETTING_VISUAL_CONTROLS] = "0"
+                check(controls.keyboardAlpha == 255 && controls.keyAlpha(200) == 200)
+                kb.onDestroy()
+                println("PASS visuals: slider values, drawing and disabled theme restoration")
+            }
             else -> error("Unknown device check")
         }
     } finally {
