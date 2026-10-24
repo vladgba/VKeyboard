@@ -137,7 +137,7 @@
     <string name="ui_action_complete">Accept suggestion %1$d (1 = best)</string>
     <string name="words_transfer">Import and export</string>
     <string name="words_import">Import a file</string>
-    <string name="words_import_sub">Word list (.txt), Gboard dictionary (.zip / dictionary.txt), AOSP .combined list or static v2 .dict</string>
+    <string name="words_import_sub">Word lists (.txt), dictionary XML backups (.xml / .zip), Gboard dictionaries, AOSP .combined lists or static v2 .dict; up to 32 MiB</string>
     <string name="words_export_plain">Export as word list</string>
     <string name="words_export_gboard">Export as Gboard dictionary (.zip)</string>
     <string name="words_from_system">Import from Android personal dictionary</string>

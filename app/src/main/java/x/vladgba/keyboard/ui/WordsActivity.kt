@@ -153,7 +153,7 @@ class WordsActivity : LocalizedActivity() {
         if (resultCode != RESULT_OK) return
         when (requestCode) {
             REQ_IMPORT -> background {
-                val bytes = contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: ByteArray(0)
+                val bytes = contentResolver.openInputStream(uri)?.use { UserWords.readImport(it) } ?: ByteArray(0)
                 val words = UserWords.parse(bytes)
                 val added = UserWords.merge(this, words)
                 getString(if (words.isEmpty()) R.string.words_import_none else R.string.words_imported, added, words.size)

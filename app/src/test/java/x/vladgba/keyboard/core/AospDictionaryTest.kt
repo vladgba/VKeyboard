@@ -1,5 +1,10 @@
 package x.vladgba.keyboard.core
 
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+
 /** Run with :app:verifyDictionaryImport; no JUnit or downloaded word lists required. */
 fun main() {
     fun dict(vararg body: Int, version: Int = 2, options: Int = 0): ByteArray =
@@ -55,5 +60,72 @@ fun main() {
     for (n in 0 until example.size) reject(example.copyOf(n))
     check(!AospDictionary.matches("hello\t120".toByteArray()))
     check(!AospDictionary.matches(byteArrayOf(0x50, 0x4b)))
+    checkXmlBackups()
     println("AOSP dictionary checks passed (valid tries, Unicode, metadata, malformed files and all truncations)")
+}
+
+private fun checkXmlBackups() {
+    fun xmlWords(text: String) = UserWords.parse(text.toByteArray())
+    fun archive(vararg entries: Pair<String, ByteArray>): ByteArray {
+        val out = ByteArrayOutputStream()
+        ZipOutputStream(out).use { zip ->
+            for ((name, data) in entries) {
+                zip.putNextEntry(ZipEntry(name))
+                zip.write(data)
+                zip.closeEntry()
+            }
+        }
+        return out.toByteArray()
+    }
+    fun reject(bytes: ByteArray) {
+        check(runCatching { UserWords.parse(bytes) }.isFailure) { "Invalid backup accepted" }
+    }
+    val backup = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <BackupPrefs version="1">
+          <pref><value locale="en"/>
+            <pref><value word="hello"/><value freq="120"/></pref>
+            <pref><value freq="20"/><value word="l&apos;été"/></pref>
+          </pref>
+          <pref><value locale="bg"/>
+            <pref><value word="тест"/><value freq="90"/></pref>
+          </pref>
+          <pref><value unrelated="untouched"/></pref>
+        </BackupPrefs>
+    """.trimIndent()
+    val expected = listOf("hello" to 120, "l'été" to 20, "тест" to 90)
+    check(xmlWords(backup) == expected)
+    check(xmlWords("\uFEFF$backup") == expected)
+    check(UserWords.parse(backup.toByteArray(Charsets.UTF_16)) == expected)
+    check(UserWords.parse(byteArrayOf(0xff.toByte(), 0xfe.toByte()) + backup.toByteArray(Charsets.UTF_16LE)) == expected)
+    check(xmlWords("<BackupPrefs version='1'/>").isEmpty())
+    check(xmlWords("<wordlist><w f='255'>hello</w><w>café</w><w f='0'>zero</w></wordlist>") ==
+        listOf("hello" to 255, "café" to 1, "zero" to 1))
+    check(xmlWords("<wordlist><w f='2000000'>high</w><w f='-5'>low</w></wordlist>") ==
+        listOf("high" to 1_000_000, "low" to 1))
+    check(UserWords.parse(archive("readme.txt" to "not a word list".toByteArray(),
+        "backups/UserWords.xml" to backup.toByteArray(),
+        "settings.xml" to "<map><value ignored='true'/></map>".toByteArray())) == expected)
+    check(UserWords.parse(archive("en.xml" to "<wordlist><w f='5'>alpha</w></wordlist>".toByteArray(),
+        "bg.xml" to "<wordlist><w f='6'>бета</w></wordlist>".toByteArray())) == listOf("alpha" to 5, "бета" to 6))
+    check(UserWords.parse(archive("dictionary.txt" to "# Gboard Dictionary version:1\n\thello\ten\n".toByteArray())) == listOf("hello" to 1))
+    check(UserWords.parse(archive("words.txt" to "hello\t50\nworld\t10".toByteArray())) == listOf("hello" to 50, "world" to 10))
+    check(UserWords.parse(archive()).isEmpty())
+    reject("<settings><word value='noise'/></settings>".toByteArray())
+    reject(backup.replace("freq=\"120\"", "freq=\"invalid\"").toByteArray())
+    reject(backup.replace("word=\"hello\"", "word=\"two words\"").toByteArray())
+    reject(backup.replace("<value freq=\"120\"/>", "<value freq=\"120\"/><value freq=\"121\"/>").toByteArray())
+    reject("<wordlist><w f='1'><nested/></w></wordlist>".toByteArray())
+    reject("<!DOCTYPE wordlist [<!ENTITY x SYSTEM 'file:///not-read'>]><wordlist><w>&x;</w></wordlist>".toByteArray())
+    reject("<wordlist><w>&unknown;</w></wordlist>".toByteArray())
+    reject(("<pref>".repeat(65) + "</pref>".repeat(65)).toByteArray())
+    for (n in 1 until backup.length) reject(backup.take(n).toByteArray())
+    reject(archive("dictionary.txt" to archive("words.txt" to "hello".toByteArray())))
+    reject(archive("a.txt" to "hello".toByteArray(), "b.txt" to "world".toByteArray()))
+    reject(byteArrayOf(0x50, 0x4b))
+    check(UserWords.readImport(ByteArrayInputStream(byteArrayOf(1, 2)), 2).contentEquals(byteArrayOf(1, 2)))
+    check(runCatching { UserWords.readImport(ByteArrayInputStream(byteArrayOf(1, 2, 3)), 2) }.isFailure)
+    // Highly compressed input must respect the expanded-size limit too.
+    reject(archive("unused.bin" to ByteArray(UserWords.MAX_IMPORT_BYTES + 1)))
+    println("XML/ZIP backup checks passed (locales, frequencies, encodings, malformed input and size limits)")
 }

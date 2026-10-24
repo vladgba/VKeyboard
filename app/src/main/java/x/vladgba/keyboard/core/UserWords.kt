@@ -2,6 +2,8 @@ package x.vladgba.keyboard.core
 
 import android.content.Context
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.io.OutputStream
 import java.util.TreeMap
 import java.util.concurrent.Executors
@@ -18,6 +20,7 @@ import java.util.zip.ZipOutputStream
  *  - a Gboard personal dictionary (`# Gboard Dictionary version:1`, `shortcut<TAB>word<TAB>language`),
  *    also inside its exported zip;
  *  - an AOSP-style `.combined` word list (` word=…,f=…` lines), or static v2 binary `.dict`.
+ *  - XML word/frequency backups or wordlist XML, also inside a zip archive.
  * Export writes the plain list or a Gboard zip.
  */
 object UserWords {
@@ -183,10 +186,42 @@ object UserWords {
     }
 
     /** Words (with counts) from a file in any of the supported formats. */
-    fun parse(bytes: ByteArray): List<Pair<String, Int>> {
+    fun parse(bytes: ByteArray): List<Pair<String, Int>> = parseFile(bytes, allowZip = true)
+
+    const val MAX_IMPORT_BYTES = 32 * 1024 * 1024
+
+    /** Shared bound for document streams and the total expanded archive size. */
+    fun readImport(input: InputStream, limit: Int = MAX_IMPORT_BYTES): ByteArray {
+        val output = ByteArrayOutputStream()
+        val buffer = ByteArray(8192)
+        while (true) {
+            val n = input.read(buffer)
+            if (n < 0) break
+            require(n <= limit - output.size()) { "Dictionary import exceeds 32 MiB" }
+            output.write(buffer, 0, n)
+        }
+        return output.toByteArray()
+    }
+
+    private fun decodeText(bytes: ByteArray): String {
+        val charset = when {
+            bytes.size >= 2 && bytes[0] == 0xff.toByte() && bytes[1] == 0xfe.toByte() -> Charsets.UTF_16LE
+            bytes.size >= 2 && bytes[0] == 0xfe.toByte() && bytes[1] == 0xff.toByte() -> Charsets.UTF_16BE
+            else -> Charsets.UTF_8
+        }
+        return String(bytes, charset).removePrefix("\uFEFF")
+    }
+
+    private fun parseFile(bytes: ByteArray, allowZip: Boolean): List<Pair<String, Int>> {
+        require(bytes.size <= MAX_IMPORT_BYTES) { "Dictionary import exceeds 32 MiB" }
         if (AospDictionary.matches(bytes)) return AospDictionary.parse(bytes)
-        if (bytes.size >= 2 && bytes[0] == 'P'.code.toByte() && bytes[1] == 'K'.code.toByte()) return parseZip(bytes)
-        val text = String(bytes, Charsets.UTF_8).removePrefix("﻿")
+        if (bytes.size >= 2 && bytes[0] == 'P'.code.toByte() && bytes[1] == 'K'.code.toByte()) {
+            require(allowZip) { "Nested dictionary archives are not supported" }
+            return parseZip(bytes)
+        }
+        val text = decodeText(bytes)
+        if (text.trimStart().startsWith("<")) return XmlWordBackup.parse(text)
+            ?: throw IllegalArgumentException("Unsupported dictionary XML format")
         val head = text.lineSequence().firstOrNull { it.isNotBlank() }?.trim() ?: return emptyList()
         return when {
             head.startsWith(GBOARD_HEADER_PREFIX) -> parseGboard(text)
@@ -196,14 +231,44 @@ object UserWords {
     }
 
     private fun parseZip(bytes: ByteArray): List<Pair<String, Int>> {
+        val found = ArrayList<Pair<String, Int>>()
+        var fallback: ByteArray? = null
+        var fallbackCount = 0
+        var structured = false
+        var expanded = 0
+        var entries = 0
         ZipInputStream(ByteArrayInputStream(bytes)).use { zip ->
             while (true) {
                 val e = zip.nextEntry ?: break
-                if (e.isDirectory || !e.name.endsWith(".txt")) continue
-                return parse(zip.readBytes())
+                require(++entries <= 4096) { "Dictionary archive contains too many entries" }
+                if (e.isDirectory) continue
+                val data = readImport(zip, MAX_IMPORT_BYTES - expanded)
+                expanded += data.size
+                val name = e.name.substringAfterLast('/').lowercase()
+                val words = when {
+                    name.endsWith(".xml") -> XmlWordBackup.parse(decodeText(data))
+                    name == "dictionary.txt" || name.endsWith(".combined") ||
+                        (name.endsWith(".dict") && AospDictionary.matches(data)) -> parseFile(data, allowZip = false)
+                    name.endsWith(".txt") && !name.startsWith("readme") && !name.startsWith("license") -> {
+                        fallback = data
+                        fallbackCount++
+                        null
+                    }
+                    else -> null
+                }
+                if (words != null) {
+                    structured = true
+                    require(words.size <= 500_000 - found.size) { "Dictionary archive contains too many words" }
+                    found.addAll(words)
+                }
             }
         }
-        return emptyList()
+        require(entries > 0 || (bytes.size >= 22 && bytes[2] == 5.toByte() && bytes[3] == 6.toByte())) {
+            "Invalid dictionary archive"
+        }
+        if (structured) return found
+        require(fallbackCount <= 1) { "Archive contains multiple unrecognized word lists; import one file at a time" }
+        return fallback?.let { parseFile(it, allowZip = false) } ?: emptyList()
     }
 
     /** One word per line, optionally followed by a tab or space and a count. `#` lines are comments. */
