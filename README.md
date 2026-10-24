@@ -72,6 +72,8 @@ New features & options:
 
 `rtlMarks=1` adds Unicode direction controls (LRM/RLM/ALM and LRI/RLI/FSI/PDI), also available as `@RTL:<name>` actions. `mirrorBrackets=1` swaps single typed bracket/angle-quote pairs on layouts marked `rtl=1` or containing RTL letters. Both options are off by default and configurable in Settings.
 
+`combiningMarks=1` adds Arabic vowel marks or Hebrew niqqud on matching layouts. Keys insert the combining character after the base letter; custom layouts can use `@MARK:<hex codepoint>`. Off by default. Word learning, completion-prefix detection and word deletion keep diacritics attached to their word.
+
 ```
 (                                   # layout
     (                               # row

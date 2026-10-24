@@ -717,7 +717,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
         if (isEditor || privateField || !Settings.bool(SETTING_LEARN_WORDS, true)) return
         val before = inputConnection?.getTextBeforeCursor(64, 0)?.toString() ?: return
         var i = before.length
-        while (i > 0 && (before[i - 1].isLetter() || before[i - 1] == '\'' || before[i - 1] == '’' || before[i - 1] == '-')) i--
+        while (i > 0 && (isLetterOrMark(before[i - 1]) || before[i - 1] == '\'' || before[i - 1] == '’' || before[i - 1] == '-')) i--
         if (i > 0 && before[i - 1].isLetterOrDigit()) return  // e.g. digits glued to the word
         val word = before.substring(i).trim('\'', '’', '-')
         if (word.isEmpty() || textExpander.isAbbreviation(word)) return
@@ -825,7 +825,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
         if (!suggestionsShown || (selStart >= 0 && selStart != selEnd)) return cancelSuggestions()
         val before = inputConnection?.getTextBeforeCursor(48, 0)?.toString() ?: return cancelSuggestions()
         var i = before.length
-        while (i > 0 && (before[i - 1].isLetter() || before[i - 1] == '\'' || before[i - 1] == '’')) i--
+        while (i > 0 && (isLetterOrMark(before[i - 1]) || before[i - 1] == '\'' || before[i - 1] == '’')) i--
         val prefix = before.substring(i)
         // A word whose auto-complete was undone stays protected until a different word is typed.
         if (prefix != suggestionPrefix && prefix != autoRejected) autoRejected = null
@@ -923,7 +923,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
         if (!suggestionsShown || privateField || !suggestionReady || selStart != selEnd) return false
         val before = inputConnection?.getTextBeforeCursor(48, 0)?.toString() ?: return false
         var start = before.length
-        while (start > 0 && (before[start - 1].isLetter() || before[start - 1] == '\'' || before[start - 1] == '’')) start--
+        while (start > 0 && (isLetterOrMark(before[start - 1]) || before[start - 1] == '\'' || before[start - 1] == '’')) start--
         return before.substring(start) == suggestionPrefix
     }
 
@@ -1011,7 +1011,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
         scheduleAutoShift()
     }
 
-    private fun isWordChar(ch: Char) = ch.isLetterOrDigit() || ch == '_'
+    private fun isWordChar(ch: Char) = isLetterOrMark(ch) || ch.isDigit() || ch == '_'
 
     /** Index in [s] where the last word (plus the spaces after it) begins. */
     private fun wordStart(s: CharSequence): Int {
@@ -1179,6 +1179,10 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
     /** `"macro:name"` runs a macro, `"ctrl+c"` sends a combination. Returns false for anything else. */
     fun runSpecial(value: String): Boolean {
         val trimmed = value.trim()
+        if (trimmed.startsWith(CombiningMarks.PREFIX)) {
+            if (Settings.bool(SETTING_COMBINING_MARKS, false)) CombiningMarks.mark(trimmed)?.let { setText(it) }
+            return true
+        }
         if (trimmed.startsWith(RtlTools.PREFIX)) {
             if (Settings.bool(SETTING_RTL_MARKS, false)) RtlTools.marks[trimmed.removePrefix(RtlTools.PREFIX)]?.let { setText(it) }
             return true
@@ -1298,7 +1302,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
     private fun pickLayout(name: String): Boolean {
         if (name.isBlank()) return false
         val options = listOf(SETTING_NUMBER_ROW, SETTING_SIDE_NUMPAD, SETTING_INVERT_NUMPAD,
-            SETTING_EXTRA_ROW, SETTING_EXTRA_ROW_KEYS, SETTING_RTL_MARKS).joinToString { Settings.str(it) }
+            SETTING_EXTRA_ROW, SETTING_EXTRA_ROW_KEYS, SETTING_RTL_MARKS, SETTING_COMBINING_MARKS).joinToString { Settings.str(it) }
         if (options != loadedLayoutOptions) {
             loaded.clear()
             loadedLayoutOptions = options
@@ -1327,6 +1331,9 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?, private val connectionOv
             if (row.childCount() > 0) node.childs.add(0, row)
         }
         if (!isEditor && Bootstrap.isTextLayout(name) && Settings.bool(SETTING_RTL_MARKS, false)) node.childs.add(0, RtlTools.row())
+        if (!isEditor && Bootstrap.isTextLayout(name) && Settings.bool(SETTING_COMBINING_MARKS, false)) {
+            node.childs.addAll(0, CombiningMarks.rows(node))
+        }
         if (!isEditor && name == "\$numpad" && Settings.bool(SETTING_INVERT_NUMPAD, false)) Numpad.invert(node)
         val layout = KeybLayout(this, node, !isEditor && Bootstrap.isTextLayout(name) && Settings.num(SETTING_SIDE_NUMPAD, 0) != 0)
         layout.lastModified = file.lastModified()

@@ -213,7 +213,7 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
                 } else if (bool(KEY_COMPOSE) || str(KEY_KEY).trim() == COMPOSE_ACTION) {
                     c.compose.toggle()
                     c.invalidate()
-                } else if (str(KEY_KEY).trim().let { it == DELETE_WORD_ACTION || it == DELETE_WORD_FORWARD_ACTION || it == CLIPBOARD_ACTION || DeadKeys.isDeadKey(it) || it.startsWith(RtlTools.PREFIX) }) {
+                } else if (str(KEY_KEY).trim().let { it == DELETE_WORD_ACTION || it == DELETE_WORD_FORWARD_ACTION || it == CLIPBOARD_ACTION || DeadKeys.isDeadKey(it) || it.startsWith(RtlTools.PREFIX) || it.startsWith(CombiningMarks.PREFIX) }) {
                     c.runSpecial(str(KEY_KEY))
                 } else if (has(KEY_MACRO) && str(KEY_MACRO).isNotBlank()) {
                     c.runMacro(str(KEY_MACRO).trim())
@@ -895,6 +895,7 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
             raw == DELETE_WORD_FORWARD_ACTION -> "⌦⌦"
             raw == CLIPBOARD_ACTION -> "📋"
             raw.startsWith(RtlTools.PREFIX) -> raw.removePrefix(RtlTools.PREFIX)
+            raw.startsWith(CombiningMarks.PREFIX) -> CombiningMarks.label(raw)
             DeadKeys.isDeadKey(raw) -> DeadKeys.symbol(DeadKeys.nameOf(raw))
             else -> Labels.resolve(c.ctx, raw)
         }

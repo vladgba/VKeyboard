@@ -33,6 +33,7 @@ class KeyboardDeviceTests : Instrumentation() {
 
 private fun runChecks(ctx: Context, check: String) {
     val original = PFile(ctx, "settings").read()
+    val originalWords = PFile(ctx, LEARNED_FILENAME, LEARNED_EXT).read()
     try {
         Settings.loadVars(ctx)
         when (check) {
@@ -144,9 +145,47 @@ private fun runChecks(ctx: Context, check: String) {
                 } finally { file.delete() }
                 println("PASS rtl: detection, mirrored output, Unicode marks, controls and off")
             }
+            "marks" -> {
+                val ar = PFile(ctx, "roadmap-test-ar")
+                val he = PFile(ctx, "roadmap-test-he")
+                check(!ar.exists() && !he.exists())
+                try {
+                    ar.write("(((\"key\":\"ب\")))")
+                    he.write("(((\"key\":\"ש\")))")
+                    Settings[SETTING_COMBINING_MARKS] = "1"
+                    Settings[SETTING_RTL_MARKS] = "0"
+                    Settings[SETTING_LEARN_WORDS] = "1"
+                    Settings.save(ctx)
+                    val connection = BaseInputConnection(EditText(ctx), true)
+                    val kb = Keyboard(ctx, KeybWrapper(), connection)
+                    kb.switchLayout("roadmap-test-ar")
+                    check(kb.currentLayout.rows.size == 3)
+                    kb.onText("ب")
+                    kb.runSpecial("@MARK:064E")
+                    check(connection.editable.toString() == "بَ")
+                    kb.onText(" ")
+                    UserWords.submit { }.get(10, java.util.concurrent.TimeUnit.SECONDS)
+                    check(UserWords.contains(ctx, "بَ"))
+                    kb.switchLayout("roadmap-test-he")
+                    connection.editable?.clear()
+                    kb.onText("ש")
+                    kb.runSpecial("@MARK:05C1")
+                    check(connection.editable.toString() == "שׁ")
+                    Settings[SETTING_COMBINING_MARKS] = "0"
+                    kb.runSpecial("@MARK:05C2")
+                    check(connection.editable.toString() == "שׁ")
+                    kb.reloadLayout()
+                    check(kb.currentLayout.rows.size == 1)
+                    kb.onDestroy()
+                } finally { ar.delete(); he.delete() }
+                println("PASS marks: Arabic/Hebrew output, diacritic learning and disabled behavior")
+            }
             else -> error("Unknown device check")
         }
     } finally {
+        UserWords.submit { }.get(10, java.util.concurrent.TimeUnit.SECONDS)
+        PFile(ctx, LEARNED_FILENAME, LEARNED_EXT).write(originalWords)
+        UserWords.reload()
         PFile(ctx, "settings").write(original)
         Settings.invalidate()
     }
