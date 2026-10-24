@@ -279,6 +279,7 @@ class SettingsActivity : LocalizedActivity() {
         int(KEY_VIBRATE_ADDITIONAL, R.string.ui_set_vib_popup, R.string.ui_set_vib_popup_sub, 0, 60, 5, 0, vib)
 
         page.header(getString(R.string.ui_sec_hardware))
+        bool(SETTING_HIDE_PHYSICAL, R.string.ui_hide_physical, R.string.ui_hide_physical_sub, false)
         bool(SETTING_REDEFINE_HW_ACTION, R.string.ui_set_hw_remap, R.string.ui_set_hw_remap_sub, false)
         page.row(getString(R.string.ui_key_tester), getString(R.string.ui_key_tester_sub)) {
             startActivity(Intent(this, PhysicalKeysActivity::class.java))

@@ -8,6 +8,9 @@ import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Build
 import android.inputmethodservice.InputMethodService
+import android.hardware.input.InputManager
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -26,6 +29,8 @@ import x.vladgba.keyboard.keyboard.ImeFrame
 import x.vladgba.keyboard.keyboard.Keyboard
 import x.vladgba.keyboard.keyboard.Macros
 import x.vladgba.keyboard.keyboard.TouchStats
+import x.vladgba.keyboard.keyboard.PhysicalKeyboardPolicy
+import x.vladgba.keyboard.core.SETTING_HIDE_PHYSICAL
 
 /**
  * The input method service. Android remembers enabled keyboards by component name
@@ -35,6 +40,14 @@ import x.vladgba.keyboard.keyboard.TouchStats
 class KeybWrapper : InputMethodService() {
     private lateinit var keyboard: Keyboard
     private var localeVersion = 0
+    private var inputActive = false
+    private var hiddenForHardware = false
+    private val inputDevices get() = getSystemService(INPUT_SERVICE) as? InputManager
+    private val deviceListener = object : InputManager.InputDeviceListener {
+        override fun onInputDeviceAdded(deviceId: Int) = updateHardwareVisibility()
+        override fun onInputDeviceRemoved(deviceId: Int) = updateHardwareVisibility()
+        override fun onInputDeviceChanged(deviceId: Int) = updateHardwareVisibility()
+    }
 
     /**
      * Started before the first unlock after a reboot (direct boot): the keyboard runs on the
@@ -58,6 +71,7 @@ class KeybWrapper : InputMethodService() {
         AppLocale.applyTo(this)
         localeVersion = AppLocale.version
         keyboard = Keyboard(DirectBoot.storage(this), this)
+        inputDevices?.registerInputDeviceListener(deviceListener, Handler(Looper.getMainLooper()))
         clipboard()?.addPrimaryClipChangedListener(clipListener)
     }
 
@@ -144,7 +158,35 @@ class KeybWrapper : InputMethodService() {
 
     override fun onStartInput(attr: EditorInfo, restarting: Boolean) {
         super.onStartInput(attr, restarting)
+        inputActive = true
         keyboard.onStartInput(attr)
+    }
+
+    override fun onFinishInput() {
+        inputActive = false
+        hiddenForHardware = false
+        super.onFinishInput()
+    }
+
+    override fun onEvaluateInputViewShown(): Boolean {
+        Settings.loadVars(DirectBoot.storage(this))
+        val hide = Settings.bool(SETTING_HIDE_PHYSICAL, false) && PhysicalKeyboardPolicy.connected()
+        if (hide && inputActive) hiddenForHardware = true
+        return !hide
+    }
+
+    private fun updateHardwareVisibility() {
+        if (!inputActive) return
+        Settings.loadVars(DirectBoot.storage(this))
+        val hide = Settings.bool(SETTING_HIDE_PHYSICAL, false) && PhysicalKeyboardPolicy.connected()
+        if (hide && isInputViewShown) {
+            hiddenForHardware = true
+            requestHideSelf(0)
+        } else if (!hide && hiddenForHardware) {
+            hiddenForHardware = false
+            if (Build.VERSION.SDK_INT >= 28) requestShowSelf(android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+            else showWindow(true)
+        }
     }
 
     override fun onStartInputView(info: EditorInfo, restarting: Boolean) {
@@ -192,6 +234,7 @@ class KeybWrapper : InputMethodService() {
     }
 
     override fun onDestroy() {
+        inputDevices?.unregisterInputDeviceListener(deviceListener)
         clipboard()?.removePrimaryClipChangedListener(clipListener)
         if (startedLocked) try { unregisterReceiver(unlockReceiver) } catch (_: Exception) {}
         keyboard.onDestroy()

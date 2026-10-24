@@ -2,6 +2,8 @@
 <!-- Strings of the newcomer-friendly screens: home, settings, macros, key tester, pickers. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Common -->
+    <string name="ui_hide_physical">Hide with a physical keyboard</string>
+    <string name="ui_hide_physical_sub">Hide the on-screen keyboard when a real alphabetic keyboard connects; restore it when that keyboard disconnects.</string>
     <string name="bi_ar">Arabic</string>
     <string name="bi_he">Hebrew</string>
     <string name="bi_el">Greek</string>

@@ -82,6 +82,7 @@ internal const val SETTING_MIRROR_BRACKETS = "mirrorBrackets"
 internal const val SETTING_COMBINING_MARKS = "combiningMarks"
 internal const val SETTING_MODIFIER_MAPPINGS = "modifierMappings"
 internal const val SETTING_EXPANDED_LAYOUTS = "expandedLayouts"
+internal const val SETTING_HIDE_PHYSICAL = "hideWithPhysicalKeyboard"
 /** 1 = tap modifier once for the next key, tap again to lock, third tap to release. 0 = plain toggle. */
 internal const val SETTING_META_ONE_SHOT = "metaOneShot"
 /** Expand abbreviations from the dictionary when a space/punctuation is typed. */

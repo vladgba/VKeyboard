@@ -64,6 +64,8 @@ New features & options:
 
 ## Layout format (Flexaml)
 
+`hideWithPhysicalKeyboard=1` hides the software keyboard when a non-virtual alphabetic keyboard connects and restores a keyboard hidden for that reason on disconnect. Off by default, in Settings → Hardware. DPAD remotes, touchscreens and virtual devices do not trigger it.
+
 Enable **Expanded language layouts** in Settings to make the additional Arabic, Hebrew, Greek, Turkish, Italian, Portuguese, Czech, Hungarian, Swedish, Finnish, Norwegian and Danish layouts available in Built-in layouts. Add only the ones you want; existing files are preserved. The feature is off by default and disabling it removes these layouts from normal cycling/selection. See [layout sources](docs/layout-sources.md) for provenance and mobile adaptations.
 
 `orientationLayouts=1` remembers manual typing-layout choices separately in portrait and landscape (`portraitLayout`, `landscapeLayout`). Enable it in Settings; it is off by default. App-specific layouts take priority, and temporary number/emoji pages do not replace the remembered choice.

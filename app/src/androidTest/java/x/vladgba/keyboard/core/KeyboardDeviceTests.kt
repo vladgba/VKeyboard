@@ -253,6 +253,15 @@ private fun runChecks(ctx: Context, check: String) {
                 kb.onDestroy()
                 println("PASS languages: 12 assets, parser validity, geometry/hit tests, RTL, Turkish casing and off")
             }
+            "hardware" -> {
+                val policy = x.vladgba.keyboard.keyboard.PhysicalKeyboardPolicy
+                check(policy.qualifies(false, android.view.InputDevice.SOURCE_KEYBOARD, android.view.InputDevice.KEYBOARD_TYPE_ALPHABETIC))
+                check(!policy.qualifies(true, android.view.InputDevice.SOURCE_KEYBOARD, android.view.InputDevice.KEYBOARD_TYPE_ALPHABETIC))
+                check(!policy.qualifies(false, android.view.InputDevice.SOURCE_DPAD, android.view.InputDevice.KEYBOARD_TYPE_NON_ALPHABETIC))
+                check(!policy.qualifies(false, android.view.InputDevice.SOURCE_TOUCHSCREEN, android.view.InputDevice.KEYBOARD_TYPE_NONE))
+                val connected = policy.connected()
+                println("PASS hardware: physical alphabetic filtering and Android device enumeration (connected=$connected)")
+            }
             else -> error("Unknown device check")
         }
     } finally {
