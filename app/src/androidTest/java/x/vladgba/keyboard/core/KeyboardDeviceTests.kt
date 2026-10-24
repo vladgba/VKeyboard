@@ -180,6 +180,34 @@ private fun runChecks(ctx: Context, check: String) {
                 } finally { ar.delete(); he.delete() }
                 println("PASS marks: Arabic/Hebrew output, diacritic learning and disabled behavior")
             }
+            "modmap" -> {
+                val file = PFile(ctx, "roadmap-test-modmap")
+                check(!file.exists())
+                try {
+                    file.write("(\"modmap\":(\"alt\":(\"é\":\"α\"), \"ctrl+shift\":(\"é\":\"!\")), ((\"key\":\"é\", \"modmap\":(\"ctrl\":\"β\"))))")
+                    Settings[SETTING_MODIFIER_MAPPINGS] = "1"
+                    Settings.save(ctx)
+                    val connection = BaseInputConnection(EditText(ctx), true)
+                    val kb = Keyboard(ctx, KeybWrapper(), connection)
+                    kb.switchLayout("roadmap-test-modmap")
+                    kb.currentLayout.measure(1080, true)
+                    val key = kb.currentLayout.rows.last().keys[0]
+                    fun tap(mask: Int) {
+                        kb.metaState = mask
+                        key.press(key.x + key.width / 2, key.y + key.height / 2)
+                        key.release(key.x + key.width / 2, key.y + key.height / 2, 0)
+                    }
+                    tap(android.view.KeyEvent.META_ALT_ON)
+                    tap(android.view.KeyEvent.META_CTRL_ON)
+                    tap(android.view.KeyEvent.META_CTRL_ON or android.view.KeyEvent.META_SHIFT_ON)
+                    check(connection.editable.toString() == "αβ!")
+                    Settings[SETTING_MODIFIER_MAPPINGS] = "0"
+                    tap(0)
+                    check(connection.editable.toString() == "αβ!é")
+                    kb.onDestroy()
+                } finally { file.delete() }
+                println("PASS modmap: layout/key precedence, modifier combinations, actual key taps and off")
+            }
             else -> error("Unknown device check")
         }
     } finally {

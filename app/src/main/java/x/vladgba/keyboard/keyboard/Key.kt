@@ -205,7 +205,9 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
 
         when (state) {
             State.PRESSED -> {
-                if (mode == KEY_MODE_RANDOM && this[KEY_RANDOM].childCount() > 0) {
+                if (modifierMapping()) {
+                    // The mapping supplies the complete action, including any explicit modifiers.
+                } else if (mode == KEY_MODE_RANDOM && this[KEY_RANDOM].childCount() > 0) {
                     val rnd = this[KEY_RANDOM]
                     c.onText(rnd.str((0 until rnd.childCount()).random()))
                 } else if (bool(KEY_VOICE) || isTrVoiceKey()) {
@@ -296,6 +298,14 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
     private fun emit(value: String) {
         val n = if (value.startsWith("-")) value.toIntOrNull() else null
         if (n != null) c.onKey(n) else if (!c.runSpecial(value)) c.onText(value)
+    }
+
+    private fun modifierMapping(): Boolean {
+        if (!Settings.bool(SETTING_MODIFIER_MAPPINGS, false)) return false
+        val value = ModifierMap.resolve(this, c.currentLayout, c.metaState) ?: return false
+        val previous = c.metaState
+        try { c.metaState = 0; emit(value) } finally { c.metaState = previous }
+        return true
     }
 
     /** What a plain tap produces (used for hold-to-repeat). */
@@ -886,6 +896,11 @@ class Key(private val c: Keyboard, var row: Row, var x: Int, var y: Int, opts: F
     }
 
     private fun shiftedLabel(): String {
+        if (Settings.bool(SETTING_MODIFIER_MAPPINGS, false)) {
+            ModifierMap.resolve(this, c.currentLayout, c.metaState)?.takeIf {
+                it.codePointCount(0, it.length) == 1 && !it.startsWith("-")
+            }?.let { return it }
+        }
         val raw = str(KEY_KEY).trim()
         val lb = when {
             raw == VOICE_ACTION || bool(KEY_VOICE) -> "🎤"

@@ -74,6 +74,8 @@ New features & options:
 
 `combiningMarks=1` adds Arabic vowel marks or Hebrew niqqud on matching layouts. Keys insert the combining character after the base letter; custom layouts can use `@MARK:<hex codepoint>`. Off by default. Word learning, completion-prefix detection and word deletion keep diacritics attached to their word.
 
+`modifierMappings=1` enables layout-defined `modmap` tables (off by default). On a key: `"modmap": ("alt": "α", "ctrl+shift": "macro:name")`. At layout level: `"modmap": ("alt": ("a": "α", "b": "β"))`. Key mappings override layout mappings. Names: shift, ctrl, alt, altgr, meta, or none. Values use normal action syntax (text, negative key code, combo, macro or layout action). Source modifiers are consumed; specify output modifiers explicitly in a combo.
+
 ```
 (                                   # layout
     (                               # row

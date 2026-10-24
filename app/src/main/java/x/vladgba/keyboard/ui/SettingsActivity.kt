@@ -190,6 +190,7 @@ class SettingsActivity : LocalizedActivity() {
 
         page.header(getString(R.string.ui_sec_typing))
         bool(SETTING_META_ONE_SHOT, R.string.ui_set_one_shot, R.string.ui_set_one_shot_sub, true)
+        bool(SETTING_MODIFIER_MAPPINGS, R.string.ui_modifier_maps, R.string.ui_modifier_maps_sub, false)
         bool(SETTING_TEXT_EXPANSION, R.string.ui_set_expansion, R.string.ui_set_expansion_sub, true)
         page.row(getString(R.string.dictionary), getString(R.string.ui_set_dict_sub)) {
             startActivity(Intent(this, DictionaryActivity::class.java))

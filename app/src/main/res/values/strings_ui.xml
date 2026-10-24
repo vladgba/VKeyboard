@@ -2,6 +2,8 @@
 <!-- Strings of the newcomer-friendly screens: home, settings, macros, key tester, pickers. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Common -->
+    <string name="ui_modifier_maps">Layout modifier mappings</string>
+    <string name="ui_modifier_maps_sub">Use alternate key actions defined by the layout for Shift, Ctrl, Alt, AltGr and Meta combinations.</string>
     <string name="ui_combining_marks">Arabic and Hebrew marks</string>
     <string name="ui_combining_marks_sub">Show vowel and combining-mark keys on Arabic/Hebrew layouts. Marks apply to the preceding letter.</string>
     <string name="ui_rtl_marks">Direction marks row</string>
