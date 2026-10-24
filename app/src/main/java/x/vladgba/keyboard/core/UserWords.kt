@@ -16,7 +16,7 @@ import java.util.zip.ZipOutputStream
  *  - a plain word list: one word per line, optionally followed by a tab/space and a count;
  *  - a Gboard personal dictionary (`# Gboard Dictionary version:1`, `shortcut<TAB>word<TAB>language`),
  *    also inside its exported zip;
- *  - an AOSP-style `.combined` word list (` word=…,f=…` lines).
+ *  - an AOSP-style `.combined` word list (` word=…,f=…` lines), or static v2 binary `.dict`.
  * Export writes the plain list or a Gboard zip.
  */
 object UserWords {
@@ -176,6 +176,7 @@ object UserWords {
 
     /** Words (with counts) from a file in any of the supported formats. */
     fun parse(bytes: ByteArray): List<Pair<String, Int>> {
+        if (AospDictionary.matches(bytes)) return AospDictionary.parse(bytes)
         if (bytes.size >= 2 && bytes[0] == 'P'.code.toByte() && bytes[1] == 'K'.code.toByte()) return parseZip(bytes)
         val text = String(bytes, Charsets.UTF_8).removePrefix("﻿")
         val head = text.lineSequence().firstOrNull { it.isNotBlank() }?.trim() ?: return emptyList()

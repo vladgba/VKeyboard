@@ -6,6 +6,8 @@ A customizable, lightweight virtual keyboard for Android. It has **zero library 
 
 Open the folder in Android Studio and run `app`. For release signing, put a `keystore.properties` file in the project root (`storeFile`, `storePassword`, `keyAlias`, `keyPassword`). Without it, the release build is unsigned and the build no longer fails.
 
+Use JDK 17 or 21 for command-line builds. Run `./gradlew :app:verifyDictionaryImport` for dependency-free dictionary format checks using synthetic data.
+
 ## Versioning
 
 The version lives in `version.properties` (`major`, `minor`, `patch`, semantic versioning):
@@ -50,7 +52,7 @@ New features & options:
 - **Word deletion**: actions `@DELETE_WORD` (word before the cursor, drawn as ⌫⌫) and `@DELETE_WORD_FORWARD` (word after it, ⌦⌦) work anywhere an action goes: popup positions, swipes, hold, heavy press, circles, or as a key label. In the bundled layouts, swiping Backspace up deletes the previous word and swiping it down the next one.
 - **Clipboard history**: copied text is remembered (in memory only, never apps' sensitive clips such as passwords) and listed by the `@CLIPBOARD` action, drawn as 📋 and on swipe-up of 123 in the bundled layouts. Tap a clip to paste it, ☆ pins it (pinned clips are saved in `clipboard.pins` and included in backups), ✕ deletes it, Clear removes all unpinned clips. Unpinned clips are forgotten after `clipExpiry` minutes.
 - **Dead keys** (`@DEAD:<name>`): the next character typed is changed. Accents: `acute`, `grave`, `circumflex`, `diaeresis`, `tilde`, `macron`, `breve`, `dotabove`, `dotbelow`, `ring`, `doubleacute`, `caron`, `cedilla`, `ogonek`, `horn`, `hook`, `doublegrave` (´ + e → é; letters without a precomposed form keep the combining mark). Others: `stroke` (d → đ, l → ł, o → ø), `superscript` (2 → ²), `subscript` (2 → ₂), `ordinal` (a → ª), `smallcaps` (a → ᴀ), `arrows` (number-pad directions, 6 → →) and `box` (number-pad positions, 5 → ┼). Space or the same dead key again types the accent itself; Backspace cancels.
-- **Learned words** (home screen): search and delete learned words; import a plain word list (one word per line, optionally with a count), a Gboard personal dictionary (zip or `dictionary.txt`) or an AOSP `.combined` word list; export as a word list or a Gboard zip; copy words from/to Android's personal dictionary. No word lists are bundled.
+- **Learned words** (home screen): search and delete learned words; import a plain word list (one word per line, optionally with a count), a Gboard personal dictionary (zip or `dictionary.txt`), an AOSP `.combined` word list or a static AOSP v2 binary `.dict`; export as a word list or a Gboard zip; copy words from/to Android's personal dictionary. Binary imports preserve unigram frequencies, omit blocked/non-word entries and ignore shortcuts/bigrams. Dynamic dictionaries and other binary versions require a text export. No word lists are bundled.
 - **Compose key (`@COMPOSE` / `"compose": "1"`)**: Sequential character composition, e.g. tap `⎄` then `'` + `e` → `é`, `c` + `o` → `©`, `s` + `s` → `ß`, `1` + `2` → `½`, `a` + `e` → `æ`.
 - **Modifier indicators**: Distinct pip indicator for one-shot active modifiers and auto-shift; solid bar for locked modifiers (Caps Lock).
 - Key option `"holdRepeat": "1"` repeats the key while it is held. All bundled layouts now use it on Backspace.
