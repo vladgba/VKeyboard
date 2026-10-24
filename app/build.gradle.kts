@@ -76,3 +76,25 @@ kotlin {
 // No library dependencies on purpose: the app uses only the Android framework + Kotlin stdlib.
 dependencies { }
 
+// Pure Kotlin format checks without adding a test library or an Android runtime dependency.
+tasks.register<JavaExec>("verifyDictionaryImport") {
+    group = "verification"
+    description = "Checks binary dictionary import using synthetic fixtures"
+    dependsOn("compileDebugUnitTestKotlin")
+    classpath = files(
+        layout.buildDirectory.dir("tmp/kotlin-classes/debugUnitTest"),
+        layout.buildDirectory.dir("tmp/kotlin-classes/debug")
+    ) + configurations.getByName("debugUnitTestRuntimeClasspath")
+    mainClass.set("x.vladgba.keyboard.core.AospDictionaryTestKt")
+}
+
+tasks.register<JavaExec>("verifyWordIndex") {
+    group = "verification"
+    description = "Checks indexed suggestions and benchmarks 200,000 synthetic words"
+    dependsOn("compileDebugUnitTestKotlin")
+    classpath = files(
+        layout.buildDirectory.dir("tmp/kotlin-classes/debugUnitTest"),
+        layout.buildDirectory.dir("tmp/kotlin-classes/debug")
+    ) + configurations.getByName("debugUnitTestRuntimeClasspath")
+    mainClass.set("x.vladgba.keyboard.core.WordIndexTestKt")
+}

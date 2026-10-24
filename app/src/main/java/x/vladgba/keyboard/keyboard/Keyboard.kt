@@ -23,6 +23,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Toast
+import java.util.concurrent.Future
 import x.vladgba.keyboard.KeybWrapper
 import x.vladgba.keyboard.R
 import x.vladgba.keyboard.core.*
@@ -144,6 +145,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     val lastTypingLayout get() = lastTextLayout
 
     fun onStartInput(info: EditorInfo) {
+        cancelSuggestions()
         selStart = info.initialSelStart
         selEnd = info.initialSelEnd
         voice.cancel()
@@ -206,11 +208,12 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     }
 
     fun onHide() {
+        cancelSuggestions()
         voice.cancel()
         compose.cancel()
         resetTouches()
         TouchStats.flush(ctx)
-        UserWords.flush(ctx)
+        UserWords.submit { UserWords.flush(ctx) }
     }
 
     fun resetTouches() {
@@ -228,6 +231,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     }
 
     fun onDestroy() {
+        cancelSuggestions()
         voice.release()
         handler.removeCallbacksAndMessages(null)
         sounds.release()
@@ -702,7 +706,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         if (i > 0 && before[i - 1].isLetterOrDigit()) return  // e.g. digits glued to the word
         val word = before.substring(i).trim('\'', '’', '-')
         if (word.isEmpty() || textExpander.isAbbreviation(word)) return
-        UserWords.learn(ctx, word)
+        UserWords.submit { UserWords.learn(ctx, word) }
     }
 
     private fun expandText(sep: String = "") {
@@ -760,9 +764,24 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     private var suggestionPrefix = ""
 
     private val suggestRunnable = Runnable { refreshSuggestions() }
+    private var suggestionTask: Future<*>? = null
+    private var suggestionRequest = 0
+    private var suggestionReady = false
+    private var suggestionKnown = false
+
+    private fun cancelSuggestions() {
+        suggestionRequest++
+        suggestionTask?.cancel(false)
+        suggestionTask = null
+        handler.removeCallbacks(suggestRunnable)
+        suggestionReady = false
+        setSuggestions(emptyList())
+    }
 
     private fun scheduleSuggestions() {
         if (!suggestionsShown) return
+        suggestionRequest++
+        suggestionTask?.cancel(false)
         handler.removeCallbacks(suggestRunnable)
         handler.post(suggestRunnable)
     }
@@ -777,7 +796,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             suggestionsShown = shown
             onSuggestionsChanged?.invoke()
         }
-        if (!shown) setSuggestions(emptyList())
+        if (!shown) cancelSuggestions()
     }
 
     private fun setSuggestions(list: List<Suggestion>) {
@@ -788,15 +807,20 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
     /** Learned words that complete the word before the cursor, in the case being typed. */
     private fun refreshSuggestions() {
-        if (!suggestionsShown || (selStart >= 0 && selStart != selEnd)) return setSuggestions(emptyList())
-        val before = inputConnection?.getTextBeforeCursor(48, 0)?.toString() ?: return setSuggestions(emptyList())
+        if (!suggestionsShown || (selStart >= 0 && selStart != selEnd)) return cancelSuggestions()
+        val before = inputConnection?.getTextBeforeCursor(48, 0)?.toString() ?: return cancelSuggestions()
         var i = before.length
         while (i > 0 && (before[i - 1].isLetter() || before[i - 1] == '\'' || before[i - 1] == '’')) i--
         val prefix = before.substring(i)
         // A word whose auto-complete was undone stays protected until a different word is typed.
         if (prefix != suggestionPrefix && prefix != autoRejected) autoRejected = null
+        if (prefix != suggestionPrefix) {
+            suggestionReady = false
+            setSuggestions(emptyList())
+        }
         suggestionPrefix = prefix
-        if (prefix.isEmpty() || (i > 0 && before[i - 1].isDigit())) return setSuggestions(emptyList())
+        if (prefix.isEmpty() || (i > 0 && before[i - 1].isDigit())) return cancelSuggestions()
+        if (suggestionReady) return
         val upper = prefix.length > 1 && prefix.all { !it.isLetter() || it.isUpperCase() }
         val capital = prefix[0].isUpperCase()
         fun cased(w: UserWords.Word) = when {
@@ -804,13 +828,26 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
             capital -> w.form.replaceFirstChar { it.uppercaseChar() }
             else -> w.form
         }
-        // Completions first; typos one edit away from an unknown word after them.
-        val found = LinkedHashMap<String, UserWords.Word>()
-        for (w in UserWords.complete(ctx, prefix, 3)) found[w.form.lowercase()] = w
-        if (!UserWords.contains(ctx, prefix)) for (w in UserWords.corrections(ctx, prefix, 3)) found.putIfAbsent(w.form.lowercase(), w)
-        val words = found.values.take(3).map { Suggestion(cased(it)) }
-        val emoji = if (Settings.bool(SETTING_EMOJI_SUGGEST, true)) EmojiKeywords.lookup(ctx, prefix).firstOrNull() else null
-        setSuggestions(if (emoji != null) words.take(2) + Suggestion(emoji, emoji = true) else words)
+        val request = ++suggestionRequest
+        suggestionTask?.cancel(false)
+        val emojiEnabled = Settings.bool(SETTING_EMOJI_SUGGEST, true)
+        suggestionTask = UserWords.submit {
+            try {
+                val matches = UserWords.query(ctx, prefix)
+                val words = matches.words.map { Suggestion(cased(it)) }
+                val emoji = if (emojiEnabled) EmojiKeywords.lookup(ctx, prefix).firstOrNull() else null
+                val result = if (emoji != null) words.take(2) + Suggestion(emoji, emoji = true) else words
+                handler.post {
+                    if (request == suggestionRequest && suggestionsShown) {
+                        suggestionKnown = matches.known
+                        suggestionReady = true
+                        setSuggestions(result)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w("VKeyboard", "Word suggestions unavailable", e)
+            }
+        }
     }
 
     /** Space auto-complete: replaces a word that isn't a learned word with the top suggestion. */
@@ -819,7 +856,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         refreshSuggestions()
         val typed = suggestionPrefix
         val top = suggestions.firstOrNull()?.takeIf { !it.emoji } ?: return false
-        if (typed.isEmpty() || typed == autoRejected || UserWords.contains(ctx, typed) || top.text.equals(typed, true)) return false
+        if (!suggestionReady || typed.isEmpty() || typed == autoRejected || suggestionKnown || top.text.equals(typed, true)) return false
         acceptSuggestion(0)
         autoAccepted = typed to top.text
         return true
@@ -842,6 +879,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
     /** Adds the emoji suggestion after the word being typed. */
     fun acceptEmoji() {
+        if (!canAcceptSuggestion()) return
         val e = suggestions.firstOrNull { it.emoji } ?: return
         val ic = inputConnection ?: return
         ic.commitText(" " + e.text + " ", 1)
@@ -850,6 +888,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
 
     /** Replaces the word being typed with suggestion [rank] (0 = best) and adds a space. */
     fun acceptSuggestion(rank: Int) {
+        if (!canAcceptSuggestion()) return
         val s = suggestions.getOrNull(rank) ?: return
         if (s.emoji) return acceptEmoji()
         val word = s.text
@@ -858,10 +897,19 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         if (suggestionPrefix.isNotEmpty()) ic.deleteSurroundingText(suggestionPrefix.length, 0)
         ic.commitText("$word ", 1)
         ic.endBatchEdit()
-        if (!privateField && Settings.bool(SETTING_LEARN_WORDS, true)) UserWords.learn(ctx, word)
+        if (!privateField && Settings.bool(SETTING_LEARN_WORDS, true)) UserWords.submit { UserWords.learn(ctx, word) }
         textExpander.clearUndo()
         setSuggestions(emptyList())
         scheduleAutoShift()
+    }
+
+    /** A delayed result must never replace text from another word, selection or private field. */
+    private fun canAcceptSuggestion(): Boolean {
+        if (!suggestionsShown || privateField || !suggestionReady || selStart != selEnd) return false
+        val before = inputConnection?.getTextBeforeCursor(48, 0)?.toString() ?: return false
+        var start = before.length
+        while (start > 0 && (before[start - 1].isLetter() || before[start - 1] == '\'' || before[start - 1] == '’')) start--
+        return before.substring(start) == suggestionPrefix
     }
 
     /** Last selection reported by the editor (start == end: just a cursor; -1: unknown). */
