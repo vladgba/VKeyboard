@@ -223,6 +223,11 @@ class SettingsActivity : LocalizedActivity() {
             if (it == 0) getString(R.string.ui_off) else "$it dp"
         }
         numberRowChoice()
+        bool(SETTING_EXTRA_ROW, R.string.ui_extra_row, R.string.ui_extra_row_sub, false)
+        page.row(getString(R.string.ui_extra_row_keys), Settings.str(SETTING_EXTRA_ROW_KEYS, x.vladgba.keyboard.keyboard.ExtraRow.DEFAULT_KEYS)) {
+            Ask.text(this, getString(R.string.ui_extra_row_keys), Settings.str(SETTING_EXTRA_ROW_KEYS, x.vladgba.keyboard.keyboard.ExtraRow.DEFAULT_KEYS),
+                getString(R.string.ui_extra_row_help)) { set(SETTING_EXTRA_ROW_KEYS, it.take(2048)); render() }
+        }
         val padNames = listOf(getString(R.string.ui_off), getString(R.string.ui_pad_right), getString(R.string.ui_pad_left), getString(R.string.ui_pad_landscape))
         page.row(getString(R.string.ui_side_numpad), padNames[Settings.num(SETTING_SIDE_NUMPAD, 0).coerceIn(0, 3)]) {
             Ask.choice(this, getString(R.string.ui_side_numpad), padNames, Settings.num(SETTING_SIDE_NUMPAD, 0)) {

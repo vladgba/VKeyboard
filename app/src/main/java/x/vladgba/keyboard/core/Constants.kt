@@ -75,6 +75,8 @@ internal const val SETTING_LAYOUT_LANDSCAPE = "landscapeLayout"
 internal const val SETTING_SIDE_NUMPAD = "sideNumpad"
 internal const val SETTING_NUMPAD_WIDTH = "numpadWidth"
 internal const val SETTING_INVERT_NUMPAD = "invertNumpad"
+internal const val SETTING_EXTRA_ROW = "extraKeysRow"
+internal const val SETTING_EXTRA_ROW_KEYS = "extraRowKeys"
 /** 1 = tap modifier once for the next key, tap again to lock, third tap to release. 0 = plain toggle. */
 internal const val SETTING_META_ONE_SHOT = "metaOneShot"
 /** Expand abbreviations from the dictionary when a space/punctuation is typed. */

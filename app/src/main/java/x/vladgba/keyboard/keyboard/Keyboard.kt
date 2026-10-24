@@ -1293,7 +1293,8 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     /** Makes [name] current. Returns false if it can't be loaded. */
     private fun pickLayout(name: String): Boolean {
         if (name.isBlank()) return false
-        val options = listOf(SETTING_NUMBER_ROW, SETTING_SIDE_NUMPAD, SETTING_INVERT_NUMPAD).joinToString { Settings.str(it) }
+        val options = listOf(SETTING_NUMBER_ROW, SETTING_SIDE_NUMPAD, SETTING_INVERT_NUMPAD,
+            SETTING_EXTRA_ROW, SETTING_EXTRA_ROW_KEYS).joinToString { Settings.str(it) }
         if (options != loadedLayoutOptions) {
             loaded.clear()
             loadedLayoutOptions = options
@@ -1317,6 +1318,10 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         val node = FlexParser.parse(file.read())
         // The layout editor shows (and saves) the file exactly as it is.
         if (!isEditor) NumberRow.apply(node, name, Settings.num(SETTING_NUMBER_ROW, NumberRow.OFF))
+        if (!isEditor && Bootstrap.isTextLayout(name) && Settings.bool(SETTING_EXTRA_ROW, false)) {
+            val row = ExtraRow.build(Settings.str(SETTING_EXTRA_ROW_KEYS, ExtraRow.DEFAULT_KEYS))
+            if (row.childCount() > 0) node.childs.add(0, row)
+        }
         if (!isEditor && name == "\$numpad" && Settings.bool(SETTING_INVERT_NUMPAD, false)) Numpad.invert(node)
         val layout = KeybLayout(this, node, !isEditor && Bootstrap.isTextLayout(name) && Settings.num(SETTING_SIDE_NUMPAD, 0) != 0)
         layout.lastModified = file.lastModified()

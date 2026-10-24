@@ -68,6 +68,8 @@ New features & options:
 
 `sideNumpad`: `0` off (default), `1` right, `2` left, `3` right in landscape only. `numpadWidth` sets its width (15–45%, default 25%). `invertNumpad=1` swaps 1–3 and 7–9 on the side and standalone pads. These settings never rewrite layout files.
 
+`extraKeysRow=1` adds a toolbar to typing layouts. Configure up to 16 pipe-separated `extraRowKeys` in Settings: navigation names, Ctrl/Alt/Shift/Meta, F1–F12, or literal text. Default: `Esc|Tab|Ctrl|Alt|←|↓|↑|→`. Off by default.
+
 ```
 (                                   # layout
     (                               # row

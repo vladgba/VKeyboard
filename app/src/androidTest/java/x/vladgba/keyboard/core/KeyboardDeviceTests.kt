@@ -94,6 +94,26 @@ private fun runChecks(ctx: Context, check: String) {
                 kb.onDestroy()
                 println("PASS numpad: right/left/landscape, hit testing, inversion and off")
             }
+            "extra-row" -> {
+                Settings[SETTING_EXTRA_ROW] = "1"
+                Settings[SETTING_EXTRA_ROW_KEYS] = "Tab|Ctrl|F12|hello"
+                Settings.save(ctx)
+                val kb = Keyboard(ctx, KeybWrapper())
+                kb.switchLayout("en")
+                val keys = kb.currentLayout.rows[0].keys
+                check(keys.size == 4 && keys[0].num(KEY_CODE) == -61)
+                check(keys[1].num(KEY_MOD_META) == 4096 && keys[2].num(KEY_CODE) == -142)
+                check(keys[3].str(KEY_TEXT) == "hello")
+                val count = kb.currentLayout.rows.size
+                Settings[SETTING_EXTRA_ROW] = "0"
+                kb.reloadLayout()
+                check(kb.currentLayout.rows.size == count - 1)
+                Settings[SETTING_EXTRA_ROW] = "1"
+                kb.switchLayout("123")
+                check(kb.currentLayout.rows.none { row -> row.keys.any { it.str(KEY_TEXT) == "hello" } })
+                kb.onDestroy()
+                println("PASS extra-row: codes, modifiers, custom text, off and numeric exclusions")
+            }
             else -> error("Unknown device check")
         }
     } finally {
