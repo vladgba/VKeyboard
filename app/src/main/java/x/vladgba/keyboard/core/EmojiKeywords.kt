@@ -16,22 +16,22 @@ object EmojiKeywords {
 
     private fun mapOf(ctx: Context) = map ?: load(ctx).also { map = it }
 
-    fun reload() {
+    @Synchronized fun reload() {
         map = null
     }
 
-    fun size(ctx: Context) = mapOf(ctx).size
+    @Synchronized fun size(ctx: Context) = mapOf(ctx).size
 
     /** Emojis for [word] (exact keyword, any case), best first. */
-    fun lookup(ctx: Context, word: String): List<String> = mapOf(ctx)[word.lowercase()] ?: emptyList()
+    @Synchronized fun lookup(ctx: Context, word: String): List<String> = mapOf(ctx)[word.lowercase()]?.toList() ?: emptyList()
 
-    fun clear(ctx: Context) {
+    @Synchronized fun clear(ctx: Context) {
         mapOf(ctx).clear()
         save(ctx)
     }
 
     /** Merges keyword → emoji pairs from [bytes]; returns how many pairs were read. */
-    fun import(ctx: Context, bytes: ByteArray): Int {
+    @Synchronized fun import(ctx: Context, bytes: ByteArray): Int {
         val text = String(bytes, Charsets.UTF_8).removePrefix("﻿")
         val pairs = when {
             text.contains("<annotation") -> parseXml(text)

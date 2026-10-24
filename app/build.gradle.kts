@@ -87,3 +87,14 @@ tasks.register<JavaExec>("verifyDictionaryImport") {
     ) + configurations.getByName("debugUnitTestRuntimeClasspath")
     mainClass.set("x.vladgba.keyboard.core.AospDictionaryTestKt")
 }
+
+tasks.register<JavaExec>("verifyWordIndex") {
+    group = "verification"
+    description = "Checks indexed suggestions and benchmarks 200,000 synthetic words"
+    dependsOn("compileDebugUnitTestKotlin")
+    classpath = files(
+        layout.buildDirectory.dir("tmp/kotlin-classes/debugUnitTest"),
+        layout.buildDirectory.dir("tmp/kotlin-classes/debug")
+    ) + configurations.getByName("debugUnitTestRuntimeClasspath")
+    mainClass.set("x.vladgba.keyboard.core.WordIndexTestKt")
+}
