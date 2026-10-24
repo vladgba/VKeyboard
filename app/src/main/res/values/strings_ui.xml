@@ -2,6 +2,8 @@
 <!-- Strings of the newcomer-friendly screens: home, settings, macros, key tester, pickers. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Common -->
+    <string name="ui_orientation_layouts">Remember layout by orientation</string>
+    <string name="ui_orientation_layouts_sub">Remember your last typing layout separately in portrait and landscape. App-specific layouts still take priority.</string>
     <string name="ui_none">none</string>
     <string name="ui_off">Off</string>
     <string name="ui_done">Done</string>

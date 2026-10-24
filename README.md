@@ -64,6 +64,8 @@ New features & options:
 
 ## Layout format (Flexaml)
 
+`orientationLayouts=1` remembers manual typing-layout choices separately in portrait and landscape (`portraitLayout`, `landscapeLayout`). Enable it in Settings; it is off by default. App-specific layouts take priority, and temporary number/emoji pages do not replace the remembered choice.
+
 ```
 (                                   # layout
     (                               # row

@@ -107,6 +107,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         InjectedEvent.DEV = Settings.str(SETTING_INPUT_DEVICE)
         Theme.load(ctx, isNight)
         currentLayoutName = Settings.str(SETTING_DEF_LAYOUT)
+        if (!isEditor && Settings.bool(SETTING_ORIENTATION_LAYOUTS, false)) currentLayoutName = orientationLayout()
         lastTextLayout = currentLayoutName
         reloadLayout()
     }
@@ -118,6 +119,14 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
     fun onConfigurationChanged(cfg: Configuration) {
         Labels.clear() // the language may have changed
         val orientation = updateOrientation(cfg)
+        if (orientation && !isEditor && Settings.bool(SETTING_ORIENTATION_LAYOUTS, false) && !appSwitchedLayout) {
+            val target = orientationLayout()
+            lastTextLayout = target
+            if (!autoNumSwitched && Bootstrap.isTextLayout(currentLayoutName)) {
+                currentLayoutName = target
+                reloadLayout()
+            }
+        }
         val night = updateNightState(cfg)
         if (night) Theme.load(ctx, isNight)
         if (orientation || night) {
@@ -138,6 +147,12 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         if (night == isNight) return false
         isNight = night
         return true
+    }
+
+    private fun orientationLayout(): String {
+        val saved = Settings.str(if (isPortrait) SETTING_LAYOUT_PORTRAIT else SETTING_LAYOUT_LANDSCAPE)
+        return saved.takeIf { Bootstrap.isTextLayout(it) && it.isNotBlank() && PFile(ctx, it).exists() }
+            ?: Settings.str(SETTING_DEF_LAYOUT)
     }
 
     /** Called by the IME for every new input field. */
@@ -187,7 +202,7 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
                 }
             } else if (appSwitchedLayout) {
                 appSwitchedLayout = false
-                val def = Settings.str(SETTING_DEF_LAYOUT)
+                val def = if (Settings.bool(SETTING_ORIENTATION_LAYOUTS, false)) orientationLayout() else Settings.str(SETTING_DEF_LAYOUT)
                 currentLayoutName = def
                 lastTextLayout = def
             }
@@ -1321,6 +1336,11 @@ class Keyboard(val ctx: Context, val ime: KeybWrapper?) {
         currentLayoutName = name
         autoNumSwitched = false
         reloadLayout()
+        if (!isEditor && !appSwitchedLayout && Settings.bool(SETTING_ORIENTATION_LAYOUTS, false) &&
+            Bootstrap.isTextLayout(currentLayoutName)) {
+            Settings[if (isPortrait) SETTING_LAYOUT_PORTRAIT else SETTING_LAYOUT_LANDSCAPE] = currentLayoutName
+            Settings.save(ctx)
+        }
     }
 
     private fun cycleLayout(step: Int) {

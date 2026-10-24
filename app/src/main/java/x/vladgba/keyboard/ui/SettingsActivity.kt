@@ -205,6 +205,7 @@ class SettingsActivity : LocalizedActivity() {
 
         page.header(getString(R.string.ui_sec_look))
         choice(SETTING_DEF_LAYOUT, R.string.ui_set_def_layout, R.string.ui_set_def_layout_sub, Bootstrap.textLayouts(this))
+        bool(SETTING_ORIENTATION_LAYOUTS, R.string.ui_orientation_layouts, R.string.ui_orientation_layouts_sub, false)
         val themes = PFile.list(this, THEME_EXT)
         choice(THEME_DAY, R.string.ui_set_day_theme, R.string.ui_set_day_theme_sub, themes)
         choice(THEME_NIGHT, R.string.ui_set_night_theme, R.string.ui_set_night_theme_sub, themes)

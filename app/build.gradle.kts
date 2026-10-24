@@ -17,6 +17,7 @@ android {
         applicationId = "x.vladgba.keyboard"
         minSdk = 21
         targetSdk = 35
+        testInstrumentationRunner = "x.vladgba.keyboard.core.KeyboardDeviceTests"
         resValue("string", "app_name", "VKeyboard")
         resValue("string", "version", appVersionName)
     }
