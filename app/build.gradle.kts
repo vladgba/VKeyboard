@@ -99,3 +99,13 @@ tasks.register<JavaExec>("verifyWordIndex") {
     ) + configurations.getByName("debugUnitTestRuntimeClasspath")
     mainClass.set("x.vladgba.keyboard.core.WordIndexTestKt")
 }
+
+tasks.register<JavaExec>("validateLayouts") {
+    group = "verification"
+    description = "Validates shipped layouts or -PlayoutDir=<directory>"
+    dependsOn("compileDebugUnitTestKotlin")
+    classpath = files(layout.buildDirectory.dir("tmp/kotlin-classes/debugUnitTest"),
+        layout.buildDirectory.dir("tmp/kotlin-classes/debug")) + configurations.getByName("debugUnitTestRuntimeClasspath")
+    mainClass.set("x.vladgba.keyboard.core.LayoutValidationKt")
+    args(rootProject.file(providers.gradleProperty("layoutDir").getOrElse("app/src/main/assets")).absolutePath)
+}

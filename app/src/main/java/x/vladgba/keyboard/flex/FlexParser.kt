@@ -14,7 +14,7 @@ import android.util.Log
  *
  * The parser never throws: broken input produces a best-effort tree and [warnings].
  */
-open class FlexParser(private val input: String) {
+open class FlexParser(private val input: String, private val reporter: ((String) -> Unit)? = null) {
 
     enum class TokenType { WORD, COLON, STR, NUM, BEGIN, END, HEX }
 
@@ -45,7 +45,7 @@ open class FlexParser(private val input: String) {
             enumerate(result)
         } catch (e: Exception) {
             warnings += ParseWarning(e.message ?: e.toString(), row, col)
-            Log.w(TAG, "Parse failed", e)
+            if (reporter != null) reporter.invoke("Parse failed: ${e.message}") else Log.w(TAG, "Parse failed", e)
         }
         return if (tokens.isNotEmpty() && tokens[0].type == TokenType.BEGIN && result.childCount() > 0) result[0] else result
     }
@@ -241,7 +241,7 @@ open class FlexParser(private val input: String) {
 
     private fun warn(msg: String, token: Token) {
         ParseWarning(msg, token.row, token.col).also {
-            Log.w(TAG, it.toString())
+            if (reporter != null) reporter.invoke(it.toString()) else Log.w(TAG, it.toString())
             warnings += it
         }
     }

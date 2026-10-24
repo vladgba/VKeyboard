@@ -32,6 +32,10 @@ class KeyboardDeviceTests : Instrumentation() {
 }
 
 private fun runChecks(ctx: Context, check: String) {
+    if (check == "all") {
+        for (name in listOf("orientation", "numpad", "extra-row", "rtl", "marks", "modmap", "languages", "hardware", "voice-provider", "visuals")) runChecks(ctx, name)
+        return
+    }
     val original = PFile(ctx, "settings").read()
     val originalWords = PFile(ctx, LEARNED_FILENAME, LEARNED_EXT).read()
     try {

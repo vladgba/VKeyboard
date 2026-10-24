@@ -9,6 +9,10 @@ Open the folder in Android Studio and run `app`. For release signing, put a `key
 Use JDK 17 or 21 for command-line builds. Run `./gradlew :app:verifyDictionaryImport` for dependency-free dictionary format checks using synthetic data.
 Run `./gradlew :app:verifyWordIndex` to check suggestion ranking against a reference implementation and benchmark 200,000 generated words.
 
+Run `./gradlew :app:validateLayouts` (Windows: `tools/validate-layouts.ps1`) to validate shipped layouts. Use `-PlayoutDir=<directory>` or the script `-LayoutDir` argument for a custom folder. Checks cover parser warnings, balanced structure, row/key shape, finite positive dimensions, actions, popup limits and missing layout references. The command exits unsuccessfully on errors and never rewrites files.
+
+With an authorized Android device connected, `tools/device-checks.ps1 all` runs the existing framework-only integration cases. It installs debug app/test APKs and restores settings/learned words after each case. Hardware hotplug and live microphone capture require separate manual testing; automated checks cover hardware policy and provider discovery/routing.
+
 ## Versioning
 
 The version lives in `version.properties` (`major`, `minor`, `patch`, semantic versioning):
